@@ -1,0 +1,12 @@
+body {
+  background-color: #000000;
+}
+
+.item {
+  background-color: #292929;
+}
+
+.item,
+.item a{
+  color:#fff;
+}
