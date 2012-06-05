@@ -3,10 +3,10 @@
   var PubSub = {
     pubsub:   $({}),
     subscribe: function(){
-      this.pubsub.on.apply(this.pubsub, arguments);
+      this.pubsub.bind.apply(this.pubsub, arguments);
     },
     unsubscribe: function(){
-      this.pubsub.off.apply(this.pubsub, arguments);
+      this.pubsub.unbind.apply(this.pubsub, arguments);
     },
     publish: function(){
       this.pubsub.trigger.apply(this.pubsub, arguments);

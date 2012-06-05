@@ -13,6 +13,71 @@ class Router
       //yes we are, so we skip all the next elseif's
     }
     
+    //Quick and dirty implementation of REST.
+    elseif(tx('Data')->get->rest->is_set())
+    {
+      
+      //Get the "rest" path and method.
+      $path = tx('Data')->get->rest->get();
+      $method = tx('Data')->server->REQUEST_METHOD->lowercase()->get();
+      
+      //Base the method we'll call off of the request method.
+      switch($method){
+        case 'get': $methodtype = 'get'; break;
+        case 'post': $methodtype = 'create'; break;
+        case 'put': $methodtype = 'update'; break;
+        case 'delete': $methodtype = 'delete'; break;
+        default: throw new \exception\Programmer('Method "%s" not supported.', tx('Data')->server->REQUEST_METHOD); break;
+      }
+      
+      //Use PHP $_GET?
+      if($method == 'get'){
+        $data = tx('Data')->get->copy()->un_set('rest');
+      }
+      
+      //Or parse JSON-input?
+      else{
+        $data = Data(tx('Data')->xss_clean(json_decode(file_get_contents("php://input"), true)));
+      }
+      
+      //Read the path to get component, method and parameters.
+      $parameters = explode('/', $path);
+      $component = array_shift($parameters);
+      $methodname = array_shift($parameters);
+      
+      //Call the method. It should return a \dependencies\UserFunction.
+      $userfunc = tx('Component')->sections($component)->_call(
+        "{$methodtype}_{$methodname}", array($data, Data($parameters))
+      );
+      
+      //test for UserFunction.
+      if(!($userfunc instanceof \dependencies\UserFunction)){
+        set_status_header(500, "Method {$methodtype}_{$methodname}() must return an instance of UserFunction.");
+        exit;
+      }
+      
+      //Decide on the response code.
+      if($userfunc->failure())
+      {
+        
+        switch($userfunc->exception->getExCode()){
+          case EX_AUTHORISATION: $code = 401; break;
+          case EX_EMPTYRESULT: $code = 404; break;
+          case EX_VALIDATION: $code = 412; break;
+          default: $code = 500; break;
+        }
+        
+        set_status_header($code, $userfunc->get_user_message());
+        exit;
+        
+      }
+      
+      //Return content as JSON.
+      header('Content-type: application/json');
+      $contents = Data($userfunc->return_value)->as_json();
+      
+    }
+    
     //are we going to execute an action?
     elseif(tx('Data')->get->action->is_set()){
       $ai = $this->parse_action(tx('Data')->get->action->get());

@@ -4,7 +4,7 @@
 <!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
 <!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
-<head>
+<html>
 
   <head>
 
@@ -38,15 +38,16 @@
   
   <body>
 
-<div id="container">
-  
-  <?php echo $body->content; ?>
+    <div id="container">
+      
+      <?php echo $body->content; ?>
 
-  <footer id="footer">
-  </footer>
+      <footer id="footer">
+      </footer>
 
-</div>
-<!-- /#container -->
+    </div>
+    <!-- /#container -->
 
   </body>
+  
 </html>

@@ -99,7 +99,7 @@
       if(args.length == 1){
         if( $.isPlainObject(args[0]) ){
           map = args[0];
-        }else if(scalar(args[0])){
+        }else{
           el = args[0];
         }
       }
@@ -125,6 +125,7 @@
       map = map || {};
 
       if(el === false || namespace === false){
+        console.log(el, namespace);
         throw "Invalid arguments. Element and namespace required.";
       }
       //eof handle arguments

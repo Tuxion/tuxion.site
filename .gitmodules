@@ -1,0 +1,3 @@
+[submodule "plugins/jquery_postpone"]
+	path = plugins/jquery_postpone
+	url = git://github.com/Avaq/jQuery-Postpone.git

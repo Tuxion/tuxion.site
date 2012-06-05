@@ -1,0 +1,6 @@
+
+/logs
+/config/database.php
+/config/email.php
+/config/paths.php
+sftp-config.json

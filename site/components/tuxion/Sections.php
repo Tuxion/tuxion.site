@@ -5,97 +5,108 @@ class Sections extends \dependencies\BaseViews
 
   /* ---------- Frontend ---------- */
 
-  protected function get_items($filter)
+  public function get_items($data, $args)
   {
 
     $that = $this;
-    return tx('Fetching items.', function()use($filter, $that){
+    
+    return tx('Fetching items.', function()use($data, $args, $that){
 
-      return
-        $that->table('Items')
+      $result = $that->table('Items')
+        ->join('Categories', $c)->left()
+        ->select("$c.title", 'category_title')
+        ->select("$c.color", 'category_color')
         ->is($filter->id->is('set')->and_not('empty'), function($q)use($filter){
           $q->where('id', $filter->id);
         })
-        ->join('Categories', $c)->left()
-        ->select("$c.title", 'category_title')
-        ->select("$c.color", 'category_color')
-        ->execute();
+      ->execute();
 
-    })->failure(function($info){
-      throw $info->exeption;
     });
 
   }
+  
+  //Get the closest (default 50) items to the given item id.
+  public function get_closest($data, $args)
+  {
+    
+    $that = $this;
+    
+    return tx('Fetching the closest items.', function()use($data, $args, $that){
+      
+      //The total amount of items we should end up with. Defaults to 50.
+      $amount = $data->amount->otherwise(50)->get();
+      $half = floor($amount/2);
+      
+      //The id of the item "in the middle".
+      $id = $args[0]->validate('item identifier', array('number' => 'int'))->otherwise(false)->get();
+      
+      //Get information about the item itself.
+      if($id){
+        $item = $that->table('Items')->pk($id)->execute_single();
+      }
+      
+      //No item? Use the first.
+      if(!$id || $item->is_empty()){
+        $item = $that->table('Items')->order('dt_created', 'DESC')->execute_single();
+      }
+      
+      //No items at all?
+      if($item->is_empty()){
+        return array('first', 'last');
+      }
+      
+      //Get items before the middle item.
+      $before = $that->table('Items')
+        ->where('dt_created', '>', $item->dt_created)
+        ->order('dt_created', 'ASC')
+        ->limit($half)
+      ->execute()
+      ->convert('reverse');
+        
+      //Get items after the middle item.
+      $after = $that->table('Items')
+        ->where('dt_created', '<', $item->dt_created)
+        ->order('dt_created', 'DESC')
+        ->limit($half)
+      ->execute();
+      
+      //First? Prepend "first".
+      if($before->size() < $half){
+        $before = $before->reverse()->push('first')->reverse();
+      }
+      
+      //Last? Append "last".
+      if($after->size() < $half){
+        $after->push('last');
+      }
+      
+      return array('item' => $item, 'before' => $before, 'after' => $after);
+      
+    });
+    
+  }
 
-  private function get_item($filter)
+  public function get_item($data, $args)
   {
 
     $that = $this;
-    return tx('Fetching item.', function()use($filter, $that){
+    
+    return tx('Fetching item.', function()use($data, $args, $that){
+      
+      $args[0]->validate('item identifier', array('required', 'number' => 'int'));
 
-      return
-        $that->table('Items')
-        ->where('id', $filter->id)
-        ->join('Categories', $c)->left()
-        ->select("$c.title", 'category_title')
-        ->select("$c.color", 'category_color')
-        ->execute_single();
+      $result = $that->table('Items')->pk($args[0])->execute_single();
+      
+      $result->is('empty', function()use($args){
+        throw new \exception\EmptyResult('Item %s was not found.', $args[0]);
+      });
+      
+      return $result;
 
     });
 
   }
-
-  protected function json($options)
-  {
-
-    switch(tx('Data')->server->REQUEST_METHOD->lowercase()->get()){
-      case 'get': $data = tx('Data')->get; $method = 'get'; break;
-      case 'post': $data = Data(tx('Data')->xss_clean(json_decode(file_get_contents("php://input"), true))); $method = 'create'; break;
-      case 'put': $data = Data(tx('Data')->xss_clean(json_decode(file_get_contents("php://input"), true))); $method = 'update'; break;
-      case 'delete': $data = Data(tx('Data')->xss_clean(json_decode(file_get_contents("php://input"), true))); $method = 'delete'; break;
-      default: throw new \exception\Programmer('Method "%s" not supported.', tx('Data')->server->REQUEST_METHOD); break;
-    }
-    
-    header('Content-type: application/json');
-
-    if($data->model->is_empty()){
-      set_status_header(412, "Model name required.");
-      return null;
-    }
-
-    $method = "{$method}_{$data->model}";
-    
-    if(!method_exists($this, $method)){
-      set_status_header(501, "Method ".get_class($this)."::$method() missing.");
-      return null;
-    }
-    
-    $data->model->un_set();
-    $user_function = $this->{$method}($data);
-
-    if( ! $user_function instanceof \dependencies\UserFunction){
-      set_status_header(500, "Method ".get_class($this)."::$method() must return an instance of UserFunction.");
-      return null;
-    }
-    
-    if($user_function->failure()){
-      
-      switch($user_function->exception->getExCode()){
-        case EX_AUTHORISATION: $code = 401; break;
-        case EX_EMPTYRESULT: $code = 404; break;
-        case EX_VALIDATION: $code = 412; break;
-        default: $code = 500; break;
-      }
-      
-      set_status_header($code, $user_function->get_user_message());
-      return null;
-      
-    }
-    
-    return Data($user_function->return_value)->as_json();
-    
-  }
-
+  
   /**
    * Backend
    */

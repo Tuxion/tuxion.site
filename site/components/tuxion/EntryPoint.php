@@ -9,11 +9,11 @@ class EntryPoint extends \dependencies\BaseEntryPoint
     //Show view.
     return $this->template('tuxion', array('plugins' => array(
       load_plugin('jquery'),
-      load_plugin('jquery_ui'),
-      load_plugin('jsFramework'),
-      load_plugin('html5shiv'),
-      load_plugin('jquery_appear'),
-      load_plugin('jquery_smoothDivScroll')
+      load_plugin('jquery_scrollTo'),
+      load_plugin('jquery_viewport'),
+      load_plugin('jquery_postpone'),
+      load_plugin('underscore'),
+      load_plugin('jsFramework')
     )),
     array(
       'content' => $this->view('app')

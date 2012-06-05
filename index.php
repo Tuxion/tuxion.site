@@ -33,7 +33,7 @@ tx('Component');
 
 //config
 tx('Config')->system('backend', false);
-tx('Config')->system('component', 'cms');
+tx('Config')->system('component', 'tuxion');
 
 //start doing stuff
 tx('Router')->start();

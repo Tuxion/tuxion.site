@@ -85,7 +85,7 @@ abstract class BaseComponent
   }
   
   // calls $controller on this instance with specified array passed as argument list
-  private function _call($controller, array $args = array())
+  public function _call($controller, array $args = array())
   {
     
     //check defined permissions
