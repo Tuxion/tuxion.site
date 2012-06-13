@@ -1,46 +1,4 @@
-var Tuxion = (function($, root, undefined){
-  
-  //Define a template helper function.
-  function tmpl(id){
-    
-    return function(){
-      var tmpl;
-      if(!$.domReady){
-        throw "Can not generate templates before DOM is ready.";
-      }else{
-        tmpl = tmpl || _.template($('#'+id).html());
-        return tmpl.apply(this, arguments);
-      }
-    }
-    
-  }
-  
-  //Resize a box and maintain aspect ratio.
-  function resize(old, New)
-  {
-    
-    //Fill in missing variables.
-    old.height = old.height || -1;
-    old.width = old.width || -1;
-    
-    //Resize by height.
-    if(New.width == undefined){
-      New.height = New.height || 0;
-      var ratio = old.height / New.height;
-      New.width = old.width*ratio;
-    }
-    
-    //Resize by width.
-    else if(New.height == undefined){
-      New.width = New.width || 0;
-      var ratio = old.width / New.width;
-      New.height = old.height*ratio;
-    }
-    
-    //Return the new width and height.
-    return New;
-    
-  }
+;(function(root, $, _, undefined){
   
   //Do an ajax request.
   var GET=1, POST=2, PUT=4, DELETE=8;
@@ -84,7 +42,7 @@ var Tuxion = (function($, root, undefined){
     //Should data be processed by jQuery?
     var process = (method == GET);
     
-    //Stringify out JSON?
+    //Stringify our JSON?
     if(!process) data = JSON.stringify(data);
     
     //Convert method to string for use in the jQuery ajax API.
@@ -98,7 +56,7 @@ var Tuxion = (function($, root, undefined){
     var url = window.location.host + window.location.pathname + '?rest=tuxion/' + model;
     
     //Do it, jQuery!
-    return _($.ajax({
+    return $.ajax({
       url: url,
       type: method,
       data: data,
@@ -108,20 +66,48 @@ var Tuxion = (function($, root, undefined){
       headers: {
         'X-Requested-With': 'XMLHttpRequest'
       }
-    }))
-    
-    //Extend with simple fail alert.
-    .extend({
-      alertFail: function(){
-        return this.fail(function(xhr){
-          if(xhr.status<400){
-            alert('Invalid server response.');
-          }else{
-            alert('ERROR '+xhr.status+":\n"+xhr.statusText);
-          }
-        });
-      }
     });
+    
+  }
+  
+  //A template helper function.
+  function tmpl(id){
+    
+    return function(){
+      var tmpl;
+      if(!$.domReady){
+        throw "Can not generate templates before DOM is ready.";
+      }else{
+        tmpl = tmpl || _.template($('#'+id).html());
+        return $(tmpl.apply(this, arguments));
+      }
+    }
+    
+  }
+  
+  //A data-id extractor helper function.
+  $.fn.id = function(setter){
+    
+    if(setter){
+      return $(this).attr('data-id', setter);
+    }
+    
+    return parseInt( $(this).attr('data-id') , 10 );
+    
+  };
+  
+  //A helper function for getting the delta out of mouse wheel events.
+  function getWheelDelta(event){
+    
+    if(event.wheelDelta){
+      return -(event.wheelDelta/120);
+    }
+    
+    if(event.detail){
+      return (event.detail/3);
+    }
+    
+    else return false;
     
   }
   
@@ -140,105 +126,36 @@ var Tuxion = (function($, root, undefined){
     
   });
   
-  //Return the app interface.
-  return new Class(null, {
+  var app;
+  
+  root.Tuxion = new Class(null, {
     
-    options: {
-      
-    },
-    
+    /**
+    * OPTIONS AND INITIATOR
+    */
+    options: {},
     init: function(options){
+      app = this;
       this.options = _(options).defaults(this.options);
-      this.createContent();
-      this.bindHash();
-      this.bindScroll();
-      if(window.location.hash.length > 0){
-        this.openPage(window.location.hash);
-      }else{
-        this.Content.renderFirst();
-      }
+      this.Content = new this.ContentController;
     },
     
-    //Bind hashchange events.
-    bindHash: function(){
+    /**
+    * ITEM FETCHING AND CACHING (model)
+    */
+    Items: {
       
-      var app = this;
+      array: [],
+      object: {},
       
-      $(window).hashchange(function(){
+      //Return the item with the given id.
+      fetch: function(id){
         
-      });
-      
-    },
-    
-    bindScroll: function(){
-      
-      var app = this;
-      
-      $(window).scroll(function(e){
-        // console.log('scrolled');
-        app.Content.showVisible();
-      });
-      
-    },
-    
-    createColumn: tmpl('item-column'),
-    
-    Item: Controller.sub({
-      
-      elements: {
-        'more': '.read-more'
-      },
-      
-      events: {
-        'click on more': function(){}
-      },
-      
-      data: {},
-      
-      templator: tmpl('item'),
-      namespace: 'item',
-      
-      init: function(data){
-        this.data = data;
-        this.previous($('<li>', {
-          'class': 'item-container'
-        }));
-      },
-      
-      render: function(){
-        this.view.empty().append( this.templator(this.data) );
-        return this;
-      }
-      
-    }),
-    
-    createContent: function(){ var app = this; app.Content = new Controller('#content', 'items', {
-      
-      elements: {
-        'el_items': '.item',
-        'el_columns': '.items'
-      },
-      
-      items: {},
-      itemArray: [],
-      itemFilters: [
-        function(item){
-          return item !== 'first';
-        },
-        function(item){
-          return item !== 'last';
-        }
-      ],
-      
-      fetchItem: function(id){
-        
-        var app = this;
+        var Items = this;
         
         //Return the item if we already had it.
-        if(app.items[id]){
-          return _(($.Deferred()).resolve(app.items[id]).promise()).extend({
-            alertFail: $.noop
-          });
+        if(id in Items.object){
+          return ($.Deferred()).resolve(Items.object[id]).promise();
         }
         
         //Add a request to the item to the pending items.
@@ -246,33 +163,135 @@ var Tuxion = (function($, root, undefined){
         
         //Add it to the list of items when it's done.
         .done(function(data){
-          app.itemArray.push(data);
-          app.items[id] = data;
+          //#TODO: Items.array.push(data);
+          Items.object[id] = data;
         });
-              
+        
         //Return the pending item.
         return req;
         
       },
       
-      //Fetches the 50 latest items, or the 50 items closest to the given item id.
+      //Return the item that comes after the given id (before it in time).
+      fetchNext: function(id){
+        
+        var Items = this;
+        
+        //Find it in our cache.
+        if(Items.object[id]){
+          
+          //Look for the item key.
+          var item = Items.object[id]
+            , key = Items.array.indexOf(item) + 1;
+          
+          //No items come after the last one.
+          if(item == "last"){
+            return ($.Deferred()).reject("last").promise();
+          }
+          
+          //Found it?
+          if(Items.array[key]){
+            return ($.Deferred()).resolve(Items.array[key]).promise();
+          }
+          
+        }
+        
+        var D = $.Deferred()
+          , P = D.promise();
+        
+        //Fetch a new chunk of items.
+        Items.fetchClosest(id).done(function(data){
+          Items.fetchNext(id).done(function(item){
+            D.resolve(item);
+          });
+        });
+        
+        return P;
+        
+      },
+      
+      //Return the item that comes before the item with the given id.
+      fetchPrevious: function(id){
+        
+        var Items = this;
+        
+        //Find it in our cache.
+        if(id in Items.object){
+          
+          //Look for the item key.
+          var item = Items.object[id]
+            , key = Items.array.indexOf(item) - 1;
+          
+          //No items come before the first one.
+          if(item == "first"){
+            return ($.Deferred()).reject("first").promise();
+          }
+          
+          //Found it?
+          if(key in Items.array){
+            return ($.Deferred()).resolve(Items.array[key]).promise();
+          }
+          
+        }
+        
+        var D = $.Deferred()
+          , P = D.promise();
+        
+        //Fetch a new chunk of items.
+        Items.fetchClosest(id).done(function(data){
+          Items.fetchPrevious(id).done(function(item){
+            D.resolve(item);
+          });
+        });
+        
+        return P;
+        
+      },
+      
+      //Return the first item.
+      fetchFirst: function(){
+        
+        var Items = this;
+        
+        //Try to fetch it from cache.
+        if(0 in Items.array && Items.array[0] == "first" && 1 in Items.array){
+          return ($.Deferred()).resolve(Items.array[1]).promise();
+        }
+        
+        var D = $.Deferred()
+          , P = D.promise();
+        
+        //Fetch it from the server.
+        Items.fetchClosest(0).done(function(){
+          Items.fetchFirst().done(function(item){
+            D.resolve(item);
+          });
+        });
+        
+        return P;
+        
+      },
+      
+      //Return the closest (amount||50) items to the given id.
       fetchClosest: function(id, amount){
         
         var data = {}
-          , app = this
+          , Items = this
           , req;
+          
+          amount=6;
           
         amount && _(data).extend({amount:amount});
         
         //Try to fetch from cache
-        if(app.items[id]){
+        if(Items.object[id]){
           
           var half = Math.floor((amount || 50) / 2)
-            , item = app.items[id]
-            , idx = _(app.itemArray).indexOf(item);
+            , item = Items.object[id]
+            , idx = _(Items.array).indexOf(item);
           
-          var before = app.itemArray.slice((idx-half < 0 ? 0 : idx-half), idx);
-          var after = app.itemArray.slice((idx+1), (idx+half+1));
+          var before = Items.array.slice((idx-half < 0 ? 0 : idx-half), idx);
+          var after = Items.array.slice((idx+1), (idx+half+1));
           
           req = _(($.Deferred()).resolve({before: before, item: item, after: after}).promise()).extend({
             alertFail: $.noop
@@ -314,12 +333,12 @@ var Tuxion = (function($, root, undefined){
               return true;
             }
             
-            app.items[val.id] = val;
+            Items.object[val.id] = val;
             
           });
           
           //The indexes of items in our already existing array that we are going to replace in between.
-          var first = 0, last = undefined, this_itemArray = app.itemArray;
+          var first = 0, last = undefined, this_itemArray = Items.array;
                   
           //Detect the closest date in the future if we're not the first node.
           if(_(itemArray).first() != 'first'){
@@ -367,148 +386,340 @@ var Tuxion = (function($, root, undefined){
           }
           
           if(last === undefined){
-            app.itemArray.splice(first);
-            app.itemArray = app.itemArray.concat(itemArray);
+            // console.log('adding at the end');
+            // console.dir(itemArray);
+            Items.array = Items.array.concat(itemArray);
           }else{
-            Array.prototype.splice.apply(app.itemArray, [first, (last-first)].concat(itemArray));
+            // console.log('adding in between', first, last);
+            // console.dir(itemArray);
+            Items.array.splice(first);
+            Array.prototype.splice.apply(Items.array, [first, (last-first)].concat(itemArray));
           }
           
         });
         
         return req;
         
+      }
+      
+    },
+    
+    /**
+    * ITEM CONTROLLER
+    */
+    items: {},
+    Item: Controller.sub({
+      
+      elements: {
+        'more': '.read-more'
       },
       
-      renderFirst: function(){
+      events: {
+        'click on more': function(e){
+          e.preventDefault();
+          app.Content.openPage(this.id);
+        }
+      },
+      
+      data: {},
+      
+      templator: tmpl('item'),
+      namespace: 'item',
+      
+      init: function(data){
+        this.id = data.id;
+        this.data = data;
+        app.items[this.id] = this;
+        this.previous(this.templator(data));
+      },
+      
+      render: function(){
+        this.view.replaceWith( this.templator(this.data) );
+        return this;
+      }
+      
+    }),
+    
+    /**
+    * COLUMN CONTROLLER
+    */
+    columns: [],
+    Column: Controller.sub({
+      
+      templator: tmpl('item-column'),
+      namespace: 'column',
+      
+      elements: {
+        'el_items': '.item'
+      },
+      
+      init: function(){
+        this.id = app.columns.length;
+        app.columns.push(this);
+        this.previous( this.templator({id:this.id}) );
+      },
+      
+      //Rerender with a new template.
+      render: function(){
+        this.view.replaceWith( this.templator({}) );
+        return this;
+      },
+      
+      //Append an instance of Item.
+      append: function(item){
         
-        var content = this;
+        var Column = this;
+        this.view.append(item.view);
         
-        content.fetchClosest(0).done(function(data){
-          content.append(
-            _(data.after)
-            .chain()
-            .values()
-            .unshift(data.item)
-            .value()
-          );
-          $.after(0).done(content.proxy(content.showVisible));
+        $.after(0).done(function(){
+          Column.refreshElements();
+          app.Content.refreshElements();
         });
         
+        return this;
         
       },
       
-      renderNext: function(){
+      //Append our view to the Content.
+      toContent: function(){
         
-        var content = this, lastId = parseInt( content.el_items.filter(':last-child').attr('data-id') , 10 );
-        
-        if(_(lastId).isNaN()){
-          throw "Could not identify the last item on the screen.";
+        if(app.Content.el_columns.filter(this.view).size() == 1){
+          return this;
         }
         
-        content.fetchClosest(lastId).done(function(data){
-          content.append(data.after);
+        var lastColumn = app.Content.el_columns.last();
+        this.view.appendTo(app.Content.view);
+        this.view.addClass(lastColumn.size() == 0 || lastColumn.hasClass('wide') ? 'small' : 'wide');
+        
+        $.after(0).done(function(){
+          app.Content.refreshElements();
         });
         
         return this;
         
       },
       
-      append: function(items){
+      //Return true if this column has too many items.
+      overflowing: function(){
+        var lastItem = this.el_items.last();
+        if(lastItem.size() < 1) return false;
+        return (lastItem.height() + lastItem.position().top + 50) > this.view.height();
+      }
+      
+    }),
+    
+    /**
+    * CONTENT CONTROLLER
+    */
+    ContentController: Controller.sub({
+      
+      el: '#content',
+      namespace: 'content',
+      
+      elements: {
+        'el_items': '.item',
+        'el_columns': '.col'
+      },
+      
+      init: function(){
         
-        var content = this
-          , items = content.filterItems(items)
-          , appendNext = _(function(){
-            
-            var last_column = content.el_columns.last();
-            
-            if(last_column.size() == 0){
-              last_column = $(app.createColumn({})).appendTo(content.view).matches();
-            }
-            
-            var item = new app.Item(items.shift())
-              , ul = last_column.find('ul');
-            
-            item.render().view.appendTo(ul);
-            
-            $.after(0).done(function(){
-              
-              console.log(ul.height(), last_column.height());
-              
-              if(ul.height() > last_column.height()){
-                item.view.appendTo($(app.createColumn({})).appendTo(content.view).find('ul'));
-              }
-              
-              content.refreshElements();
-              
-              if(items.length > 0){
-                appendNext();
-              }
-            
-            });
-            
-          }).debounce(0);
+        var Content = this;
+        
+        Content.previous();
+        Content.fixWidth();
+        
+        if(window.location.hash.length > 0){
+          Content.openPage(window.location.hash);
+        }else{
+          Content.renderFrom();
+        }
+        
+        $(window)
           
-          appendNext();
+          .on('mousewheel DOMMouseScroll', Content.view, function(e){
+            var delta = getWheelDelta(e.originalEvent);
+            $('#container').scrollLeft($('#container').scrollLeft()+(delta*100));
+            Content.renderItems(delta < 0);
+          })
           
-          $.after(0).done(content.proxy(content.showVisible));
+          .on('resize', _(function(){
+            Content.rerender();
+          }).debounce(120));
         
-          // item = new app.Item(item);
-          // item.render();
-          // append.appendChild(item.view[0]);
-          // 
-        
-        return this;
+        ;//eof: $(window)
         
       },
       
-      showVisible: function(){
+      openPage: function(id){
         
-        var filtered = this.el_items.filter(':in-viewport').filter(function(){
-          return $(this).css('visibility') == 'hidden';
-        });
+        var Content = this;
         
-        filtered.each(function(i){
-          var item = this;
-          $.after(150*i).done(function(){
-            $(item).css('visibility', 'visible').fadeIn(300);
+        if(app.items[id]){
+          
+        }
+        
+      },
+      
+      renderFrom: function(id){
+        
+        var Content = this;
+        Content.view.empty();
+        this.items = [];
+        
+        app.Items[(id ? 'fetch' : 'fetchFirst')](id).done(function(data){
+          Content.append(new app.Item(data)).done(function(data){
+            Content.renderItems();
           });
         });
         
-        this.el_items.not(':in-viewport').not(filtered).css('visibility', 'hidden');
+        return this;
         
       },
       
-      filterItems: function(items, extraFilters){
+      rerender: function(){
         
-        var app = this
-          , filtered = []
-          , filters = app.itemFilters.concat(extraFilters || []);
+        var Content = this;
         
-        iterateItems:
-        for(var i = 0; i < items.length; i++){
+        if(Content.rendering){
           
-          var item = items[i];
-        
-          for(var j = 0; j < filters.length; j++){
-            
-            var filter = filters[j];
-            
-            if(!filter(item)){
-              continue iterateItems;
-            }
-            
+          if(Content.rendering.rerender){
+            return this;
           }
           
-          filtered.push(item);
-        
+          Content.rendering.rerender = true;
+          Content.rendering.done(function(){
+            Content.rerender();
+          });
+          
+          return this;
+          
         }
         
-        return filtered;
+        var id = Content.el_items.filter(':in-viewport').first().id();
+        Content.renderFrom( id );
+        return this;
         
+      },
+      
+      rendering: false,
+      renderItems: function(left){
+        
+        if(this.rendering){
+          return this;
+        }
+        
+        var D = $.Deferred()
+          , P = D.promise();
+          
+        this.rendering = P;
+        
+        var Content = this, next = function(){
+          Content[left ? "appendPrevious" : "appendNext"]().done(function(){
+            next();
+          }).fail(function(){
+            Content.rendering = false;
+            D.resolve();
+          })
+        };
+        next();
+        
+        return this;
+        
+      },
+      
+      appendNext: function(){
+        
+        var Content = this
+          , lastId = Content.el_items.last().id()
+          , D = $.Deferred()
+          , P = D.promise();
+          
+        app.Items.fetchNext(lastId).done(function(data){
+          
+          if(data == 'last'){
+            D.reject();
+            return;
+          }
+          
+          var item = new app.Item(data);
+          
+          Content.append(item).done(function(){
+            
+            if(!item.view.is(':in-viewport')){
+              item.view.remove();
+              delete app.items[item.id];
+              Content.refreshElements();
+              D.reject();
+            }
+            
+            D.resolve();
+            
+          });
+          
+        });
+        
+        return P;
+        
+      },
+      
+      appendPrevious: function(){
+        return $.Deferred().reject().promise();
+      },
+      
+      append: function(item){
+        
+        var Content = this
+          , D = $.Deferred()
+          , P = D.promise();
+        
+        $.after(0).done(function(){
+          
+          var lastColumn
+            , key = Content.el_columns.last().id();
+            
+          //Create a new column?
+          if(key > -1 && app.columns[key]){
+            lastColumn = app.columns[key];
+          }else{
+            lastColumn = (new app.Column);
+          }
+          
+          //Append the item.
+          lastColumn.append(item);
+          
+          //Wait for rendering to finish.
+          $.after(0).done(function(){
+            
+            //Was it too much?
+            if(lastColumn.overflowing()){
+              lastColumn = (new app.Column);
+            }
+            
+            //Append the item to a brand new column.
+            lastColumn.append(item);
+            lastColumn.toContent();
+            
+            //Wait for rendering to finish.
+            $.after(0).done(function(){
+              item.view.css({'visibility': 'visible', 'opacity': .1}).animate({opacity: 1}, 150);
+              Content.fixWidth();
+              D.resolve();
+            });
+            
+          });
+          
+        });
+        
+        return P;
+        
+      },
+      
+      fixWidth: function(){
+        this.view.width($(window).width() + 1000 + (this.el_columns.size() * 815));
       }
       
-    })}
+    })
     
   });
   
-})(jQuery, window);
+})(this, jQuery, _);

@@ -1,15 +1,12 @@
 <?php namespace components\tuxion; if(!defined('TX')) die('No direct access.'); ?>
 
 <script id="item-column" type="text/template">
-  <div class="items">
-    <ul>
-      
-    </ul>
+  <div class="col" data-id="<%- id %>">
   </div>
 </script>
 
 <script id="item" type="text/template">
-  <section class="item" data-id="<%- id %>">
+  <section class="item blue" data-id="<%- id %>" style="visibility:hidden">
     <header>
       <h1><%- title %></h1>
     </header>

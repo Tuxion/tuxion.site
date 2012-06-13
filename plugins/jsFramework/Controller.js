@@ -120,7 +120,7 @@
         map = args[2];
       }
       
-      el = el || (map && map.el) || this.view || false;
+      el = el || (map && map.el) || this.view || this.el || false;
       namespace = namespace || (map && map.namespace) || this.namespace || false;
       map = map || {};
 

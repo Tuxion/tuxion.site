@@ -25,6 +25,7 @@ html, body{
   margin:0;
   padding:0;
   height:100%;
+  overflow:hidden;
 }
 body{
   position:relative;
@@ -32,16 +33,16 @@ body{
 }
 
 #container{
-  position:relative;
   padding-left:10px;
-  float:left;
-  width:8000px;
+  /*width:8000px;*/
+  width: 100%;
+  overflow:hidden;
 }
-  #container,
-  #item-container{
-    height:100%;
-  }
-
+#container,
+#content{
+  height:100%;
+}
+  
 /* =Fonts
 -------------------------------------------------------------- */
 
@@ -62,12 +63,17 @@ body{
 
 .col{
   float:left;
+  height: 100%;
+  overflow: hidden;
 }
 .col.wide{
   width:530px;
 }
 .col.small{
   width:285px;
+}
+.col.fluid{
+  width:97%;
 }
 
 /**********************
@@ -113,6 +119,11 @@ body{
 .small .item{
 	width: 240px;
 	height: auto;
+}
+
+.fluid .item{
+  width: 100%;
+  height: auto;
 }
 
 /**********************
