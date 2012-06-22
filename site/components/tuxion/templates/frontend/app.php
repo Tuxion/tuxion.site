@@ -6,7 +6,7 @@
 </script>
 
 <script id="item" type="text/template">
-  <section class="item blue" data-id="<%- id %>" style="visibility:hidden">
+  <section class="item blue" data-id="<%- id %>">
     <header>
       <h1><%- title %></h1>
     </header>
@@ -14,10 +14,27 @@
       <%= description %>
     </p>
     <footer>
-      <a href="#" class="read-more button">Lees meer</a>
+      <a href="#<%- id %>" class="read-more button">Lees meer</a>
       <a class="author" data-id="<%- user_id %>"><%- "author_name" %></a>
     </footer>
   </section>
+</script>
+
+<script id="blog" type="text/template">
+  
+  <article class="inner">
+    <header>
+      <h1><%- title %></h1>
+      <p>Published: <time pubdate="pubdate"><%- (new Date(dt_created)).toLocaleDateString() %></time></p>
+    </header>
+    
+    <%= description %>
+    
+    <footer>
+      <p><small>By %author_name%</small></p>
+    </footer>
+  </article>
+  
 </script>
 
 <script type="text/javascript">

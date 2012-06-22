@@ -161,11 +161,13 @@
         //Add a request to the item to the pending items.
         var req = request('item/'+id)
         
-        //Add it to the list of items when it's done.
-        .done(function(data){
-          //#TODO: Items.array.push(data);
-          Items.object[id] = data;
-        });
+        // //Add it to the list of items when it's done.
+        // .done(function(data){
+          
+        //   //#TODO: Items.array.push(data);
+        //   Items.object[id] = data;
+          
+        // });
         
         //Return the pending item.
         return req;
@@ -279,8 +281,6 @@
           , Items = this
           , req;
           
-          amount=6;
-          
         amount && _(data).extend({amount:amount});
         
         //Try to fetch from cache
@@ -338,18 +338,16 @@
           });
           
           //The indexes of items in our already existing array that we are going to replace in between.
-          var first = 0, last = undefined, this_itemArray = Items.array;
-                  
+          var first = 0, last = undefined, tmp = Items.array.copy();
+          
           //Detect the closest date in the future if we're not the first node.
-          if(_(itemArray).first() != 'first'){
+          if(_(itemArray).first() != 'first' && _(tmp).first() != 'first'){
             
-            var startDate = Date.parse( _(itemArray).first().dt_created ), closest = 0;
+            var startDate = Date.parse( _(itemArray).first().dt_created.replace(' ', 'T') ), closest = 0;
             
-            for(var i = 0; i < this_itemArray.length; i++){
+            for(var i = 0; i < tmp.length; i++){
               
-              var val = this_itemArray[i];
-              
-              if(Date.parse(val.dt_created) >= startDate){
+              if(Date.parse(tmp[i].dt_created.replace(' ', 'T')) >= startDate){
                 closest = i;
                 continue;
               }
@@ -363,16 +361,16 @@
           }
           
           //We don't need this chunk anymore.
-          this_itemArray = this_itemArray.slice(first);
+          tmp = tmp.slice(first);
           
           //Are we dealing with the end of our items?
           if(_(itemArray).last() != 'last'){
             
             var endDate = Date.parse( _(itemArray).last().dt_created );
             
-            for(var i = 0; i < this_itemArray.length; i++){
+            for(var i = 0; i < tmp.length; i++){
               
-              var val = this_itemArray[i];
+              var val = tmp[i];
               
               if(Date.parse(val.dt_created) >= endDate){
                 continue;
@@ -386,12 +384,8 @@
           }
           
           if(last === undefined){
-            // console.log('adding at the end');
-            // console.dir(itemArray);
             Items.array = Items.array.concat(itemArray);
           }else{
-            // console.log('adding in between', first, last);
-            // console.dir(itemArray);
             Items.array.splice(first);
             Array.prototype.splice.apply(Items.array, [first, (last-first)].concat(itemArray));
           }
@@ -416,8 +410,7 @@
       
       events: {
         'click on more': function(e){
-          e.preventDefault();
-          app.Content.openPage(this.id);
+          if(app.Content.mode !== 'list') e.preventDefault();
         }
       },
       
@@ -501,8 +494,8 @@
       
       //Return true if this column has too many items.
       overflowing: function(){
+        if(this.el_items.size() < 2) return false;
         var lastItem = this.el_items.last();
-        if(lastItem.size() < 1) return false;
         return (lastItem.height() + lastItem.position().top + 50) > this.view.height();
       }
       
@@ -521,6 +514,13 @@
         'el_columns': '.col'
       },
       
+      templators: {
+        portfolio: tmpl('portfolio'),
+        blog: tmpl('blog')
+      },
+      
+      mode: 'list',
+      
       init: function(){
         
         var Content = this;
@@ -528,43 +528,198 @@
         Content.previous();
         Content.fixWidth();
         
-        if(window.location.hash.length > 0){
-          Content.openPage(window.location.hash);
-        }else{
-          Content.renderFrom();
-        }
+        $.after(20).done(function(){
+          Content.navigate();
+        });
         
         $(window)
           
           .on('mousewheel DOMMouseScroll', Content.view, function(e){
+            
             var delta = getWheelDelta(e.originalEvent);
-            $('#container').scrollLeft($('#container').scrollLeft()+(delta*100));
-            Content.renderItems(delta < 0);
+            
+            if(Content.mode == 'list'){
+              $('#container').scrollLeft($('#container').scrollLeft()+(delta*100));
+              Content.renderItems(delta < 0);
+            }
+            
+            else if(Content.mode == 'full'){
+              var el = Content.view.find('.col.full');
+              el.scrollTop(el.scrollTop() + (delta*50));
+            }
+            
           })
           
           .on('resize', _(function(){
-            Content.rerender();
-          }).debounce(120));
+            
+            if(Content.mode == 'list'){
+              Content.rerender();
+            }
+            
+            else if(Content.mode == 'full'){
+              Content.el_full.animate({width: ($(window).width() * .9)}, 100);
+              $('#container').scrollTo(Content.el_full, {
+                offset: {left: -($(window).width() * .05)},
+                duration: 100
+              });
+            }
+            
+          }).debounce(120))
+          
+          .on('keyup', function(e){
+            
+            //Escape key to close an article.
+            if(e.which == 27 && Content.mode == 'full'){
+              Content.closePage();
+            }
+            
+          })
+          
+          .on('hashchange', function(e){
+            if(window.location.hash.length < 1) return;
+            Content.navigate();
+          })
         
         ;//eof: $(window)
         
       },
       
-      openPage: function(id){
+      navigate: function(){
         
         var Content = this;
         
-        if(app.items[id]){
+        if(window.location.hash.length > 0){
+          Content.openPage(window.location.hash.slice(1));
+        }else{
+          Content.renderFrom();
+        }
+        
+      },
+      
+      setMode: function(mode){
+        
+        var Content = this;
+        
+        switch(mode){
+          
+          case 'list':
+            Content.view.removeClass('disabled');
+            break;
+            
+          case 'full':
+            Content.view.addClass('disabled');
+            break;
           
         }
+        
+        
+        Content.mode = mode;
+        
+      },
+      
+      openPage: function(id){
+        
+        var Content = this
+          , column = $('<div>', {"class":"col"})
+          , wait = 0;
+          
+        if(Content.mode != 'full'){
+        
+          if(app.items[id] && app.items[id].view.is(':in-viewport')){
+            
+            var f, closest = app.items[id].view.closest('.col');
+            
+            if((closest.offset().left + (closest.width() / 2)) > ($(window).width() / 2)){
+              f = 'before';
+            }else{
+              f = 'after';
+            }
+            
+            closest[f](column);
+            wait = 250;
+            
+          }
+          
+          else{
+            
+            Content.empty();
+            (new app.Column).toContent();
+            Content.view.append(column);
+            
+          }
+  
+          $.after(0).done(function(){
+            
+            Content.fixWidth(($(window).width() * .95));
+            column.addClass('full').css('width', '0').animate({width: ($(window).width() * .9)}, 500);
+            $('#container').scrollTo(column, {axis: 'x', offset: {left: -($(window).width() * .05)}, duration: 500});
+            
+            
+          });
+          
+          Content.el_full = column;
+          
+        }
+        
+        $.after(0).done(function(){
+          
+          $.after(wait).done(function(){
+            Content.setMode('full');
+          });
+          
+          app.Items.fetch(id).done(function(data){
+            
+            var tmpl = Content.templators[data.typeName || 'blog'];
+            Content.el_full.html(tmpl(data)).find('.inner').css('width', ($(window).width() * .9));
+            
+          });
+          
+        });
+        
+        Content.openPageID = id;
+        
+      },
+      
+      closePage: function(){
+        
+        var Content = this;
+        
+        if(!Content.el_full){
+          return;
+        }
+        
+        var to = ($('#container').scrollLeft())-($(window).width()/2);
+        to = (to < 0 ? 0 : to);
+        $('#container').scrollTo(to, {axis: 'x', duration:500});
+        
+        Content.fixWidth(0,500);
+        Content.el_full.animate({'width': 0}, 500).queue(function(){
+         
+          Content.el_full.remove();
+          delete Content.el_full;
+          Content.setMode('list');
+          
+          if(Content.el_items.size() > 0){
+            Content.renderItems();
+          }
+          
+          else{
+            //#TODO: Content.renderFrom(Content.openPageID);
+            Content.renderFrom();
+          }
+          
+          window.location.hash = '#';
+          
+          delete Content.openPageID;
+          
+        });
         
       },
       
       renderFrom: function(id){
         
         var Content = this;
-        Content.view.empty();
-        this.items = [];
+        Content.empty();
         
         app.Items[(id ? 'fetch' : 'fetchFirst')](id).done(function(data){
           Content.append(new app.Item(data)).done(function(data){
@@ -701,9 +856,12 @@
             
             //Wait for rendering to finish.
             $.after(0).done(function(){
-              item.view.css({'visibility': 'visible', 'opacity': .1}).animate({opacity: 1}, 150);
+              
+              item.view.addClass('solid');
+              
               Content.fixWidth();
               D.resolve();
+              
             });
             
           });
@@ -714,8 +872,28 @@
         
       },
       
-      fixWidth: function(){
-        this.view.width($(window).width() + 1000 + (this.el_columns.size() * 815));
+      prepend: function(item){
+        
+      },
+      
+      empty: function(){
+        
+        this.view.empty();
+        app.items = {};
+        app.columns = [];
+        this.view.width($(window).width() + 1000);
+        return this;
+        
+      },
+      
+      fixWidth: function(extraWidth, duration){
+        
+        var colWidth = _(this.el_columns.map(function(){
+          return $(this).width();
+        }).get()).reduce(function(a,b){return a+b;}, 0);
+        
+        this.view.animate({width: (colWidth + (extraWidth||20))}, duration||0);
+        
       }
       
     })
