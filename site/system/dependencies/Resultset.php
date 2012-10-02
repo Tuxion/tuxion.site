@@ -59,6 +59,7 @@ class Resultset extends Data
   public function as_hlist()
   {
 
+    $id = null;
     if(func_num_args() == 1){
       if(is_string(func_get_arg(0))){
         $classes = func_get_arg(0);
@@ -69,7 +70,13 @@ class Resultset extends Data
       }
     }
     elseif(func_num_args() == 2){
-      $classes = func_get_arg(0);
+      if(is_array(func_get_arg(0))){
+        $options = func_get_arg(0);
+        $classes = $options['classes'];
+        $id = $options['id'];
+      }else{
+        $classes = func_get_arg(0);
+      }
       $data = func_get_arg(1);
     }
     else{
@@ -77,7 +84,7 @@ class Resultset extends Data
       $data = null;
     }
     
-    $list = '<ul'.(is_string($classes) ? ' class="'.$classes.'"' : '').'>'."\n";
+    $list = '<ul'.(is_string($classes) ? ' class="'.$classes.'"' : '').(is_string($id) ? ' id="'.$id.'"' : '').'>'."\n";
     $indent = 2;
 
     $this->hwalk(function($val, $key, $delta)use(&$indent, &$list, $data){

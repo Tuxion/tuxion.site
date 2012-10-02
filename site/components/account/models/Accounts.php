@@ -8,7 +8,8 @@ class Accounts extends \dependencies\BaseModel
     $table_name = 'cms_users',
     
     $relations = array(
-      'UserInfo' => array('id' => 'UserInfo.user_id')
+      'UserInfo' => array('id' => 'UserInfo.user_id'),
+      'AccountsToUserGroups' => array('id' => 'AccountsToUserGroups.user_id')
     );
   
   public function get_is_administrator()
@@ -20,8 +21,19 @@ class Accounts extends \dependencies\BaseModel
   
   public function get_user_info()
   {
-  
+    
     return $this->table('UserInfo')->where('user_id', $this->id)->execute_single();
+    
+  }
+  
+  public function get_groups()
+  {
+    
+    return tx('Sql')
+      ->table('account', 'AccountsToUserGroups')
+      ->where('user_id', $this->id)
+      ->join('UserGroups', $UG)
+      ->execute($UG);
     
   }
   

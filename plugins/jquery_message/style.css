@@ -1,0 +1,29 @@
+
+  .tx-message-wrapper{}
+
+  .tx-message-alert{background-color:red}
+  
+  .tx-message-notice{
+    position:absolute;
+    width:178px;
+    font-size:11px;
+    top:37px;
+    height:34px;
+    line-height:18px;
+    left:9px;
+    padding:10px;
+    border:1px solid #535f77;
+    background-color:#535f77;
+    background-image: -moz-linear-gradient(top, #535f77, #414c62); 
+    background-image: -o-linear-gradient(top, #535f77, #414c62); 
+    background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #535f77),color-stop(1, #414c62)); 
+    background-image: -webkit-linear-gradient(#535f77, #414c62); 
+    background-image: linear-gradient(top, #535f77, #414c62);   
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#535f77', endColorstr='#565656')"; /* IE8 */
+    }
+  
+  .tx-message-confirm{background-color:yellow}
+  
+  .tx-message-confirm{padding:10px}
+  
+  

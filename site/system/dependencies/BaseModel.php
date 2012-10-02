@@ -30,16 +30,15 @@ abstract class BaseModel extends Data
     $this->set(self::table_data()->fields->map(function($val, $key)use(&$database_row){
       
       //Workaround for byte strings from mysql_fetch_assoc.
-      if($val->type->get() === 'bit' && $val->arguments->{0}->get('int') === 1 && gettype($database_row[$key]) === 'string')
+      if($val->type->get() === 'bit' && $val->arguments->{0}->get('int') === 1 && gettype($database_row[$key]) === 'string'){
         $database_row[$key] = $database_row[$key] === "\x01";
+      }
       
-
       if($val->check('null_allowed') && !$val->value->is_set()){
         return array($key => $val->value);
       }else{
         return null;
       }
-
       
     }));
     
@@ -148,11 +147,33 @@ abstract class BaseModel extends Data
 
   }
 
-  // create an HTML form for updating this model
+  /**
+   * Create an HTML form for updating this model.
+   *
+   *  as_form(&$id[, $action][, $columns])
+   *  @id       (string)          Form ID.
+   *  @action   (string)          An action to execute with the form.
+   *  @action   (string)          An URL, to set as form action.
+   *  @action   (instanceof Url)  Read the last two words at the left of this description.
+   *  @columns  (array)           Array of columns.
+   *    array('column_name' => 'string')              Type, see $field_types.
+   *    array('column_name' => instanceof \Closure)   $closure($value, $info[$column], $options).
+   *    array('column_name' => array())               Array with options.
+   *      add_placeholder     (bool)    If true, also set an placeholder name. See below.
+   *      name                (string)  Placeholder title.
+   *      required            (bool)    Well..
+   *      wrapper_attributes  (array)   Wrapper attributes. E.g. class="awesomeness".
+   *      field_attributes    (array)   Field attributes. E.g. class="small".
+   *      field_id            (string)  E.g. <label for="$field_id">, <input id="$field_id">.
+   *      label               (string)  E.g. <label>$label</label>.
+   *      accesskey           (string)  E.g. <label accesskey="$accesskey">.
+   *      custom_field        (bool)    Whether to add this field regardless of the column name being present in the table.
+   *      custom_html         (string)  When type = custom, this field contains the html for the field.
+   */
   public function as_form(&$id)
   {
-
-    //predefine variables
+    
+    //Predefine variables.
     $field_types = array(
       'text' => array('char', 'varchar'),
       'number' => array('int', 'tinyint', 'smallint', 'mediumint', 'bigint', 'float', 'double', 'decimal'),
@@ -162,79 +183,103 @@ abstract class BaseModel extends Data
       'url',
       'range',
       'date, month, week, time, datetime, datetime-local',
-      'color'
+      'color',
+      'hidden',
+      'textarea' => array('text'),
+      'custom' => array('custom') //Requires custom_html option to be set.
     );
-
+    
     $info = self::table_data()->fields;
     $id = uniqid('form_');
-
-    //handle arguments
+    
+    //Handle arguments.
     $args = func_get_args();
     array_shift($args);
-
-    // a string as first argument is an action to execute with the form, or a url
+    
+    //A string as first argument is an action to execute with the form, or a url.
     if(count($args) > 0 && is_string($args[0]))
     {
-
+      
       if(preg_match('~^[a-z_]+$~', $args[0])){
         $action = url('?action='.$args[0]);
       }
-
+      
       else{
         $action = url($args[0]);
       }
-
+      
       array_shift($args);
-
+      
     }
-
-    //if the argument is an instance of Url, well, then what? Captain obvious.
+    
+    //If the argument is an instance of Url, well, then what? Captain obvious.
     elseif(count($args) > 0 && $args[0] instanceof \dependencies\Url){
       $action = array_shift($args);
     }
-
-    //the first argument does not have the format of a url, find our own
+    
+    //The first argument does not have the format of a url, find our own.
     else
     {
-
+    
       $this->pks()->each(function($pk)use(&$update){
         $update = $pk->is_set();
         return $update;
       });
-
-      $action = url("?action={$this->component}/".($update ? 'update' : 'insert')."_".strtolower(preg_replace('~([A-Z])([A-Z][a-z])|([a-z0-9])([A-Z])~', '\1\3_\2\4', $this->model)));
-
+      
+      $action = url("?action={$this->component}/".($update ? 'update' : 'insert')."_".strtolower(preg_replace('~([A-Z])([A-Z][a-z])|([a-z0-9])([A-Z])~', '\1\3_\2\4', $this->model).'/post'));
+      
     }
-
-    // if there is an argument left, it must be the array of columns
+    
+    //If there is an argument left, it must be the array of columns.
     if(count($args) > 0){
       $columns = (array) $args[0];
     }
-
-    //no columns given
+    
+    //No columns given.
     else{
       $columns = array();
     }
-
-    //build ze form
-    $form = '<form id="'.$id.'" action="'.$action.'">'."\n\n";
-
-    //for every value in this node
-    foreach($this as $column => $value)
+    
+    //Check if there are custom fields to add.
+    foreach($columns as $column => $meta)
     {
-
-      // skip columns that are not part of the table structure
+      
+      if(is_array($meta) && array_key_exists('custom_field', $meta) && $meta['custom_field'] === true)
+      {
+        
+        if(!array_key_exists('type', $meta))
+          throw new Programmer('Using custom_field, without defining type.');
+        
+        $info[$column]->type = $meta['type'];
+        
+      }
+      
+    }
+    
+    //Build ze form.
+    $form = '<form id="'.$id.'" action="'.$action.'" method="post" class="form">'."\n\n";
+    
+    //For every value in this node.
+    foreach($info as $column => $meta)
+    {
+      
+      $options = Data();
+      $value = $this->{$column}->get();
+      
+      //Skip columns that are not part of the table structure.
       if( ! $info[$column]->is_set()){
         continue;
       }
-
-      // get input type
+      
+      //Get input type.
+      if($info[$column]->type->get() == null)
+        trace('null type', $info[$column]->type->get(), $column, $info[$column]->dump());
       $type = array_get(array_search_recursive($info[$column]->type->get(), $field_types), 0);
-
-      // start making html
+      
+      //Start making html.
       $html = '';
 
-      // get given data
+      //Get given data.
       if(array_key_exists($column, $columns))
       {
 
@@ -251,55 +296,97 @@ abstract class BaseModel extends Data
 
         elseif(is_array($data)){
           $options = $data;
+          $type = (array_key_exists('type', $options) ? $options['type'] : $type);
         }
 
       }
 
-      //create html if we do not already have it
+      //Hide primary keys by default.
+      else
+      {
+        // if($info[$column]->key == 'PRI'){
+        //   $type = 'hidden';
+        // }
+      }
+
+      //Create html if we do not already have it.
       if(empty($html) || !is_string($html))
       {
+
+        $label =
+          '<label'.(array_key_exists('field_id', $options) ? ' for="'.$options['field_id'].'"' : '').(array_key_exists('accesskey', $options) ? ' accesskey="'.$options['accesskey'].'"' : '').'>'.__(array_key_exists('label', $options) ? $options['label'] : $column, 1).'</label>';
 
         switch($type)
         {
 
-          case 'text': $html =
+          case 'hidden': $html =
             '<input'.
+            ' name="'.$info[$column]->key().'"'.
+            ' type="hidden"'.
+            ' value="'.$value.'"'.
+            '>';
+            break;
+
+          case 'text': $html =
+            $label.
+            '<input'.
+            ' name="'.$info[$column]->key().'"'.
             ' type="text"'.
             ' value="'.$value.'"'.
             (array_key_exists('add_placeholder', $options) && $options['add_placeholder'] === true ? ' placeholder="'.(array_key_exists('name', $options) ? $options['name'] : $column).'"' : '').
             (array_key_exists('required', $options) ? ($options['required'] === true ? ' required' : '') : ($info[$column]->check('null_allowed') ? '' : ' required')).
+            (array_key_exists('field_attributes', $options) ? ' '.implode_keys('" ', '="', $options['field_attributes']).'"' : '').
             '>';
             break;
 
+          case 'textarea': $html =
+            $label.
+            '<textarea'.
+            ' name="'.$info[$column]->key().'"'.
+            (array_key_exists('required', $options) ? ($options['required'] === true ? ' required' : '') : ($info[$column]->check('null_allowed') ? '' : ' required')).
+            '>'.$value.'</textarea>';
+            break;
+
           case 'number': $html =
+            $label.
             '<input'.
+            ' name="'.$info[$column]->key().'"'.
             ' type="number"'.
             ' value="'.$value.'"'.
             (array_key_exists('required', $options) ? ($options['required'] === true ? ' required' : '') : ($info[$column]->check('null_allowed') ? '' : ' required')).
             '>';
             break;
-
+            
+          case 'custom':
+            if(!array_key_exists('custom_html', $options))
+              throw new Programmer('Custom field type used without defining custom_html option.');
+            $html = $label.$options['custom_html'];
+            break;
+          
         }
-
+        
       }
-
-      //append html to ze form
+      
+      //Append html to ze form.
       $form .=
-        '<p'.(array_key_exists('wrapper_attributes', $options) ? ' '.implode_keys('" ', '="', $options['wrapper_attributes']).'"' : '').'>'.
-        " $html".
-        '</p>'.
+        '<div class="ctrlHolder"'.(array_key_exists('wrapper_attributes', $options) ? ' '.implode_keys('" ', '="', $options['wrapper_attributes']).'"' : '').'>'.
+        "  $html".
+        '</div>'.
         "\n\n";
-
+      
     }
-
-    //close ze form
+    
+    //Append form buttons to ze form.
+    $form .= form_buttons();
+    
+    //Close ze form.
     $form .= '</form>'."\n\n";
-
-    //return ze form
+    
+    //Return ze form.
     return $form;
-
+    
   }
-
+  
   // Store the model to the database.
   public function save()
   {
@@ -334,7 +421,7 @@ abstract class BaseModel extends Data
         $query .= " AND `$primary_key` = ".$this[$primary_key];
       }
       
-      $query = $query = tx('Sql')->make_query($query, $data);
+      $query = tx('Sql')->make_query($query, $data);
       
       tx('Sql')->execute_non_query($query);
       
@@ -373,6 +460,7 @@ abstract class BaseModel extends Data
     {
 
       $result = $this->table($this->model)
+        ->sk($this->having(self::model_data('secondary_keys'))->as_array())
         ->not(is_null($parent_pks))
           ->success(function($q)use($parent_pks){
             $q->parent_pk($parent_pks)->add_relative_depth();
@@ -380,7 +468,6 @@ abstract class BaseModel extends Data
           ->failure(function($q){
             $q->add_absolute_depth();
           })
-        ->sk($this->having(self::model_data('secondary_keys'))->as_array())
         ->max_depth(1)
         ->execute();
 
@@ -662,9 +749,9 @@ abstract class BaseModel extends Data
       ->merge(function($table_data){
       
         return $table_data->attributes->parse('~'.
-          '(?:^(?<type>\w+))'. //type
-          '(?:\((?<arguments>[^\)]+)\))?'. //arguments
-          '(?:(?<extra>(?:\s+\w+)*))'. //other attributes
+          '(?:^(?P<type>\w+))'. //type
+          '(?:\((?P<arguments>[^\)]+)\))?'. //arguments
+          '(?:(?P<extra>(?:\s+\w+)*))'. //other attributes
         '~')
 
         ->having('type', 'arguments', 'extra')
@@ -774,7 +861,7 @@ abstract class BaseModel extends Data
     elseif($info->type->get() == 'varchar' || $info->type->get() == 'char')
     {
 
-      if(strlen($value) > $info->arguments[0]->get()){
+      if(mb_strlen($value, 'UTF-8') > $info->arguments[0]->get()){
         throw new \exception\Validation('The length of the value is longer than the allowed maximum of %s characters for insertion into %s.', $info->arguments[0], $column_name);
       }
 
@@ -904,11 +991,11 @@ abstract class BaseModel extends Data
     {
 
       switch($info->type->get()){
-        case 'date': $regex = '(?<Y>\d{4})-(?<m>\d{2})-(?<d>\d{2})'; break;
+        case 'date': $regex = '(?P<Y>\d{4})-(?P<m>\d{2})-(?P<d>\d{2})'; break;
         case 'timestamp':
-        case 'datetime': $regex = '(?<Y>\d{4})-(?<m>\d{2})-(?<d>\d{2}) (?<H>\d{2}):(?<i>\d{2}):(?<s>\d{2})'; break;
-        case 'time': $regex = '(?<H>\d{2}):(?<i>\d{2}):(?<s>\d{2})'; break;
-        case 'year': $regex = '(?:(?<Y>\d{4})|(?<y>\d{2}))'; break;
+        case 'datetime': $regex = '(?P<Y>\d{4})-(?P<m>\d{2})-(?P<d>\d{2}) (?P<H>\d{2}):(?P<i>\d{2}):(?P<s>\d{2})'; break;
+        case 'time': $regex = '(?P<H>\d{2}):(?P<i>\d{2}):(?P<s>\d{2})'; break;
+        case 'year': $regex = '(?:(?P<Y>\d{4})|(?P<y>\d{2}))'; break;
       }
       
       if(is_numeric($value)){
@@ -956,48 +1043,48 @@ abstract class BaseModel extends Data
 
       switch($info->type->get())
       {
-
+        
         case 'timestamp':
         case 'datetime':
         case 'time':
-
+          
           if($H < 0 || $H > 23){
             throw new \exception\Validation('Hours must be between 0 and 23 for insertion into %s.', $column_name);
           }
-
+          
           if($i < 0 || $i > 59){
             throw new \exception\Validation('Minutes must be between 0 and 59 for insertion into %s.', $column_name);
           }
-
+          
           if($s < 0 || $s > 59){
             throw new \exception\Validation('Seconds must be between 0 and 59 for insertion into %s.', $column_name);
           }
-
+          
           if($info->type->get() === 'time'){
             break;
           }
-
-
+        
+        
         case 'date':
-
+          
           if($Y == 0 && $m == 0 && $d == 0) break;
-
+          
           if($Y > 9999){
             throw new \exception\Validation('The database field "%s" can not store years after the year 9999.', $column_name);
           }
-
+          
           if($m < 1 || $m > 12){
             throw new \exception\Validation('Months must be between 01 and 12 for insertion into %s.', $column_name);
           }
-
+          
           if($d < 1 || $d > 31){
             throw new \exception\Validation('Days must be between 01 and 31 for insertion into %s.', $column_name);
           }
-
+          
           break;
-
+        
       }
-
+      
       switch($info->type->get()){
         case 'date': $value = "$Y-$m-$d"; break;
         case 'timestamp':
@@ -1005,44 +1092,44 @@ abstract class BaseModel extends Data
         case 'time': $value = "$H:$i:$s"; break;
         case 'year': $value = is_null($Y) ? $y: $Y; break;
       }
-
+      
     }
-
+    
     //validate enum
     elseif($info->type->get() == 'enum')
     {
-
+      
       if($info->arguments->keyof($value) === false){
         throw new \exception\Validation('Allowed values are \'%s\' for insertion into %s.', $info->arguments->join("', '"), $column_name);
       }
-
+      
     }
-
+    
     //validate set
     elseif($info->type->get() == 'set')
     {
-
+      
       $values = Data($value)->split(',')->trim()->as_array();
-
+      
       foreach($values as $key => $val)
       {
-
+        
         if($info->arguments->keyof($value) === false){
           throw new \exception\Validation('Allowed values are \'%s\' for insertion into %s.', $info->arguments->join("', '"), $column_name);
         }
-
+        
         $values[$key] = tx('Sql')->escape($val);
-
+        
       }
-
+      
       $value = implode(',', $values);
-
+      
     }
-
+    
     return $value;
-
+    
   }
-
+  
   // ORM helper function
   public function table($model_name){
     return tx('Sql')->table($this->component, $model_name);

@@ -8,8 +8,11 @@ class Views extends \dependencies\BaseViews
     
     return array(
       'users' => $this->section('user_list'),
+      'groups' => $this->section('group_list'),
       'new_user' => $this->section('edit_user'),
-      'compose_mail' => $this->section('compose_mail')
+      'new_group' => $this->section('edit_user_group'),
+      'compose_mail' => $this->section('compose_mail'),
+      'import_users' => $this->section('import_users')
     );
     
   }

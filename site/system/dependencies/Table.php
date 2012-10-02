@@ -19,8 +19,9 @@ class Table extends Successable
     $group=array(),
     $having = '',
     $order=array(),
-    $limit;
-
+    $limit,
+    
+    $applied_sks=array();
 
 
   ###
@@ -92,6 +93,7 @@ class Table extends Successable
     }
 
     foreach($sk_fields as $sk){
+      $this->applied_sks[$sk] = current($values);
       if(!is_null($sk)) $this->where($sk, current($values));
       next($values);
     }
@@ -173,7 +175,8 @@ class Table extends Successable
     $model = $this->models[$this->working_model]['path'];
     $hierarchy = $model::model_data('hierarchy');
     $pks = $model::table_data()->primary_keys->as_array();
-
+    $sks = $model::model_data('secondary_keys');
+    
     $this->subquery($sq, $this->component, $model_name);
 
     $sq($ancestors)
@@ -186,6 +189,13 @@ class Table extends Successable
       $sq->group($pk);
       $sq->select($pk, 'leaf_'.$pk);
     }
+        
+    foreach($sks as $sk)
+    {
+      if($this->applied_sks[$sk]){
+        $sq->where("$ancestors.$sk", $this->applied_sks[$sk]);
+      }
+    }
 
     $this->from($sq, $id);
     $this->select("$id.depth", $as);
@@ -193,7 +203,7 @@ class Table extends Successable
     foreach($pks as $k => $pk){
       $this->pk("$id.leaf_$pk");
     }
-
+    
     $this->hierarchy[$this->working_model]['abs_depth'] = $id;
 
     return $this;
@@ -434,8 +444,8 @@ class Table extends Successable
       //check if a jointype was provided
       $join_type = next($target['relations'][$model_name]);
 
-      //set new target
-      //Either ComponentName.ModelName or ModelName
+      //Set new target.
+      //Either ComponentName.ModelName or ModelName.
       $target = $this->get_model_info($foreign_array_count == 3 ? $foreign_array[0].'.'.$foreign_array[1] : $foreign_array[0]);
 
       //check if the foreign model is the same as the local model
@@ -587,9 +597,10 @@ class Table extends Successable
   // Count the amount of rows that would be returned by the query
   public function count()
   {
-
-    return tx('Sql')->execute_scalar($this->query('COUNT(*)'))->is('empty', function(){return 0;});
-
+    
+    return tx('Sql')->execute_scalar("SELECT COUNT(*) FROM (".$this->query("`{$this->model}`.*").") as WouldYouBeSoKindAsToCountMyRecords")
+      ->is('empty', function(){return 0;});
+    
   }
 
   // execute the query and return the first model in the resultset only

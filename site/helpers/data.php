@@ -1,5 +1,17 @@
 <?php if(!defined('TX')) die('No direct access.');
 
+function string_if_null(){
+  
+  $args = func_get_args();
+  $data = array_shift($args);
+  foreach($args as $arg){
+    if($data->{$arg}->get() === null)
+      $data->{$arg}->set('NULL');
+  }
+  return $data;
+  
+};
+
 function Data(){
   $arg = (func_num_args() == 1 ? func_get_arg(0) : (func_num_args() > 1 ? func_get_args() : null));
   return ($arg instanceof \dependencies\Data ? $arg : new \dependencies\Data($arg));

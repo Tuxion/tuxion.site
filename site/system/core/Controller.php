@@ -37,7 +37,7 @@ class Controller
   
   public function load_template($template, $theme, $body=array(), $head=array())
   {
-  
+    
     //include js from /includes
     $js=array();
     foreach(files(PATH_INCLUDES.DS.'js'.DS.'*.js') as $file){
@@ -58,7 +58,7 @@ class Controller
         'links' => array($css),
         'scripts' => array($js),
         'theme' => load_html(PATH_THEMES.DS.str_replace('/', DS, $theme).DS.'theme'.EXT, array('theme' => URL_THEMES.$theme.'/', 'template' => URL_TEMPLATES.$template.'/'), true)
-      ))->merge($head),
+      ))->merge($head, true),
       
       //the body contains the given $body array
       'body' => Data($body),
@@ -73,8 +73,7 @@ class Controller
       'meta'=>array(tx('Ob')->get('meta')),
       'links'=>array(tx('Ob')->get('link')),
       'scripts'=>array(tx('Ob')->get('script'))
-    ));
-    
+    ), true);
     
     //require the template, injecting the $data array
     return load_html(PATH_TEMPLATES.DS.$template.DS.'template'.EXT, $data);

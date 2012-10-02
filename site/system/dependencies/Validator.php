@@ -182,14 +182,13 @@ class Validator extends Successable
   private function _not_empty()
   {
     
-    $this->check_rule('string');
-    $this->check_rule('number');
+    if($this->_string() === true && (!empty($this->data)))
+      return true;
     
-    if(empty($this->data)){
-      return "The value can not be empty.";
-    }
+    if($this->_number() === true && (!empty($this->data)))
+      return true;
     
-    return true;
+    return "The value can not be empty.";
     
   }
   
@@ -285,7 +284,7 @@ class Validator extends Successable
   }
   
   // greater than
-  public function _gt($number)
+  private function _gt($number)
   {
     
     if($this->check_rule('number') !== false && $this->data > $number){
@@ -309,7 +308,7 @@ class Validator extends Successable
   }
   
   // lesser than
-  public function _lt($number)
+  private function _lt($number)
   {
     
     if($this->check_rule('number') !== false && $this->data < $number){
@@ -333,23 +332,34 @@ class Validator extends Successable
   }
   
   // equal to
-  public function _eq($value)
+  private function _eq($value)
   {
     
     if($this->check_rule('number') !== false && $this->data == $value){
       return true;
     }
     
-    return "The value must be equal to $value";
+    return "The value must be equal to $value.";
+    
+  }
+  
+  // not in
+  public function _not_in()
+  {
+    
+    if(in_array($this->data, func_get_args(), true))
+      return "The value must not be one of the following values: ".implode(', ', func_get_args()).'.';
+    
+    return true;
     
   }
   
   // validate a string contains a variable name
-  public function _javascript_variable_name()
+  private function _javascript_variable_name()
   {
   
     //This is the old format. Yes it is now possible to use all sorts of unicode characters.
-    //We're not going to let you though ò_ó
+    //We're not going to let you though ÃƒÂ²_ÃƒÂ³
     //This is backwards compatible with javascript 1.5 standards
     //Considering that means the vast majority of Internet Explorer versions this is required.
     if($this->check_rule('string') !== false && preg_match('~^[a-zA-Z_$][0-9a-zA-Z_$]*$~', $this->data) == 1){
@@ -360,7 +370,7 @@ class Validator extends Successable
   
   }
   
-  public function _boolean()
+  private function _boolean()
   {
     
     if(is_bool($this->data))
@@ -384,7 +394,7 @@ class Validator extends Successable
     
   }
   
-  public function _array()
+  private function _array()
   {
     
     $data = data_of($this->data);
@@ -396,7 +406,7 @@ class Validator extends Successable
     
   }
   
-  public function _url()
+  private function _url()
   {
   
     try{
@@ -409,15 +419,68 @@ class Validator extends Successable
     
   }
   
-  public function _password()
+  private function _password()
   {
     
     //Validate a password is strong enough.
     if(tx('Security')->get_password_strength($this->data) < SECURITY_PASSWORD_STRENGTH)
       return 'The value must be a strong password please mix at least '.SECURITY_PASSWORD_STRENGTH.
-        ' of the following: uppercase letters, lowercase letters, numbers and special characters].';
+        ' of the following: uppercase letters, lowercase letters, numbers and special characters.';
     
     return true;
+    
+  }
+  
+  public function _datetime($target_format='Y-m-d H:i:s')
+  {
+    
+    if($this->_required() !== true){
+      $this->data = null;
+      return true;
+    }
+    
+    if($this->_not_empty() !== true){
+      $this->data = null;
+      return true;
+    }
+    
+    $input = $this->data;
+    
+    switch(gettype($this->data)){
+      
+      case 'string':
+        $input = @strtotime($input);
+        if($input === false)
+          return 'The value must be a valid date-time value.';
+        
+      case 'integer':
+        $input = @date($target_format, $input);
+        if($input === false)
+          return 'The value must be a valid date-time value.';
+        $this->data = $input;
+        return true;
+        
+      default:
+        return 'The value must be a valid date-time value.';
+        
+    }
+    
+  }
+  
+  private function _length($length)
+  {
+    
+    if(!is_int($length))
+      throw new \exception\InvalidArgument('$length must be an integer.');
+    
+    if($this->check_rule('string')===true){
+      if(strlen($this->data) !== $length && (strlen($this->data) !== 0 && $this->check_rule('required') !== true)){
+        return "The value must be $length characters.";
+      }
+      return true;
+    }
+    
+    throw new \exception\Programmer('Length check is only implemented for strings.');
     
   }
   

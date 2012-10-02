@@ -374,7 +374,7 @@ class Data extends Successable implements \Serializable, \IteratorAggregate, \Ar
 
     //select
     $select = "\n".'<select'.($options->id->is_set() ? ' id="'.$options->id.'"' : '').' class="tx-select" name="'.$name.'"'.($options->multiple->get() ? ' multiple="multiple"' : '').'>'."\n\n";
-    if(!$options->multiple->get())
+    if(!$options->multiple->get() && !$options->force_choice->is_true())
       $select .= '  <option value="">-- '.__($options->placeholder_text->is_set() ? $options->placeholder_text->get('string') :'Please select an option', 1).' --</option>'."\n\n";
     
     //Unwind $default.
@@ -1062,7 +1062,7 @@ class Data extends Successable implements \Serializable, \IteratorAggregate, \Ar
   }
   
   // returns an md5 hashed copy of this node
-  // :'( why did you do this???
+  // :'[ why did you do this???
   // I hope I can deprecate this soon
   public function md5()
   {
@@ -1520,6 +1520,8 @@ class Data extends Successable implements \Serializable, \IteratorAggregate, \Ar
       case 'float':
       case 'double':
         return $this->get();
+      case 'NULL':
+        return 0;
     }
     
   }
@@ -1529,6 +1531,18 @@ class Data extends Successable implements \Serializable, \IteratorAggregate, \Ar
   {
     
     return gettype($this->data);
+    
+  }
+  
+  // returns the keys of the childnodes
+  public function keys()
+  {
+    
+    if($this->is_leafnode()){
+      return false;
+    }
+    
+    return Data(array_keys($this->data));
     
   }
   
@@ -1641,7 +1655,7 @@ class Data extends Successable implements \Serializable, \IteratorAggregate, \Ar
   // uses successable to implement greater then with short notation
   public function gt($value, $callback=null)
   {
-  
+    
     return $this->is($this->data > data_of($value), $callback);
     
   }

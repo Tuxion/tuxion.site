@@ -21,13 +21,13 @@ class UserInfo extends \dependencies\BaseModel
     
     $parts = Data();
     
-    if($this->check('name'))
+    if($this->check('name') && !$this->name->is_empty())
       $parts->{null}->set($this->name);
     
-    if($this->check('preposition'))
+    if($this->check('preposition') && !$this->preposition->is_empty())
       $parts->{null}->set($this->preposition);
       
-    if($this->check('family_name'))
+    if($this->check('family_name') && !$this->family_name->is_empty())
       $parts->{null}->set($this->family_name);
     
     return $parts->join(' ');
@@ -36,16 +36,13 @@ class UserInfo extends \dependencies\BaseModel
   
   public function set_status($value)
   {
-    
     $value = data_of($value);
-
-    if($value == 0){ $value = (int)$value; }
+    
     switch(strtolower(gettype($value)))
     {
       
       //String values set or unset one binary flag at a time.
       case 'string':
-        
         $c = $this->status->get('int');
         
         switch($value)
@@ -96,7 +93,7 @@ class UserInfo extends \dependencies\BaseModel
         break;
       
       default:
-        throw new \exception\InvalidArgument('Status cannot be parsed from input type %s. Expected: string|int.', gettype($value));
+        throw new \exception\InvalidArgument('Status cannot be parsed from input type %s. Expected: string|integer.', gettype($value));
       
     }
     

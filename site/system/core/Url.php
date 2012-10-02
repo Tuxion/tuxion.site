@@ -32,13 +32,13 @@ class Url
 
     $regex =
       "~^(?!&)". //url can not start with '&'
-      "(?:(?<scheme>[^:/?#]+)(?=://))?". //scheme
+      "(?:(?P<scheme>[^:/?#]+)(?=://))?". //scheme
       "(?:\://)?". //thingy
-      "(?:(?<!\?)(?<=\://)(?<domain>(?:[a-zA-Z0-9\-]+)(?:\.[a-zA-Z0-9\-\:]+)*))?". //domain (only if it's not in the query string)
-      "(?:(?<!\?)(?<path>/?(?:[^=?#]*/)+))?". //path
-      "(?:(?<file>(?:[^?#]+)(?:\.[^=?#]+)+))?". //file
-      "(?:\??(?<query>(?:[^#]+(?:=[^#]+)?)(?:&(?:amp;)?[^#]+(?:=[^#]+)?)*))?". //query
-      "(?:#?(?<anchor>.+))?$~"; //anchor
+      "(?:(?<!\?)(?<=\://)(?P<domain>(?:[a-zA-Z0-9\-]+)(?:\.[a-zA-Z0-9\-\:]+)*))?". //domain (only if it's not in the query string)
+      "(?:(?<!\?)(?P<path>/?(?:[^=?#]*/)+))?". //path
+      "(?:(?P<file>(?:[^?#]+)(?:\.[^=?#]+)+))?". //file
+      "(?:\??(?P<query>(?:[^#]+(?:=[^#]+)?)(?:&(?:amp;)?[^#]+(?:=[^#]+)?)*))?". //query
+      "(?:#?(?P<anchor>.+))?$~"; //anchor
 
     if(!preg_match($regex, $url, $segments)){
       throw new \exception\Unexpected("Oh no! The URL that was given could not be parsed.");
@@ -86,7 +86,7 @@ class Url
     //port
     $port = ((tx('Data')->server->SERVER_PORT->get() == '80') ? '' : (':'.tx('Data')->server->SERVER_PORT->get()));
 
-    preg_match('~(?:(?<!\?)(?<path>/?(?:((?![^?#]*=)[^?#])*/)+))?(?:(?<file>(?:[^\?]+)(?:\.[^\?]+)+))?~', array_get(explode('?', $req_uri), 0), $matches);
+    preg_match('~(?:(?<!\?)(?P<path>/?(?:((?![^?#]*=)[^?#])*/)+))?(?:(?P<file>(?:[^\?]+)(?:\.[^\?]+)+))?~', array_get(explode('?', $req_uri), 0), $matches);
 
     //path
     $path = array_key_exists('path', $matches) ? $matches['path'] : '/';

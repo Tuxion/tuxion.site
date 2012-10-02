@@ -90,7 +90,7 @@ abstract class BaseComponent
     
     //check defined permissions
     if(array_key_exists($controller, $this->permissions) ? !tx('Account')->check_level($this->permissions[$controller]) : !tx('Account')->check_level($this->default_permission)){
-      throw new \exception\Authorisation('You are not authorised to execute this controller.');
+      throw new \exception\Authorisation('You are not authorized to execute this controller.');
     }
     
     //check if the method actually exists

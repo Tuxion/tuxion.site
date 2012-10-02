@@ -1,0 +1,4 @@
+## Don't commit local configuration ##
+database.php
+paths.php
+email.php

@@ -24,7 +24,7 @@ class Config
     // $this->config->push('site', $site_config)->push('system', $system_config);
     // unset($site_config, $system_config, $GLOBALS['site_config'], $GLOBALS['system_config']);
     
-    foreach(tx('Sql')->execute_query('SELECT * FROM #__cms_config WHERE autoload = 1') AS $row){
+    foreach(tx('Sql')->execute_query('SELECT * FROM #__cms_config WHERE autoload = 1 AND site_id = '.tx('Site')->id) AS $row){
       $this->user[$row->key] = $row->value;
     }
     

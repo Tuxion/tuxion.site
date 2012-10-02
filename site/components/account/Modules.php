@@ -40,6 +40,7 @@ class Modules extends \dependencies\BaseViews
     
     return array(
       'editable' => $options->user_id->get('int') === tx('Data')->session->user->id->get('int'),
+      'need_old_password' => tx('Account')->user->level->get('int') !== 2,
       'user' => $user,
       'options' => $options,
       'image_uploader' => tx('Component')->modules('media')->get_html('image_uploader', array(

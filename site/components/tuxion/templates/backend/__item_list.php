@@ -4,7 +4,7 @@
 
 <div id="tuxion-item-list">
 
-  <a href="<?php echo url('section=faq/edit_item&pid='.$item_list->faq->page_id); ?>" id="new-item">Nieuw item</a>
+  <a href="<?php echo url('section=tuxion/edit_item'); ?>" id="new-item">Nieuw item</a>
 
   <?php
 
@@ -12,8 +12,8 @@
     'Datum' => 'dt_created',
     'Titel' => 'title',
     __('actions', 1) => array(
-      function($row)use($item_list){return '<a class="edit" href="'.url('section=tuxion/edit_item&pid='.$item_list->faq->page_id.'&item_id='.$row->id).'">'.__('edit', true).'</a>';},
-      function($row){return '<a class="delete" href="'.url('action=tuxion/delete_item&item_id='.$row->id).'">delete</a>';}
+      function($row)use($item_list){return '<a class="edit" href="'.url('section=tuxion/edit_item&item_id='.$row->id).'">'.__('edit', 1).'</a>';},
+      function($row){return '<a class="delete" href="'.url('action=tuxion/delete_item&item_id='.$row->id).'">'.__('delete', 1).'</a>';}
     )
   ));
 

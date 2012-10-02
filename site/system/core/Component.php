@@ -39,6 +39,12 @@ class Component
     return $this->load($of, 'Sections');
   }
   
+  // returns instance of the "Sections" class for the given component
+  public function json($of)
+  {
+    return $this->load($of, 'Json');
+  }
+  
   // returns instance of the "Helpers" class for the given component
   public function helpers($of)
   {
@@ -72,7 +78,7 @@ class Component
   }
   
   // loading method
-  public function load($component, $part=null)
+  public function load($component, $part=null, $instantiate=true)
   {
 
     $component = data_of($component);
@@ -94,11 +100,15 @@ class Component
     }
     
     //if the component part was not yet set, now would be the time to include it
-    if(!$this->components->{$component}->{$part}->is_set())
+    if(!$this->components->{$component}->{$part}->is_set() || $this->components->{$component}->{$part}->is_true() && $instantiate === true)
     {
-      require_once(PATH_COMPONENTS.DS.$component.DS.$part.EXT);
-      $class = "\\components\\$component\\$part";
-      $this->components->{$component}->{$part}->set(new $class);
+      require_once(PATH_COMPONENTS.DS.$component.DS.str_replace('\\', DS, $part).EXT);
+      if($instantiate){
+        $class = "\\components\\$component\\$part";
+        $this->components->{$component}->{$part}->set(new $class);
+      }else{
+        $this->components->{$component}->{$part}->set(true);
+      }
     }
     
     return $this->components->{$component}->{$part}->get();
@@ -159,6 +169,19 @@ class Component
     
     return $this->checks[$component_name] = true;
   
+  }
+  
+  public function available($component_name)
+  {
+    
+    try{
+      $this->check($component_name);
+      return true;
+    }
+    catch(\exception\Exception $e){
+      return false;
+    }
+    
   }
   
 }

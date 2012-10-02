@@ -13,6 +13,14 @@ class Image extends File
     $original=null,
     $logging=false;
 
+  public function get_width(){
+    return $this->info['width'];
+  }
+  
+  public function get_height(){
+    return $this->info['height'];
+  }
+
   //initialize the image
   public function __construct($file=null)
   {
@@ -546,7 +554,7 @@ class Image extends File
   }
 
   //output the image to the browser with the appropriate headers
-  public function output()
+  public function output($options = null)
   {
     
     if($this->logging)log_msg('Image', 'Output.');
@@ -570,6 +578,74 @@ class Image extends File
     tx('Logging')->log('Image', 'Render image', 'SUCCEEDED');
     exit;
 
+  }
+  
+  //resizes in such a way that the full image fits within the maximum dimensions given.
+  public function fit($width=0, $height=0)
+  {
+    
+    raw($width, $height);
+    
+    //If not both width and height have been given, this is actually just a resize.
+    if($width == 0 || $height == 0)
+      return $this->resize($width, $height);
+    
+    //Get the smallest ratio for each dimension.
+    $hRatio = $width / $this->info['width'];
+    $vRatio = $height / $this->info['height'];
+    $ratio = min($hRatio, $vRatio);
+    
+    //Get target dimensions.
+    $tWidth = floor($this->info['width'] * $ratio);
+    $tHeight = floor($this->info['height'] * $ratio);
+    
+    //Do the resize.
+    return $this->resize($tWidth, $tHeight);
+    
+  }
+  
+  //resizes and crops in such a way that the full dimensions provided are filled with as broad a view of the image possible.
+  //note: when cropping, the image is centered.
+  public function fill($width, $height)
+  {
+    
+    raw($width, $height);
+    
+    //If not both width and height have been given, this is actually just a resize.
+    if($width == 0 || $height == 0)
+      return $this->resize($width, $height);
+    
+    //Get the highest ratio for each dimension.
+    $hRatio = $width / $this->info['width'];
+    $vRatio = $height / $this->info['height'];
+    $ratio = max($hRatio, $vRatio);
+    
+    //Get target dimensions.
+    $tWidth = floor($this->info['width'] * $ratio);
+    $tHeight = floor($this->info['height'] * $ratio);
+    
+    //Do a resize first.
+    $this->resize($tWidth, $tHeight);
+    
+    //Find out if we need to do a crop.
+    if($tWidth > $width || $tHeight > $height){
+      
+      //See how much needs to be cropped.
+      $hDiff = $tWidth - $width;
+      $vDiff = $tHeight - $height;
+      
+      //Based on that, find the coordinates we need to start our crop from.
+      $x = floor($hDiff / 2);
+      $y = floor($vDiff / 2);
+      
+      //Since we already know the width and height, do the crop now.
+      $this->crop($x, $y, $width, $height);
+      
+    }
+    
+    //Be nice.
+    return $this;
+    
   }
 
   // creates, chmods and registers the cache directory if needed, returns the absolute path or false on failure
