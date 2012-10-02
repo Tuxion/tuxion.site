@@ -8,5 +8,9 @@ body {
 
 .item,
 .item a{
+  color:#eee;
+}
+
+.col.full{
   color:#fff;
 }

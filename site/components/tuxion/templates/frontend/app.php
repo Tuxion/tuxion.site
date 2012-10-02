@@ -6,7 +6,7 @@
 </script>
 
 <script id="item" type="text/template">
-  <section class="item blue" data-id="<%- id %>">
+  <section class="item <%- category_color %>" data-id="<%- id %>">
     <header>
       <h1><%- title %></h1>
     </header>
@@ -28,7 +28,9 @@
       <p>Published: <time pubdate="pubdate"><%- (new Date(dt_created)).toLocaleDateString() %></time></p>
     </header>
     
-    <%= description %>
+    <div class="body">
+      <%= description %>
+    </div>
     
     <footer>
       <p><small>By %author_name%</small></p>

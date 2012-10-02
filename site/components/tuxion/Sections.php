@@ -42,12 +42,24 @@ class Sections extends \dependencies\BaseViews
       
       //Get information about the item itself.
       if($id){
-        $item = $that->table('Items')->pk($id)->execute_single();
+        $item = $that
+          ->table('Items')
+          ->join('Categories', $c)->left()
+            ->select("$c.title", 'category_title')
+            ->select("$c.color", 'category_color')
+          ->pk($id)
+          ->execute_single();
       }
       
       //No item? Use the first.
       if(!$id || $item->is_empty()){
-        $item = $that->table('Items')->order('dt_created', 'DESC')->execute_single();
+        $item = $that
+          ->table('Items')
+          ->join('Categories', $c)->left()
+            ->select("$c.title", 'category_title')
+            ->select("$c.color", 'category_color')
+          ->order('dt_created', 'DESC')
+          ->execute_single();
       }
       
       //No items at all?
@@ -57,6 +69,9 @@ class Sections extends \dependencies\BaseViews
       
       //Get items before the middle item.
       $before = $that->table('Items')
+        ->join('Categories', $c)->left()
+          ->select("$c.title", 'category_title')
+          ->select("$c.color", 'category_color')
         ->where('dt_created', '>', $item->dt_created)
         ->order('dt_created', 'ASC')
         ->limit($half)
@@ -65,6 +80,9 @@ class Sections extends \dependencies\BaseViews
         
       //Get items after the middle item.
       $after = $that->table('Items')
+        ->join('Categories', $c)->left()
+          ->select("$c.title", 'category_title')
+          ->select("$c.color", 'category_color')
         ->where('dt_created', '<', $item->dt_created)
         ->order('dt_created', 'DESC')
         ->limit($half)
