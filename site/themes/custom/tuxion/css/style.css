@@ -132,7 +132,7 @@ body{
   margin-right:20px;
 }
   .col.full article{
-    padding:20px;
+    padding:20px 0px 0px;
   }
   .col.full article.actueel{
     max-width:650px;

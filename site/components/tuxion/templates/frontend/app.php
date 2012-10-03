@@ -29,7 +29,7 @@
     </header>
     
     <div class="body">
-      <%= description %>
+      <%= text %>
     </div>
     
     <footer>
