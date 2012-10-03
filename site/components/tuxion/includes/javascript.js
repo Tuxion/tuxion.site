@@ -511,6 +511,11 @@
       namespace: 'sidebar',
       
       elements: {
+        el_menu_items: 'a.menu-item'
+      },
+      
+      events: {
+        'click on a.menu-item': 'itemClick'
       },
       
       init: function(){
@@ -563,6 +568,12 @@
       
       scrollAllowed: function(){
         return this.view.css('opacity') < 1;
+      },
+      
+      itemClick: function(e){
+        e.preventDefault();
+        this.view.find('.col').scrollTo(this.view.find($(e.target).attr('href')), {axis:'y', duration: 500, offset: -25});
+        return false;
       }
       
     }),

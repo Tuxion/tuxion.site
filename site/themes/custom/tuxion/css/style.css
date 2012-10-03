@@ -59,19 +59,34 @@ body{
   position:absolute;
   top:0;
   left:0;
-  height:100%;
+  bottom:0;
   width:275px;
   padding-left:10px;
+  padding-bottom:70px;
   overflow:hidden;
 }
   #sidebar .sidebar-menu{
     position:absolute;
     bottom:0;
-    height:80px;
+    left:0;
+    width:245px;
+    height:60px;
+    text-align:center;
+    padding:0px 20px;
   }
+    #sidebar .sidebar-menu a.menu-item{
+      font-size:1.2em;
+      color:#fff;
+      text-shadow:#000 1px 1px 1px;
+      text-decoration:none;
+      margin:6px 10px 0px;
+      display:block;
+      float:left;
+      width:102px;
+    }
 
 #container{
-  padding-left:295px;
+  padding-left:310px;
   width:100%;
   overflow:hidden;
   color:#353535;
@@ -81,7 +96,7 @@ body{
   height:100%;
 }
 #content{
-  margin-right:295px;
+  margin-right:310px;
 }
 
 #footer{
