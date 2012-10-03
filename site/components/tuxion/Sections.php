@@ -36,7 +36,8 @@ class Sections extends \dependencies\BaseViews
   {
   
     return array(
-      'item' => $this->table('Items')->pk(tx('Data')->get->item_id)->execute_single()
+      'item' => $this->table('Items')->pk(tx('Data')->get->item_id)->execute_single(),
+      'categories' => tx('Component')->helpers('tuxion')->get_categories()
     );
       
 

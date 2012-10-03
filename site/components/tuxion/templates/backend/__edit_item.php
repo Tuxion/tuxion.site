@@ -12,12 +12,12 @@ $form_id = tx('Security')->random_string(20);
 
     <div class="ctrlHolder">
       <label for="l_user_id" accesskey="c"><?php __('User ID'); ?></label>
-      <input class="big large" type="text" id="l_user_id" name="user_id" value="<?php echo $edit_item->item->user_id; ?>" />
+      <input class="big large" type="text" id="l_user_id" name="user_id" value="<?php echo $edit_item->item->user_id->otherwise(tx('Account')->user->id); ?>" />
     </div>
 
     <div class="ctrlHolder">
       <label for="l_category_id" accesskey="c"><?php __('Category ID'); ?></label>
-      <input class="big large" type="text" id="l_category_id" name="category_id" value="<?php echo $edit_item->item->category_id; ?>" />
+      <?php echo $data->categories->as_options('category_id', 'title', 'id', array('id' => 'l_category_id', 'default' => $data->item->category_id->get('int'), 'placeholder_text' => __('Select a category', 1))); ?>
     </div>
 
     <div class="ctrlHolder">
@@ -27,12 +27,12 @@ $form_id = tx('Security')->random_string(20);
 
     <div class="ctrlHolder">
       <label for="l_description" accesskey="d"><?php __('Description'); ?></label>
-      <textarea name="description"><?php echo $edit_item->item->description; ?></textarea>
+      <textarea name="description" style="width:600px;height:200px;"><?php echo $edit_item->item->description; ?></textarea>
     </div>
 
     <div class="ctrlHolder">
       <label for="l_text" accesskey="x"><?php __('Text'); ?></label>
-      <textarea name="text"><?php echo $edit_item->item->text; ?></textarea>
+      <textarea name="text" style="width:600px;height:400px;"><?php echo $edit_item->item->text; ?></textarea>
     </div>
 
     <div class="ctrlHolder">
