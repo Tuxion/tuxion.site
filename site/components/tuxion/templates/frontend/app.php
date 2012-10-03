@@ -22,7 +22,7 @@
 
 <script id="blog" type="text/template">
   
-  <article class="inner">
+  <article class="inner <%- category_name %> <%- category_color %>">
     <header>
       <h1><%- title %></h1>
       <p>Published: <time pubdate="pubdate"><%- (new Date(dt_created)).toLocaleDateString() %></time></p>
@@ -35,6 +35,9 @@
     <footer>
       <p><small>By %username%</small></p>
     </footer>
+
+    <a href="#" class="back-to-overview button">Terug naar het overzicht</a>
+
   </article>
   
 </script>

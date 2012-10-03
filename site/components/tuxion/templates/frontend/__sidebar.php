@@ -1,8 +1,20 @@
 <?php namespace components\tuxion; if(!defined('TX')) die('No direct access.'); ?>
 
 <div class="col small">
-  <section id="sidebar-about" class="item blue solid">
-    <header><h1>Over Tuxion</h1></header>
+
+  <img id="logo" src="<?php echo URL_THEMES; ?>custom/tuxion/img/logo-black.png" alt="Tuxion logo" />
+
+  <section id="tuxion" class="item blue solid">
+    <header><h1>Tuxion, aangenaam</h1></header>
+    <p>
+      Wij zijn een jong, creatief team gespecialiseerd in het ontwikkelen <b>websites</b> en <b>webapplicaties</b>. Wij zijn altijd op zoek naar uitdagende projecten, zowel op technisch vlak als in design.
+    </p>
+    <p>
+      Wij zijn benieuwd naar uw idee&euml;n. <a href="#contact">Vertel ons iets over uw project!</a>
+    </p>
+  </section>
+  <section id="about" class="item blue solid">
+    <header><h1>Over ons</h1></header>
     <p>
       Tuxion is een uniek, innovatief webbureau gevestigd in Rotterdam.
       Onze passie is het creëren van fraaie, toegankelijke websites en webapplicaties.
@@ -29,26 +41,63 @@
       </li>
     </ul>
   </section>
-  <section id="sidebar-team" class="item blue solid">
+  <section id="team" class="item blue solid">
     <header><h1>Het team</h1></header>
     <p>Dingen</p>
   </section>
-  <section id="sidebar-services" class="item blue solid">
+  <section id="services" class="item blue solid">
     <header><h1>Diensten</h1></header>
     <p>Dingen</p>
   </section>
-  <section id="sidebar-contact" class="item blue solid">
+  <section id="contact" class="item blue solid">
     <header><h1>Contact</h1></header>
-    <p>Dingen</p>
+
+    Goededag!
+    Wij maken graag kennis met u. Bezoek ons, neem contact met ons op of laat ons u bellen.
+
+    <p>
+      <b>Korte lijnen</b><br />
+      <img src="http://tuxion.nl/aangenaam/img/icons/icon_phone.gif" width="8" height="8" alt="telefoonnummer" /> (010) 840 6776<br />
+      <img src="http://tuxion.nl/aangenaam/img/icons/icon_email.gif" width="8" height="8" alt="e-mailadres" /> <a href="mailto:team@tuxion.nl" title="Stuur ons een e-mail">team@tuxion.nl</a><br />
+      <img src="http://tuxion.nl/aangenaam/img/icons/icon_skype.gif" width="8" height="8" alt="Skype-naam" /> <a href="skype:tuxion_nl?chat" type="Skype ons">tuxion_nl</a><br />
+    </p>  
+
+    <p>
+      <b>Postadres</b><br />
+      Rusthofstraat 63<br />
+      3034 TR  Rotterdam
+    </p>
+
+    <p>
+      <b>Bezoekadres</b><br />
+      Slinge 250<br />
+      3085 EX  Rotterdam
+    </p>
+
+    <p>
+      <b>KvK-nummer</b><br />
+      24371485
+    </p>
+
+  </td>
+  <td width="52%" valign="top" style="padding-left:20px;">
+
+    <h4>Bel ons voor een afspraak</h4>
+
+    <p>
+      We maken graag een afspraak voor een verfrissend gesprek, bij u of bij ons. Bel ons op (010) 840 6776.
+    </p>
+
+
   </section>
 </div>
 
 <div class="sidebar-menu">
   
-  <a href="#sidebar-about" class="menu-item">Over Tuxion</a>
-  <a href="#sidebar-team" class="menu-item">Het team</a>
+  <a href="#about" class="menu-item">Over Tuxion</a>
+  <a href="#team" class="menu-item">Het team</a>
   <br>
-  <a href="#sidebar-services" class="menu-item">Diensten</a>
-  <a href="#sidebar-contact" class="menu-item">Contact</a>
+  <a href="#services" class="menu-item">Diensten</a>
+  <a href="#contact" class="menu-item">Contact</a>
   
 </div>

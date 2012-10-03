@@ -14,6 +14,7 @@ class Json extends \dependencies\BaseComponent
 
       $result = $that->table('Items')
         ->join('Categories', $c)->left()
+          ->select("$c.name", 'category_name')
           ->select("$c.title", 'category_title')
           ->select("$c.color", 'category_color')
         ->join('Accounts', $a)->left()
@@ -48,6 +49,7 @@ class Json extends \dependencies\BaseComponent
         $item = $that
           ->table('Items')
           ->join('Categories', $c)->left()
+            ->select("$c.name", 'category_name')
             ->select("$c.title", 'category_title')
             ->select("$c.color", 'category_color')
           ->join('Accounts', $a)->left()
@@ -61,6 +63,7 @@ class Json extends \dependencies\BaseComponent
         $item = $that
           ->table('Items')
           ->join('Categories', $c)->left()
+            ->select("$c.name", 'category_name')
             ->select("$c.title", 'category_title')
             ->select("$c.color", 'category_color')
           ->join('Accounts', $a)->left()
@@ -77,6 +80,7 @@ class Json extends \dependencies\BaseComponent
       //Get items before the middle item.
       $before = $that->table('Items')
         ->join('Categories', $c)->left()
+          ->select("$c.name", 'category_name')
           ->select("$c.title", 'category_title')
           ->select("$c.color", 'category_color')
         ->join('Accounts', $a)->left()
@@ -90,6 +94,7 @@ class Json extends \dependencies\BaseComponent
       //Get items after the middle item.
       $after = $that->table('Items')
         ->join('Categories', $c)->left()
+          ->select("$c.name", 'category_name')
           ->select("$c.title", 'category_title')
           ->select("$c.color", 'category_color')
         ->join('Accounts', $a)->left()
@@ -126,7 +131,16 @@ class Json extends \dependencies\BaseComponent
       
       $args[0]->validate('item identifier', array('required', 'number' => 'int'));
 
-      $result = $that->table('Items')->pk($args[0])->execute_single();
+      $result =$that
+        ->table('Items')
+        ->join('Categories', $c)->left()
+          ->select("$c.name", 'category_name')
+          ->select("$c.title", 'category_title')
+          ->select("$c.color", 'category_color')
+        ->join('Accounts', $a)->left()
+          ->select("$a.username", 'username')
+        ->pk($args[0])
+        ->execute_single();
       
       $result->is('empty', function()use($args){
         throw new \exception\EmptyResult('Item %s was not found.', $args[0]);

@@ -588,7 +588,16 @@
       
       elements: {
         'el_items': '.item',
-        'el_columns': '.col'
+        'el_columns': '.col',
+        'back': '.back-to-overview'
+      },
+
+      events: {
+        'click on back': function(e){
+          if(this.mode == 'full'){
+            this.closePage();
+          }
+        }
       },
       
       templators: {
@@ -683,7 +692,7 @@
         }else{
           Content.renderFrom();
         }
-        
+
       },
       
       setMode: function(mode){
@@ -760,7 +769,7 @@
           app.Items.fetch(id).done(function(data){
             
             var tmpl = Content.templators[data.typeName || 'blog'];
-            Content.el_full.html(tmpl(data)).find('.inner').css('width', ($(window).width() * .9));
+            Content.el_full.html(tmpl(data)).find('.inner').css('width', $(window).width());
             
           });
           
