@@ -53,7 +53,7 @@
           || 'GET';
     
     //Build the url
-    var url = window.location.host + window.location.pathname + '?rest=tuxion/' + model;
+    var url = window.location.protocol + '//' + window.location.host + window.location.pathname + '?rest=tuxion/' + model;
     
     //Do it, jQuery!
     return $.ajax({
@@ -138,6 +138,7 @@
       app = this;
       this.options = _(options).defaults(this.options);
       this.Content = new this.ContentController;
+      this.Sidebar = new this.SidebarController;
     },
     
     /**
@@ -502,6 +503,71 @@
     }),
     
     /**
+    * SIDEBAR CONTROLLER
+    */
+    SidebarController: Controller.sub({
+      
+      el: '#sidebar',
+      namespace: 'sidebar',
+      
+      elements: {
+      },
+      
+      init: function(){
+      
+        this.previous();
+        
+        var Sidebar = this;
+        Sidebar.initialWidth = Sidebar.view.outerWidth();
+        
+        $(window)
+          .on('mousewheel DOMMouseScroll', Sidebar.view, function(e){
+            
+            //Only in effect if scroll was used on the sidebar when it isn't allowed.
+            if($(e.target).closest('#sidebar').size() == 0 || app.Sidebar.scrollAllowed())
+              return;
+            
+            var delta = getWheelDelta(e.originalEvent);
+            
+            var el = Sidebar.view.find('.col');
+            el.scrollTop(el.scrollTop() + (delta*50));
+            
+            app.Sidebar.scootOver($('#container').scrollLeft());
+            
+          })
+        
+      },
+      
+      scootOver: function(distance, duration){
+        
+        var percentage = (this.initialWidth - distance) / this.initialWidth;
+        
+        if(percentage < 0)
+          percentage = 0;
+        
+        if(duration){
+          this.view.animate({
+            opacity: percentage,
+            left: '-'+distance+'px'
+          }, duration);
+        }else{
+          this.view.css({
+            opacity: percentage,
+            left: '-'+distance+'px'
+          });
+        }
+        
+        return this;
+        
+      },
+      
+      scrollAllowed: function(){
+        return this.view.css('opacity') < 1;
+      }
+      
+    }),
+    
+    /**
     * CONTENT CONTROLLER
     */
     ContentController: Controller.sub({
@@ -527,6 +593,7 @@
         
         Content.previous();
         Content.fixWidth();
+        Content.fixHeight();
         
         $.after(20).done(function(){
           Content.navigate();
@@ -535,6 +602,10 @@
         $(window)
           
           .on('mousewheel DOMMouseScroll', Content.view, function(e){
+            
+            //Only in effect if scroll was not used on the sidebar when it isn't allowed.
+            if($(e.target).closest('#sidebar').size() > 0 && !app.Sidebar.scrollAllowed())
+              return;
             
             var delta = getWheelDelta(e.originalEvent);
             
@@ -547,6 +618,8 @@
               var el = Content.view.find('.col.full');
               el.scrollTop(el.scrollTop() + (delta*50));
             }
+            
+            app.Sidebar.scootOver($('#container').scrollLeft());
             
           })
           
@@ -581,6 +654,12 @@
           })
         
         ;//eof: $(window)
+        
+      },
+      
+      fixHeight: function(){
+        
+        this.view.css('height', ($('body').innerHeight() - $('#footer').outerHeight()) + 'px');
         
       },
       
@@ -653,7 +732,7 @@
             Content.fixWidth(($(window).width() * .95));
             column.addClass('full').css('width', '0').animate({width: ($(window).width() * .9)}, 500);
             $('#container').scrollTo(column, {axis: 'x', offset: {left: -($(window).width() * .05)}, duration: 500});
-            
+            app.Sidebar.scootOver($(window).width() * .95, 500);
             
           });
           
@@ -691,6 +770,7 @@
         var to = ($('#container').scrollLeft())-($(window).width()/2);
         to = (to < 0 ? 0 : to);
         $('#container').scrollTo(to, {axis: 'x', duration:500});
+        app.Sidebar.scootOver(to, 500);
         
         Content.fixWidth(0,500);
         Content.el_full.animate({'width': 0}, 500).queue(function(){
@@ -734,6 +814,8 @@
       rerender: function(){
         
         var Content = this;
+        
+        Content.fixHeight();
         
         if(Content.rendering){
           
@@ -827,7 +909,7 @@
           , D = $.Deferred()
           , P = D.promise();
         
-        $.after(0).done(function(){
+        $.after(0).done(function(){Content
           
           var lastColumn
             , key = Content.el_columns.last().id();

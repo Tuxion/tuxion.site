@@ -27,25 +27,6 @@ html, body{
   height:100%;
   overflow:hidden;
 }
-body{
-  position:relative;
-  /*overflow-x:hidden;*/
-}
-
-#container{
-  padding-left:10px;
-  /*width:8000px;*/
-  width: 100%;
-  overflow:hidden;
-  font-family: 'Helvetica Neue', Helvetica, sans-serif;
-  font-size: 11px;
-  line-height: 21px;
-  color: #353535;
-}
-#container,
-#content{
-  height:100%;
-}
   
 /* =Fonts
 -------------------------------------------------------------- */
@@ -60,6 +41,55 @@ body{
   font-weight: normal;
   font-style: normal;
 }
+
+/**********************
+		Layout
+*********************/
+
+body{
+  position:relative;
+  /*overflow-x:hidden;*/
+  font-family:'Helvetica Neue', Helvetica, sans-serif;
+  font-size:11px;
+  line-height:21px;
+}
+
+#sidebar{
+  opacity:1;
+  position:absolute;
+  top:0;
+  left:0;
+  height:100%;
+  width:275px;
+  padding-left:10px;
+  overflow:hidden;
+}
+  #sidebar .sidebar-menu{
+    position:absolute;
+    bottom:0;
+    height:80px;
+  }
+
+#container{
+  padding-left:295px;
+  width:100%;
+  overflow:hidden;
+  color:#353535;
+}
+#container,
+#content{
+  height:100%;
+}
+#content{
+  margin-right:295px;
+}
+
+#footer{
+  position:absolute;
+  bottom:0;
+  height:0px;
+}
+
 
 /**********************
 		Cols

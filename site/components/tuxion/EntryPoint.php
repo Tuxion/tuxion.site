@@ -16,7 +16,9 @@ class EntryPoint extends \dependencies\BaseEntryPoint
       load_plugin('jsFramework')
     )),
     array(
-      'content' => $this->view('app')
+      'sidebar' => $this->section('sidebar'),
+      'content' => $this->view('app'),
+      'footer' => $this->section('footer_menu')
     ));
    
   }

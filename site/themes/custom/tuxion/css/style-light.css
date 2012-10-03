@@ -5,3 +5,7 @@ body {
 .item {
   background-color: #f4f4f4;
 }
+
+#sidebar{
+  background-color:rgba(100, 100, 100, .6);
+}

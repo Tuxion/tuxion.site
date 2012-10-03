@@ -4,7 +4,21 @@ class Sections extends \dependencies\BaseViews
 {
 
   /* ---------- Frontend ---------- */
-
+  
+  protected function sidebar($data)
+  {
+    
+    return array();
+    
+  }
+  
+  protected function footer_menu($data)
+  {
+    
+    return array();
+    
+  }
+  
   public function get_items($data, $args)
   {
 

@@ -1,7 +1,7 @@
 #Sevendays mod rewrite
-RewriteEngine On
-RewriteRule ^admin - [S=4]
-RewriteRule ^files - [S=3]
-RewriteRule ^plugins - [S=2]
-RewriteRule ^site - [S=1]
-RewriteRule ^/?([^/]+)/(.*)$ index.php?project_key=$1&%{QUERY_STRING}
+#RewriteEngine On
+#RewriteRule ^admin - [S=4]
+#RewriteRule ^files - [S=3]
+#RewriteRule ^plugins - [S=2]
+#RewriteRule ^site - [S=1]
+#RewriteRule ^/?([^/]+)/(.*)$ index.php?project_key=$1&%{QUERY_STRING}

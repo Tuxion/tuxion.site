@@ -14,3 +14,7 @@ body {
 .col.full{
   color:#fff;
 }
+
+#sidebar{
+  background-color:rgba(100, 100, 100, .6);
+}

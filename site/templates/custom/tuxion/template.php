@@ -37,16 +37,18 @@
   </head>
   
   <body>
-
-    <div id="container">
-      
-      <?php echo $body->content; ?>
-
-      <footer id="footer">
-      </footer>
-
+    
+    <div id="sidebar">
+      <?php echo $body->sidebar; ?>
     </div>
-    <!-- /#container -->
+    
+    <div id="container">
+      <?php echo $body->content; ?>
+    </div>
+    
+    <footer id="footer">
+      <?php echo $body->footer; ?>
+    </footer>
 
   </body>
   
