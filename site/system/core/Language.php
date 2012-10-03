@@ -15,7 +15,7 @@ class Language
     //if the session defines a language
     if($lang->is_set())
     {
-      
+
       tx('Validating language.', function()use($lang){
         $lang->validate('Language', array('number'=>'integer'));
         tx('Sql')->execute_scalar('SELECT id FROM #__language_languages WHERE id = '.$lang);
@@ -31,7 +31,7 @@ class Language
     //if the language is not in the session
     if( ! $lang->is_set())
     {
-    
+
       tx('Setting language from database.', function()use($lang){
         $lang->set(tx('Sql')->execute_scalar('SELECT id FROM #__language_languages ORDER BY id ASC LIMIT 1'));
       })
@@ -43,7 +43,12 @@ class Language
       
     }
     
-    define('LANGUAGE', $lang->get());
+    if(tx('Config')->system()->check('backend')){
+      define('LANGUAGE', 1);
+    }else{
+      define('LANGUAGE', $lang->get());
+    }
+    
     define('LANGUAGE_CODE', tx('Sql')->execute_scalar('SELECT code FROM #__language_languages WHERE id = '.$lang));
     
   }

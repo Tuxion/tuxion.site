@@ -9,7 +9,6 @@ class Sections extends \dependencies\BaseViews
     return $this
       ->table('Accounts')
       ->join('UserInfo', $ui)
-      ->select("$ui.username", 'username')
       ->select("$ui.name", 'name')
       ->select("$ui.preposition", 'preposition')
       ->select("$ui.family_name", 'family_name')
@@ -18,13 +17,50 @@ class Sections extends \dependencies\BaseViews
     
   }
   
+  protected function edit_user_group($options)
+  {
+    
+    $options = tx('Data')->get->having('user_group_id')->merge($options->having('user_group_id'));
+    
+    $group = tx('Sql')
+      ->table('account', 'UserGroups')
+      ->pk($options->user_group_id)
+      ->execute_single()
+      ->is('empty', function(){
+        return tx('Sql')
+          ->model('account', 'UserGroups');
+      });
+    
+    $members = $group->users->map(function($member){
+      return $member->id;
+    })->as_array();
+    
+    return array(
+      'group' => $group,
+      'users' => tx('Sql')
+        ->table('account', 'Accounts', $AC)
+        ->join('UserInfo', $UI)
+          ->where("(`$UI.status` & (1|4))", '>', 0)
+        ->execute($AC)
+        ->map(function($user)use($group, $members){
+          
+          //Add their membership status for the group we're editing.
+          $user->is_member->set(in_array($user->id->get(), $members));
+          
+          //Return the user.
+          return $user;
+          
+        })
+    );
+    
+  }
+  
   protected function user_list()
   {
-
+    
     return $this
       ->table('Accounts')
       ->join('UserInfo', $ui)
-      ->select("$ui.username", 'username')
       ->select("$ui.status", 'status')
       ->where(tx('Sql')->conditions()
         ->add('1', array("(`$ui.status` & 1)", '1'))
@@ -33,6 +69,17 @@ class Sections extends \dependencies\BaseViews
         ->utilize('3')
       )
       ->order('level', 'DESC')
+      ->order('email')
+      ->execute();
+    
+  }
+  
+  protected function group_list()
+  {
+    
+    return tx('Sql')
+      ->table('account', 'UserGroups')
+      ->order('title')
       ->execute();
     
   }
@@ -49,8 +96,8 @@ class Sections extends \dependencies\BaseViews
       'users' => $this
         ->table('Accounts')
         ->join('UserInfo', $ui)
-        ->select("$ui.username", 'username')
         ->select("$ui.status", 'status')
+        ->where("(`$ui.status` & (1|4))", '>', 0)
         ->execute()
     );
     
@@ -64,6 +111,20 @@ class Sections extends \dependencies\BaseViews
   protected function profile()
   {
     return tx('Data')->session->user;
+  }
+  
+  protected function import_users()
+  {
+    
+    return array();
+    
+  }
+  
+  protected function execute_import_users()
+  {
+    
+    return $this->helper('import_users', tx('Data')->post);
+    
   }
 
 }

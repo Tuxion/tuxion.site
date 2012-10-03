@@ -1,0 +1,72 @@
+<html>
+  
+  <head>
+    
+    <title>jquery.message</title>
+    
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    
+    <script type="text/javascript" src="jquery.min.js"></script>
+    <script type="text/javascript" src="jquery.message.js"></script>
+    <script type="text/javascript">
+      jQuery(function($){
+        $(document).ready(function(){
+        
+          $('#theform').hide();
+          
+          $.alert('You are about to delete nyerk', function(){
+            $('<span>Preparing deletion</span>').notice(function(){
+              $.confirm('Are you older than 18?', function(){
+                $.confirm('Are you sure you want to delete that?', function(){
+                  $('#nyerk').remove();
+                  $('#theform').prompt(function(data){
+                    $.notice(
+                      'are you a monkey: '+data['monkey']+'<br />'+
+                      'this '+(data['offended']===false ? 'offended you, haha!' : 'doesnt bother you')+'<br />'+
+                      'you are '+data['color']+'<br />'+
+                      'you said: '+data['nyerk']
+                    ).appendTo('body');
+                  });
+                }, function(){
+                  alert('Pff, make up your mind.');
+                });
+              }, function(){
+                alert('You are not allowed to delete nyerk.');
+              });
+            });
+          });
+          
+          
+        });
+      });
+    </script>
+    
+  </head>
+  
+  <body>
+    <div id="nyerk">nyerk</div>
+    <div id="theform">
+      Is de verwijdering naar wens verlopen? Geef hier uw feedback.
+      <form action="index.html#submitted">
+        
+        <input type="checkbox" name="monkey" value="yep" />Are you a monkey?<br />
+        <input type="checkbox" name="offended" value="nope" />Where you not offended by the above question?<br />
+        
+        <label for="color">What color is your skin?</label>
+        <input type="radio" name="color" value="yellow" />yellow (chinese)
+        <input type="radio" name="color" value="white" />white (superior)
+        <input type="radio" name="color" value="black" />black (not recomended)
+        <input type="radio" name="color" value="red" />red (angry)
+        
+        <br />
+        <br />
+        
+        <input type="text" name="nyerk" />
+        <input type="submit" value="verzenden" />
+        <input type="submit" value="annuleren" class="tx-message-cancel" />
+      
+      </form>
+    </div>
+  </body>
+
+</html>

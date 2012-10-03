@@ -34,6 +34,20 @@ class Url extends \dependencies\Data
     
   }
   
+  public function rebuild_output()
+  {
+    
+    $this->output->set(
+      $this->segments->scheme.'://'.
+      $this->segments->domain.
+      $this->segments->path.
+      ($this->segments->file->is_set() ? $this->segments->file : '').
+      ($this->segments->query->is_set() ? '?'.$this->segments->query : '').
+      ($this->segments->anchor->is_set() ? '#'.$this->segments->anchor : '')
+    );
+    
+  }
+  
   private function _build_url($string, array $options=array())
   {
   
@@ -197,16 +211,7 @@ class Url extends \dependencies\Data
     ##
     ## create output
     ##
-    $this->output->set(
-      $this->segments->scheme.'://'.
-      $this->segments->domain.
-      $this->segments->path.
-      ($this->segments->file->is_set() ? $this->segments->file : '').
-      ($this->segments->query->is_set() ? '?'.$this->segments->query : '').
-      ($this->segments->anchor->is_set() ? '#'.$this->segments->anchor : '')
-    );
-    
-    
+    $this->rebuild_output();
     
   }
 

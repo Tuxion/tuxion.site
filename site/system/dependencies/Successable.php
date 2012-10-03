@@ -44,14 +44,14 @@ abstract class Successable
   }
   
   // combines the current success state with what the new success state would be if is() would be called with the given arguments
-  public function and_is($check)
+  public function and_is($check, $callback=null)
   {
     
     if($this->success === false){
       return $this;
     }
     
-    return $this->is($check);
+    return $this->is($check, $callback);
     
   }
   

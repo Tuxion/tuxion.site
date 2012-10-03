@@ -33,7 +33,7 @@ abstract class BaseViews extends BaseComponent
     
     // if the template does not exist in any of the directories, we return the raw view data
     if(!is_file($path_view)){
-      return Data($html)->get('string');
+      return Data($html)->__toString();
     }
     
     // if the template does exist, we define the variables that will be available in the template, and then return the html

@@ -94,7 +94,6 @@ class File
     
     tx('Logging')->log('File', 'Output', 'SUCCEEDED');
     
-    trace($options);
     $src = $this->source;
     $options->delete_after_output->is('true', function()use($src){
       tx('Logging')->log('File', 'Output', 'Deleting file after output. '.$src);
@@ -144,7 +143,7 @@ class File
   {
     $options = Data($options);
     
-    header('Content-Disposition: attachment; filename='.(is_string($options->as->get()) ? $options->as : $this->file).';');
+    header('Content-Disposition: attachment; filename="'.(is_string($options->as->get()) ? $options->as : $this->file).'";');
     header('Content-Transfer-Encoding: binary');
     
     $options->un_set('as');

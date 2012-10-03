@@ -11,7 +11,12 @@ $form_id = tx('Security')->random_string(20);
     <input type="hidden" name="id" value="<?php echo $edit_item->item->id ?>" />
 
     <div class="ctrlHolder">
-      <label for="l_category_id" accesskey="c"><?php __('Category_id'); ?></label>
+      <label for="l_user_id" accesskey="c"><?php __('User ID'); ?></label>
+      <input class="big large" type="text" id="l_user_id" name="user_id" value="<?php echo $edit_item->item->user_id; ?>" />
+    </div>
+
+    <div class="ctrlHolder">
+      <label for="l_category_id" accesskey="c"><?php __('Category ID'); ?></label>
       <input class="big large" type="text" id="l_category_id" name="category_id" value="<?php echo $edit_item->item->category_id; ?>" />
     </div>
 
@@ -22,12 +27,12 @@ $form_id = tx('Security')->random_string(20);
 
     <div class="ctrlHolder">
       <label for="l_description" accesskey="d"><?php __('Description'); ?></label>
-      <textarea name="description" id="<?php echo $form_id; ?>-description" class="editor"><?php echo $edit_item->item->description; ?></textarea>
+      <textarea name="description"><?php echo $edit_item->item->description; ?></textarea>
     </div>
 
     <div class="ctrlHolder">
       <label for="l_text" accesskey="x"><?php __('Text'); ?></label>
-      <textarea name="text" id="<?php echo $form_id; ?>-text" class="editor"><?php echo $edit_item->item->text; ?></textarea>
+      <textarea name="text"><?php echo $edit_item->item->text; ?></textarea>
     </div>
 
     <div class="ctrlHolder">
@@ -36,6 +41,7 @@ $form_id = tx('Security')->random_string(20);
     </div>
 
     <div class="buttonHolder">
+      <a href="#" id="cancel">Annuleren</a>
       <input class="primaryAction button black" type="submit" value="<?php __('Save'); ?>" />
     </div>
 
@@ -47,20 +53,31 @@ $form_id = tx('Security')->random_string(20);
 
 $(function(){
 
-  //init editor
-  tx_editor.init({selector:"#<?php echo $form_id; ?>-description"});
-  tx_editor.init({selector:"#<?php echo $form_id; ?>-text"});
-
   //submit form
-  $("#form<?php echo $form_id; ?>").on("submit", function(e){
+  $("#form<?php echo $form_id; ?>")
 
-    e.preventDefault();
-  
-    $("#form<?php echo $form_id; ?>").ajaxSubmit(function(d){
-      $('#tuxion-item-form').replaceWith(d);
-    });
+    .on("submit", function(e){
 
-  });
+      e.preventDefault();
+    
+      $("#form<?php echo $form_id; ?>").ajaxSubmit(function(d){
+        $('#tuxion-item-form').replaceWith(d);
+      });
+
+    })
+
+    .on('click', '#cancel', function(e){
+      
+      e.preventDefault();
+
+      $.ajax({
+        url: '<?php echo url('section=tuxion/item_list'); ?>'
+      }).done(function(d){
+        $('#tuxion-item-form').replaceWith(d);
+      });
+
+    })
   
 });
+
 </script>

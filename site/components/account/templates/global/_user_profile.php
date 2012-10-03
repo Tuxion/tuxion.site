@@ -37,10 +37,14 @@ echo $user_profile->image_uploader;
         <input type="text" name="email_address" id="l_email" value="<?php echo tx('Account')->user->email->get('string'); ?>" disabled="disabled" />
       </fieldset>
       <fieldset>
-        <label for="l_password1"><?php __('Password'); ?>:</label>
-        <input type="password" name="password1" placeholder="<?php __('Password'); ?>" />
-        <label for="l_password2"><?php __('Confirm password'); ?>:</label>
-        <input type="password" name="password2" placeholder="<?php __('Confirm password'); ?>" />
+        <?php if($user_profile->need_old_password->is_true()){ ?>
+        <label for="l_password_old"><?php __('Old password'); ?>:</label>
+        <input type="password" name="password_old" placeholder="<?php __('Old password'); ?>" />
+        <?php } ?>
+        <label for="l_password1"><?php __('New password'); ?>:</label>
+        <input type="password" name="password1" placeholder="<?php __('New password'); ?>" />
+        <label for="l_password2"><?php __('Confirm new password'); ?>:</label>
+        <input type="password" name="password2" placeholder="<?php __('Confirm new password'); ?>" />
       </fieldset>
       <fieldset>
         <label><?php __('Voornaam'); ?>:</label>

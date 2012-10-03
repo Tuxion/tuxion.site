@@ -41,7 +41,7 @@ class Validation extends Expected
   public function errors(array $set=null)
   {
     
-    if(is_null($this->errors)) $this->errors = is_null($set) ? array() : $set;
+    if(count($this->errors) === 0) $this->errors = is_null($set) ? array() : $set;
     
     return $this->errors;
     

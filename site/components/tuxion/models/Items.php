@@ -8,14 +8,12 @@ class Items extends \dependencies\BaseModel
     $table_name = 'tuxion_items',
 
     $relations = array(
-      'Categories'=>array('category_id' => 'Categories.id')
+      'Categories'=>array('category_id' => 'Categories.id'),
+      'Accounts' => array('user_id' => 'Accounts.id')
     );
 
-  public function get_stuff()
-  {
-
-    return true;
-
+  public function get_user(){
+    return tx('Sql')->table('Accounts')->pk($this->user_id)->execute_single();
   }
 
 }

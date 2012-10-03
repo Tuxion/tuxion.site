@@ -28,7 +28,7 @@ class Security
      *   March 19th 2012 - PHP 5.4.0
      *
      * Priority reasons:
-     *   128 bits: ripemd128 is more scrutinized then snefru, both are secure.
+     *   128 bits: ripemd128 is more scrutinized than snefru, both are secure.
      *   160 bits: ripemd160 has not been broken yet while sha1 has a known collission attack.
      *             sha1 is still safe enough to be enabled though. Might be useful as sha1 is faster.
      *   224 bits: sha224 has not been broken yet.
@@ -73,7 +73,7 @@ class Security
       ->validate('Password', array('string')); //Must be a string.
     
     $strength = 0; 
-    $patterns = array('#[a-z]#','#[A-Z]#','#[0-9]#','/[¬!"£$%^&*()`{}\[\]:@~;\'#<>?,.\/\\-=_+\|]/'); 
+    $patterns = array('#[a-z]#','#[A-Z]#','#[0-9]#','/[Ã‚Â¬!"Ã‚Â£$%^&*()`{}\[\]:@~;\'#<>?,.\/\\-=_+\|]/'); 
     foreach($patterns as $pattern) 
     {
       if(preg_match($pattern,$password,$matches))
@@ -101,7 +101,7 @@ class Security
    */
   public function pref_hash_algo($bits=null, $inclusive=false, &$result_bits=null)
   {
-
+    
     //Validate input
     $bits = data_of($bits);
     $inclusive = (bool)$inclusive;
@@ -156,11 +156,13 @@ class Security
   public function hash($input, $algorithm=null, $output_type=self::OUTPUT_HEX)
   {
     
+    raw($input, $algorithm, $output_type);
+    
     //If the algorithm isn't set or not a string, use the default.
     if($algorithm == null || !is_string($algorithm)){
-      $algorithm == self::$HASH_PREFERENCES['default'];
+      $algorithm = self::$HASH_DEFAULT;
     }
-
+    
     //Check the algorithm is included as a valid hashing algorithm.
     $is_valid = false;
     foreach(self::$HASH_PREFERENCES as $key => $prefs)

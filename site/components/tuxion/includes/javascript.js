@@ -151,7 +151,7 @@
       
       //Return the item with the given id.
       fetch: function(id){
-        
+
         var Items = this;
         
         //Return the item if we already had it.
@@ -308,10 +308,10 @@
         
         //Fetch it from the server.
         req = request(GET, 'closest/'+id, data);
-        
+
         //When we're done, we are going to cache them.
         req.done(function(data){
-          
+
           var itemArray = [];
           
           //Add the "before"-items to the itemArray.

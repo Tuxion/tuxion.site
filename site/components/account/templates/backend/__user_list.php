@@ -19,14 +19,23 @@
 
 echo $user_list->as_table(array(
   '<input type="checkbox" class="select-all" />' => function($row){ return '<input type="checkbox" class="select-row" name="user_id[]" value="'.$row->id.'" />'; },
+  __('Name', 1) => function($row){ return $row->user_info->full_name; },
   __('Email address', 1) => 'email',
-  __('Laatst ingelogd', 1) => function($row){
-    return ($row->dt_last_login != '' ? $row->dt_last_login : 'Nooit ingelogd');
+  __('Groups', 1) => function($row){
+    
+    return $row->groups->map(function($group){
+      return $group->title;
+    })->join(', ')->otherwise('-');
+    
   },
-  __('Administrator', 1) => function($row){ return $row->is_administrator->get('boolean') ? __('\'Yes\'', 1) : __('\'No\'', 1); },
+  __('Administrator', 1) => function($row){ return $row->is_administrator->get('boolean') ? __('ja', 1) : __('nee', 1); },
+  __('Last login', 1) => function($row){
+    return ($row->dt_last_login != '' ? $row->dt_last_login : __('Never logged in', 1));
+  },
+  //__('Comments', 1) => function($row){ return $row->user_info->comments; },
   __('Actions', 1) => array(
-    function($row){return '<a class="edit" href="'.url('section=account/edit_user&user_id='.$row->id).'">'.__('edit', true).'</a>';},
-    function($row){return ($row->status->get('int') > 0 ? '<a class="delete" href="'.url('action=account/delete_user&user_id='.$row->id).'">delete</a>' : '');}
+    function($row){return '<a class="edit" href="'.url('section=account/edit_user&user_id='.$row->id).'">'.__('edit', 1).'</a>';},
+    function($row){return ($row->status->get('int') > 0 ? '<a class="delete" href="'.url('action=account/delete_user&user_id='.$row->id).'">'.__('delete', 1).'</a>' : '');}
   )
 ));
 
@@ -135,16 +144,14 @@ echo $user_list->as_table(array(
 
       e.preventDefault();
 
-      $('#tabber-user')
-        .show()
-        .find('a')
-          .trigger('click')
-          .text("<?php __('Edit user'); ?>");
-
       $.ajax({
         url: $(this).attr('href')
       }).done(function(data){
-        $("#tab-user").html(data);
+        $("#tab-user").addClass('no-refresh').html(data);
+        $('#tabber-user')
+          .find('a')
+            .trigger('click')
+            .text("<?php __('Edit user'); ?>");
       });
 
     });

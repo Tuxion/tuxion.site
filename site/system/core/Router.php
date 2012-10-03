@@ -23,10 +23,10 @@ class Router
       
       //Base the method we'll call off of the request method.
       switch($method){
-        case 'get': $methodtype = 'get'; break;
-        case 'post': $methodtype = 'create'; break;
-        case 'put': $methodtype = 'update'; break;
-        case 'delete': $methodtype = 'delete'; break;
+        case 'get': $methodtype = 'get'; $description = 'Getting'; break;
+        case 'post': $methodtype = 'create'; $description = 'Creating'; break;
+        case 'put': $methodtype = 'update'; $description = 'Updating'; break;
+        case 'delete': $methodtype = 'delete'; $description = 'Deleting'; break;
         default: throw new \exception\Programmer('Method "%s" not supported.', tx('Data')->server->REQUEST_METHOD); break;
       }
       
@@ -45,10 +45,15 @@ class Router
       $component = array_shift($parameters);
       $methodname = array_shift($parameters);
       
+      //Finish the description by serializing the method name.
+      $description .= ' ' . preg_replace('~(?:_([a-z])|([A-Z]))~e', '" ".strtolower("\\1")', $methodname) . '.';
+      
       //Call the method. It should return a \dependencies\UserFunction.
-      $userfunc = tx('Component')->sections($component)->_call(
-        "{$methodtype}_{$methodname}", array($data, Data($parameters))
-      );
+      $userfunc = tx($description, function()use($component, $methodtype, $methodname, $data, $parameters){
+        return tx('Component')->json($component)->_call(
+          "{$methodtype}_{$methodname}", array($data, Data($parameters))
+        );
+      });
       
       //test for UserFunction.
       if(!($userfunc instanceof \dependencies\UserFunction)){
@@ -68,6 +73,16 @@ class Router
         }
         
         set_status_header($code, $userfunc->get_user_message());
+        
+        if($userfunc->exception->getExCode() === EX_VALIDATION){
+          $errors = $userfunc->exception->errors();
+          for($i = 0, $total = count($errors), $sep = '', $msg = ''; $i < $total; $i++){
+            $msg .= $sep.strtolower(substr($errors[$i], 0, 1)).substr($errors[$i], 1);
+            $sep = ', ';
+            if($i == $total-2) $sep = ' and ';
+          }
+          echo '{"'.$userfunc->exception->key().'":"'.ucfirst($msg).'."}';
+        }
         exit;
         
       }

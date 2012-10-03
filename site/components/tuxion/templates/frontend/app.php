@@ -15,7 +15,7 @@
     </p>
     <footer>
       <a href="#<%- id %>" class="read-more button">Lees meer</a>
-      <a class="author" data-id="<%- user_id %>"><%- "author_name" %></a>
+      <a class="author" data-id="<%- user_id %>"><%- username %></a>
     </footer>
   </section>
 </script>
@@ -33,7 +33,7 @@
     </div>
     
     <footer>
-      <p><small>By %author_name%</small></p>
+      <p><small>By %username%</small></p>
     </footer>
   </article>
   
