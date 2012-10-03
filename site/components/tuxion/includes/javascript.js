@@ -572,7 +572,7 @@
       
       itemClick: function(e){
         e.preventDefault();
-        this.view.find('.col').scrollTo(this.view.find($(e.target).attr('href')), {axis:'y', duration: 500, offset: -25});
+        this.view.find('.col').scrollTo(this.view.find($(e.target).attr('href')), {axis:'y', duration: 300, offset: -25});
         return false;
       }
       
