@@ -5,7 +5,7 @@ class Accounts extends \dependencies\BaseModel
   
   protected static
     
-    $table_name = 'cms_users',
+    $table_name = 'core_users',
     
     $relations = array(
       'UserInfo' => array('id' => 'Account.UserInfo.user_id'),

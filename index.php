@@ -4,13 +4,16 @@
 $error_handler      = 'error_handler';
 $exception_handler  = 'exception_handler';
 
+//indicate we're not installing
+define('INSTALLING', false);
+
 //initiate
 require_once('init.php');
 
 //start session
 tx('Session');
 
-//initiate url class-
+//initiate url class
 tx('Url');
 
 //enter a pageload log line

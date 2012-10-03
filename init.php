@@ -28,38 +28,57 @@ error_reporting(E_ALL|E_STRICT);
 header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"');/* http://adamyoung.net/IE-Blocking-iFrame-Cookies */
 
 //load config files
-require_once('config'.DS.'database'.EXT);
-#require_once('config'.DS.'paths'.EXT);
-require_once('config'.DS.'email'.EXT);
+if(INSTALLING !== true){
+  require_once('config'.DS.'database'.EXT);
+  require_once('config'.DS.'email'.EXT);
+}
 require_once('config'.DS.'exceptions'.EXT);
 require_once('config'.DS.'miscelanious'.EXT);
 
-//get current site info
-$url_path = str_replace('/index.php', '', str_replace('/admin/index.php', '', $_SERVER['PHP_SELF']));
-if(isset($url_path[0]) && $url_path[0] === '/'){ //Not an array, but first string character.
-  $url_path = substr($url_path, 1);
+//get current site info when not in install mode
+if(INSTALLING !== true)
+{
+  
+  $url_path = str_replace('/index.php', '', str_replace('/admin/index.php', '', $_SERVER['PHP_SELF']));
+  if(isset($url_path[0]) && $url_path[0] === '/'){ //Not an array, but first string character.
+    $url_path = substr($url_path, 1);
+  }
+
+  $mysqlConnection = @mysql_connect(DB_HOST, DB_USER, DB_PASS);
+  mysql_select_db(DB_NAME, $mysqlConnection);
+  $result = mysql_query(
+    "SELECT s.*, d.`domain`".
+    "FROM `".DB_PREFIX."core_sites` s ".
+      "JOIN `".DB_PREFIX."core_site_domains` d ON s.id = d.site_id ".
+    "WHERE (d.`domain`='{$_SERVER['HTTP_HOST']}' OR d.`domain`='*') ".
+      "AND s.`url_path`='$url_path' ".
+    "ORDER BY `domain` DESC ".
+    "LIMIT 1",
+    $mysqlConnection);
+
+  if($result === false)
+    die('Failed to load website settings.'.n.@mysql_error($mysqlConnection));
+
+  if(mysql_num_rows($result) === 0)
+    die('No site settings found for domain "'.$_SERVER['HTTP_HOST'].'" and url_path "'.$url_path.'".'.n.@mysql_error($mysqlConnection));
+  
+  $site = mysql_fetch_object($result);
+  mysql_close($mysqlConnection);
+  
 }
 
-$mysqlConnection = @mysql_connect(DB_HOST, DB_USER, DB_PASS);
-mysql_select_db(DB_NAME, $mysqlConnection);
-$result = mysql_query(
-  "SELECT s.*, d.`domain`".
-  "FROM `".DB_PREFIX."core_sites` s ".
-    "JOIN `".DB_PREFIX."core_site_domains` d ON s.id = d.site_id ".
-  "WHERE (d.`domain`='{$_SERVER['HTTP_HOST']}' OR d.`domain`='*') ".
-    "AND s.`url_path`='$url_path' ".
-  "ORDER BY `domain` DESC ".
-  "LIMIT 1",
-  $mysqlConnection);
-
-if($result === false)
-  die('Failed to load website settings.'.n.@mysql_error($mysqlConnection));
-
-if(mysql_num_rows($result) === 0)
-  die('No site settings found for domain "'.$_SERVER['HTTP_HOST'].'" and url_path "'.$url_path.'".'.n.@mysql_error($mysqlConnection));
-
-$site = mysql_fetch_object($result);
-mysql_close($mysqlConnection);
+//When installing, just assume current site is the default.
+else {
+  
+  $site = new \stdClass();
+  $site->id = 0;
+  $site->path_base = $_SERVER['DOCUMENT_ROOT'];
+  $site->url_path = str_replace('/install/index.php', '', $_SERVER['PHP_SELF']);
+  
+  if($site->url_path[0] === '/')
+    $site->url_path = substr($site->url_path, 1);
+  
+}
 
 //set paths based on current site
 define('URL_PATH', $site->url_path);

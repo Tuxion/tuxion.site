@@ -24,7 +24,7 @@ class Account
     {
 
       tx('Sql')->execute_scalar("
-        SELECT id FROM #__cms_users
+        SELECT id FROM #__core_users
         WHERE 1
           AND id = '{$this->user->id}'
           AND (email = '{$this->user->email}' OR username = '{$this->user->username}')
@@ -65,7 +65,7 @@ class Account
       throw new \exception\Validation('IP address blacklisted.');
     });
 
-    $user = tx('Sql')->execute_single("SELECT * FROM #__cms_users WHERE email = '$email' OR username = '$email'")->is('empty', function(){
+    $user = tx('Sql')->execute_single("SELECT * FROM #__core_users WHERE email = '$email' OR username = '$email'")->is('empty', function(){
       throw new \exception\EmptyResult('User account not found.');
     });
     
@@ -103,7 +103,7 @@ class Account
     $sid = tx('Session')->id;
     $dtl = date("Y-m-d H:i:s");
     
-    tx('Sql')->execute_non_query("UPDATE #__cms_users SET session = '$sid', ipa = '$ipa', dt_last_login = '$dtl' WHERE id = {$user->id}");
+    tx('Sql')->execute_non_query("UPDATE #__core_users SET session = '$sid', ipa = '$ipa', dt_last_login = '$dtl' WHERE id = {$user->id}");
     
     $this->user->id = $user->id;
     $this->user->email = $user->email;
@@ -120,7 +120,7 @@ class Account
     $this->user->login = false;
     $this->user->level = 0;
     
-    tx('Sql')->execute_non_query("UPDATE #__cms_users SET session = NULL, ipa = NULL WHERE (session != NULL OR ipa != NULL)");
+    tx('Sql')->execute_non_query("UPDATE #__core_users SET session = NULL, ipa = NULL WHERE (session != NULL OR ipa != NULL)");
     
     tx('Session')->regenerate();
     
@@ -143,22 +143,27 @@ class Account
         $data->salt->get() . $password->get(),
         $data->hashing_algorithm
       );
-      
+    
     })->failure(function()use(&$data, &$password){
       $password->un_set();
     });
-
+    
     tx('Session')->regenerate();
     $sid = tx('Session')->id;
     $ipa = tx('Data')->server->REMOTE_ADDR->get();
     
     tx('Sql')->execute_non_query(
-      "INSERT INTO #__cms_users (id, dt_created, email, username, password, level, session, ipa, hashing_algorithm, salt) VALUES (NULL, NOW(), '$email', '$username', '$password', '$level', '$sid', '$ipa', '$data->hashing_algorithm', '$data->salt')"
+      "INSERT INTO #__core_users (id, dt_created, email, username, password, level, session, ipa, hashing_algorithm, salt) VALUES (NULL, NOW(), '$email', '$username', '$password', '$level', '$sid', '$ipa', '{$data->hashing_algorithm}', '{$data->salt}')"
     );
     
-    tx('Sql')->execute_non_query(
-      "INSERT INTO #__account_user_info (user_id, status) VALUES (".abs(mysql_insert_id()).", 1)"
-    );
+    if(tx('Component')->available('account'))
+    {
+      
+      tx('Sql')->execute_non_query(
+        "INSERT INTO #__account_user_info (user_id, status) VALUES (".abs(mysql_insert_id()).", 1)"
+      );
+      
+    }
     
     return true;
     

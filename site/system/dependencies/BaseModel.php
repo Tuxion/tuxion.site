@@ -67,10 +67,10 @@ abstract class BaseModel extends Data
 
     switch($get)
     {
-
+      
       case 'table_name':
-        return DB_PREFIX.static::$table_name;
-
+        return tx('Sql')->get_prefix().static::$table_name;
+      
       case 'fields':
         return isset(static::$fields) && is_array(static::$fields) ? static::$fields : array();
 

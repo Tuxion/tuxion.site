@@ -3,19 +3,39 @@
 class Sql
 {
   private 
-    $connection;
+    $connection,
+    $prefix;
+  
+  //Getter for prefix.
+  public function get_prefix() { return $this->prefix; }
   
   // Open database connection.
   public function __construct()
   {
-    $this->connection = mysql_connect(DB_HOST, DB_USER, DB_PASS);
-    mysql_select_db(DB_NAME, $this->connection);
+    if(INSTALLING !== true){
+      $this->connection = mysql_connect(DB_HOST, DB_USER, DB_PASS);
+      mysql_select_db(DB_NAME, $this->connection);
+      $this->prefix = DB_PREFIX;
+    }
   }
   
   // Close database connection.
   public function __destruct()
   {
     mysql_close($this->connection);
+  }
+  
+  public function set_connection_data($host, $user, $pass, $name, $prefix)
+  {
+    
+    if(INSTALLING === true && !isset($this->connection)){
+      $this->connection = mysql_connect($host, $user, $pass);
+      mysql_select_db($name, $this->connection);
+      $this->prefix = $prefix;
+    } else {
+      throw new \exception\Programmer('Connection data has already been set by the config files.');
+    }
+    
   }
   
   // Executes a query and does not return any results.
@@ -71,7 +91,7 @@ class Sql
   public function query($query)
   {
     
-    $query = str_replace('#__', DB_PREFIX, $query);
+    $query = str_replace('#__', $this->prefix, $query);
     $result = mysql_query($query, $this->connection);
     
     if($result === false){

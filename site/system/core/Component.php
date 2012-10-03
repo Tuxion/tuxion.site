@@ -119,6 +119,8 @@ class Component
   public function check($component_name)
   {
     
+    raw($component_name);
+    
     if(array_key_exists($component_name, $this->checks) && $this->checks[$component_name] === true){
       return $this->checks[$component_name];
     }

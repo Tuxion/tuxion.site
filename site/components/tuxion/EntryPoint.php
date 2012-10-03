@@ -9,6 +9,16 @@ class EntryPoint extends \dependencies\BaseEntryPoint
     if(tx('Config')->system()->check('backend'))
     {
       
+      //Display a login page?
+      if(!tx('Account')->user->check('login'))
+      {
+        
+        return $this->template('tx_login', 'tx_login', array(), array(
+          'content' => tx('Component')->sections('account')->get_html('login_form')
+        ));
+        
+      }
+      
       //Show view.
       return $this->template('tuxion', 'tuxion_backend', array('plugins' => array(
         load_plugin('jquery'),

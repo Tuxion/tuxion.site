@@ -726,7 +726,7 @@
             Content.view.append(column);
             
           }
-  
+            
           $.after(0).done(function(){
             
             Content.fixWidth(($(window).width() * .95));
@@ -770,7 +770,7 @@
         var to = ($('#container').scrollLeft())-($(window).width()/2);
         to = (to < 0 ? 0 : to);
         $('#container').scrollTo(to, {axis: 'x', duration:500});
-        app.Sidebar.scootOver(to, 500);
+        app.Sidebar.scootOver($(window).width() > Content.view.width() - Content.el_full.width() ? 0 : to, 500);
         
         Content.fixWidth(0,500);
         Content.el_full.animate({'width': 0}, 500).queue(function(){

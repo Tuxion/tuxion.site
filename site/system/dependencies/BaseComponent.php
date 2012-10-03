@@ -88,9 +88,11 @@ abstract class BaseComponent
   public function _call($controller, array $args = array())
   {
     
-    //check defined permissions
-    if(array_key_exists($controller, $this->permissions) ? !tx('Account')->check_level($this->permissions[$controller]) : !tx('Account')->check_level($this->default_permission)){
-      throw new \exception\Authorisation('You are not authorized to execute this controller.');
+    if(INSTALLING !== true){
+      //check defined permissions
+      if(array_key_exists($controller, $this->permissions) ? !tx('Account')->check_level($this->permissions[$controller]) : !tx('Account')->check_level($this->default_permission)){
+        throw new \exception\Authorisation('You are not authorized to execute this controller.');
+      }
     }
     
     //check if the method actually exists
