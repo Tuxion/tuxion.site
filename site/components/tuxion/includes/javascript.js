@@ -139,6 +139,7 @@
       this.options = _(options).defaults(this.options);
       this.Content = new this.ContentController;
       this.Sidebar = new this.SidebarController;
+      moment.lang('nl');
     },
     
     /**
@@ -515,7 +516,8 @@
       },
       
       events: {
-        'click on a.menu-item': 'itemClick'
+        'click on a.menu-item': 'itemClick',
+        'click on a.menu-item-link': 'itemClick'
       },
       
       init: function(){
@@ -525,7 +527,7 @@
         var Sidebar = this;
         Sidebar.initialWidth = Sidebar.view.outerWidth();
         
-        $(window)
+        $(document)
           .on('mousewheel DOMMouseScroll', Sidebar.view, function(e){
             
             //Only in effect if scroll was used on the sidebar when it isn't allowed.
@@ -618,17 +620,18 @@
         $.after(20).done(function(){
           Content.navigate();
         });
-        
-        $(window)
+
+        $(document)
           
           .on('mousewheel DOMMouseScroll', Content.view, function(e){
-            
+
             //Only in effect if scroll was not used on the sidebar when it isn't allowed.
-            if($(e.target).closest('#sidebar').size() > 0 && !app.Sidebar.scrollAllowed())
+            if($(e.target).closest('#sidebar').size() > 0 && !app.Sidebar.scrollAllowed()){
               return;
-            
+            }
+
             var delta = getWheelDelta(e.originalEvent);
-            
+
             if(Content.mode == 'list'){
               $('#container').scrollLeft($('#container').scrollLeft()+(delta*100));
               Content.renderItems(delta < 0);
@@ -641,8 +644,15 @@
             
             app.Sidebar.scootOver($('#container').scrollLeft());
             
+          });
+ 
+        $(window)
+
+          .on('hashchange', function(e){
+            if(window.location.hash.length < 1 || window.location.hash == '#') return;
+            Content.navigate();
           })
-          
+        
           .on('resize', _(function(){
             
             if(Content.mode == 'list'){
@@ -660,19 +670,14 @@
           }).debounce(120))
           
           .on('keyup', function(e){
-            
+
             //Escape key to close an article.
-            if(e.which == 27 && Content.mode == 'full'){
+            if((e.which == 27 || e.keyCode == 27) && Content.mode == 'full'){
               Content.closePage();
             }
             
           })
-          
-          .on('hashchange', function(e){
-            if(window.location.hash.length < 1) return;
-            Content.navigate();
-          })
-        
+
         ;//eof: $(window)
         
       },
@@ -686,8 +691,8 @@
       navigate: function(){
         
         var Content = this;
-        
-        if(window.location.hash.length > 0){
+
+        if(window.location.hash.length > 0 && window.location.hash != '#'){
           Content.openPage(window.location.hash.slice(1));
         }else{
           Content.renderFrom();
@@ -770,6 +775,7 @@
             
             var tmpl = Content.templators[data.typeName || 'blog'];
             Content.el_full.html(tmpl(data)).find('.inner').css('width', $(window).width());
+            document.title = data.title+' | Tuxion webdevelopment';
             
           });
           
@@ -782,11 +788,13 @@
       closePage: function(){
         
         var Content = this;
-        
+
+        document.title = 'Tuxion webdevelopment';
+
         if(!Content.el_full){
           return;
         }
-        
+
         var to = ($('#container').scrollLeft())-($(window).width()/2);
         to = (to < 0 ? 0 : to);
         $('#container').scrollTo(to, {axis: 'x', duration:500});
@@ -808,7 +816,7 @@
             Content.renderFrom();
           }
           
-          window.location.hash = '#';
+          window.location.hash = '';
           
           delete Content.openPageID;
           

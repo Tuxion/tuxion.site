@@ -13,7 +13,7 @@ class Items extends \dependencies\BaseModel
     );
 
   public function get_user(){
-    return tx('Sql')->table('Accounts')->pk($this->user_id)->execute_single();
+    return $this->table('Accounts')->pk($this->user_id)->execute_single();
   }
 
 }

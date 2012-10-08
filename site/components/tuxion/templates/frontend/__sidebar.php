@@ -2,7 +2,7 @@
 
 <div class="col small">
 
-  <img id="logo" src="<?php echo URL_THEMES; ?>custom/tuxion/img/logo-black.png" alt="Tuxion logo" />
+  <img id="logo" src="<?php echo URL_THEMES; ?>custom/tuxion/img/logo-black-blue.png" alt="Tuxion logo" />
 
   <section id="tuxion" class="item blue solid">
     <header><h1>Tuxion, aangenaam</h1></header>
@@ -10,9 +10,31 @@
       Wij zijn een jong, creatief team gespecialiseerd in het ontwikkelen <b>websites</b> en <b>webapplicaties</b>. Wij zijn altijd op zoek naar uitdagende projecten, zowel op technisch vlak als in design.
     </p>
     <p>
-      Wij zijn benieuwd naar uw idee&euml;n. <a href="#contact">Vertel ons iets over uw project!</a>
+      Wij zijn benieuwd naar uw idee&euml;n. <a class="menu-item-link" href="#contact" title="Contact">Vertel ons iets over uw project!</a>
     </p>
   </section>
+
+  <section id="team" class="item blue solid">
+    <header><h1>Het team</h1></header>
+    <p>
+      Wij zijn
+    </p>
+    <dl>
+      <dt class="adrian"><a>Adrian</a></dt>
+      <dd></dd>
+      <dt class="aldwin"><a>Aldwin</a></dt>
+      <dd></dd>
+      <dt class="bart"><a>Bart</a></dt>
+      <dd></dd>
+      <dt class="janine"><a>Janine</a></dt>
+      <dd></dd>
+      <dt class="jeroen"><a>Jeroen</a></dt>
+      <dd></dd>
+      <dt class="robin"><a>Robin</a></dt>
+      <dd></dd>
+    </dl>
+  </section>
+
   <section id="about" class="item blue solid">
     <header><h1>Over ons</h1></header>
     <p>
@@ -41,13 +63,34 @@
       </li>
     </ul>
   </section>
-  <section id="team" class="item blue solid">
-    <header><h1>Het team</h1></header>
-    <p>Dingen</p>
-  </section>
+
   <section id="services" class="item blue solid">
     <header><h1>Diensten</h1></header>
-    <p>Dingen</p>
+
+    <h3>Websites volgens webstandaarden</h3>
+
+    <p>
+      Onze websites zijn herkenbaar door hun sprekende designs en codering volgens webstandaarden van het <a href="http://www.w3.org/" target="_blank" title="Website van het World Wide Web Consortium">W3C</a>.
+    </p>
+
+    <h3>Webapplicaties die werken</h3>
+
+    <p>
+      Dagelijks werken wij aan interessante webapplicaties, die gebruiksvriendelijk zijn en perfect werken.
+      U kunt hierbij denken aan boekhoudsoftware, voorraadsystemen, software in bibliotheken en <a href="http://www.rijksoverheid.nl/onderwerpen/elektronisch-patientendossier#ref-minvws" target="_blank" title="Elektronisch pati&euml;ntendossier">EPD</a>-infrastructuur.
+      Het gehele proces wordt door ons verzorgd: van het uitwerken van een concept tot de technische realisatie daarvan.
+      Dit geeft u het grote voordeel dat techniek en ontwerp naadloos in elkaar overvloeien.
+      Daarnaast zijn wij in elke fase direct aanspreekbaar, waardoor wij snel kunnen inspelen op uw specifieke wensen.
+    </p>
+
+    <h3>Beheer</h3>
+
+    <p>
+      Wenst u een site-update? Geen probleem, wij helpen u graag.
+      Stuur uw wensen naar ons op en wij zorgen er voor dat uw website up-to-date blijft.
+      Zodat u zich volledig kunt richten op wat voor u belangrijk is.
+    </p>
+
   </section>
   <section id="contact" class="item blue solid">
     <header><h1>Contact</h1></header>
@@ -60,7 +103,7 @@
       <img src="http://tuxion.nl/aangenaam/img/icons/icon_phone.gif" width="8" height="8" alt="telefoonnummer" /> (010) 840 6776<br />
       <img src="http://tuxion.nl/aangenaam/img/icons/icon_email.gif" width="8" height="8" alt="e-mailadres" /> <a href="mailto:team@tuxion.nl" title="Stuur ons een e-mail">team@tuxion.nl</a><br />
       <img src="http://tuxion.nl/aangenaam/img/icons/icon_skype.gif" width="8" height="8" alt="Skype-naam" /> <a href="skype:tuxion_nl?chat" type="Skype ons">tuxion_nl</a><br />
-    </p>  
+    </p>
 
     <p>
       <b>Postadres</b><br />
@@ -79,25 +122,20 @@
       24371485
     </p>
 
-  </td>
-  <td width="52%" valign="top" style="padding-left:20px;">
-
     <h4>Bel ons voor een afspraak</h4>
 
     <p>
       We maken graag een afspraak voor een verfrissend gesprek, bij u of bij ons. Bel ons op (010) 840 6776.
     </p>
 
-
   </section>
 </div>
 
 <div class="sidebar-menu">
   
-  <a href="#about" class="menu-item">Over Tuxion</a>
-  <a href="#team" class="menu-item">Het team</a>
-  <br>
-  <a href="#services" class="menu-item">Diensten</a>
-  <a href="#contact" class="menu-item">Contact</a>
+  <a href="#team" class="menu-item team">Het team</a>
+  <a href="#about" class="menu-item over">Over Tuxion</a>
+  <a href="#services" class="menu-item diensten">Diensten</a>
+  <a href="#contact" class="menu-item contact">Contact</a>
   
 </div>

@@ -20,10 +20,15 @@ class EntryPoint extends \dependencies\BaseEntryPoint
       }
       
       //Show view.
-      return $this->template('tuxion', 'tuxion_backend', array('plugins' => array(
-        load_plugin('jquery'),
-        load_plugin('jsFramework')
-      )),
+      return $this->template('tuxion', 'tuxion_backend', array(
+        'plugins' => array(
+          load_plugin('jquery'),
+          load_plugin('jsFramework')
+        ),
+        'scripts' => array(
+          'cms_backend' => '<script type="text/javascript" src="'.URL_COMPONENTS.'/tuxion/includes/backend.js"></script>'
+        )
+      ),
       array(
         'content' => $this->view('items')
       ));
@@ -39,6 +44,8 @@ class EntryPoint extends \dependencies\BaseEntryPoint
         load_plugin('jquery_viewport'),
         load_plugin('jquery_postpone'),
         load_plugin('underscore'),
+        load_plugin('html5shiv'),
+        load_plugin('momentjs'),
         load_plugin('jsFramework')
       )),
       array(

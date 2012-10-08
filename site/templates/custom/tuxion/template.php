@@ -21,7 +21,7 @@
     <!-- seo -->
     <meta name="description" content="Tuxion" />
     <meta name="author" content="Tuxion" />
-    <meta name="robots" content="noindex, nofollow" />
+    <meta name="robots" content="index, follow" />
     <meta name="revisit-after" content="15 days" />
 
     <?php echo $head->meta; ?>

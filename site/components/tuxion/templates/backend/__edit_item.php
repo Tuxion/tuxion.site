@@ -10,10 +10,12 @@ $form_id = tx('Security')->random_string(20);
 
     <input type="hidden" name="id" value="<?php echo $edit_item->item->id ?>" />
 
+<!--
     <div class="ctrlHolder">
       <label for="l_user_id" accesskey="c"><?php __('User ID'); ?></label>
-      <input class="big large" type="text" id="l_user_id" name="user_id" value="<?php echo $edit_item->item->user_id->otherwise(tx('Account')->user->id); ?>" />
+      <?php echo $data->users->as_options('user_id', 'username', 'id', array('id' => 'l_user_id', 'default' => $data->item->user_id->otherwise(tx('Account')->user->id), 'placeholder_text' => __('Who are you? Who do you pretend to be?', 1))); ?>
     </div>
+-->
 
     <div class="ctrlHolder">
       <label for="l_category_id" accesskey="c"><?php __('Category ID'); ?></label>
@@ -21,8 +23,13 @@ $form_id = tx('Security')->random_string(20);
     </div>
 
     <div class="ctrlHolder">
+      <label for="l_dt_created" accesskey="t"><?php __('Date/time created'); ?></label>
+      <input class="big large" type="text" id="l_dt_created" name="dt_created" value="<?php echo $data->item->dt_created->otherwise(date("Y-m-d H:i:s")); ?>" />
+    </div>
+
+    <div class="ctrlHolder">
       <label for="l_title" accesskey="t"><?php __('Titel'); ?></label>
-      <input class="big large" type="text" id="l_title" name="title" value="<?php echo $edit_item->item->title; ?>" required />
+      <input class="big large" style="width:600px;" type="text" id="l_title" name="title" value="<?php echo $edit_item->item->title; ?>" />
     </div>
 
     <div class="ctrlHolder">
@@ -71,7 +78,7 @@ $(function(){
       e.preventDefault();
 
       $.ajax({
-        url: '<?php echo url('section=tuxion/item_list'); ?>'
+        url: '<?php echo url('section=tuxion/item_list', true); ?>'
       }).done(function(d){
         $('#tuxion-item-form').replaceWith(d);
       });

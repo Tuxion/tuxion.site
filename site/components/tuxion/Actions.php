@@ -17,7 +17,7 @@ class Actions extends \dependencies\BaseComponent
       //save item
       $item = tx('Sql')->table('tuxion', 'Items')->pk($data->id->get('int'))->execute_single()->is('empty')
         ->success(function()use($data, $user_id, &$item_id){
-          tx('Sql')->model('tuxion', 'Items')->merge($data->having('category_id', 'image_id', 'title', 'description', 'text'))->merge(array('dt_created' => date("Y-m-d H:i:s"), 'user_id' => $user_id))->save();
+          tx('Sql')->model('tuxion', 'Items')->merge($data->having('dt_created', 'category_id', 'image_id', 'title', 'description', 'text'))->merge(array('user_id' => $user_id))->save();
           $item_id = mysql_insert_id();
         })
         ->failure(function($item)use($data, $user_id, &$item_id){

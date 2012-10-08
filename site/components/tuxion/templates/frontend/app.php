@@ -5,7 +5,7 @@
   </div>
 </script>
 
-<script id="item" type="text/template">
+<script id="item" type="text/x-jquery-tmpl">
   <section class="item <%- category_color %>" data-id="<%- id %>">
     <header>
       <h1><%- title %></h1>
@@ -25,7 +25,8 @@
   <article class="inner <%- category_name %> <%- category_color %>">
     <header>
       <h1><%- title %></h1>
-      <p>Published: <time pubdate="pubdate"><%- (new Date(dt_created)).toLocaleDateString() %></time></p>
+      <?php /*<p>Published: <time pubdate="pubdate"><%- (new Date(dt_created)).toLocaleDateString() %></time></p> */ ?>
+      <p>Gepubliceerd op <time pubdate="pubdate"><%- moment(dt_created, "YYYY-MM-DD HH:mm:ss").format("D MMMM YYYY [om] H:mm [uur]") %></time></p>
     </header>
     
     <div class="body">
@@ -33,7 +34,7 @@
     </div>
     
     <footer>
-      <p><small>By %username%</small></p>
+      <p><small>By <%- username %></small></p>
     </footer>
 
     <a href="#" class="back-to-overview button">Terug naar het overzicht</a>

@@ -3,6 +3,16 @@
 class Helpers extends \dependencies\BaseComponent
 {
   
+  public function get_users($user_id = null)
+  {
+  
+    return $this
+      ->table('Accounts')
+      ->order('username')
+      ->execute();
+    
+  }
+  
   public function get_categories($category_id = null)
   {
   

@@ -5,7 +5,18 @@ body {
 .item {
   background-color: #f4f4f4;
 }
+.item a{
+  color:#666;
+  text-decoration:none;
+}
+.item a:hover{
+  text-decoration:underline;
+}
 
 #sidebar{
-  background-color:rgba(100, 100, 100, .6);
+  background-color:#fff;
+}
+
+.col.full{
+  background-color:#fff;
 }

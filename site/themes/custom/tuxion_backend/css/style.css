@@ -24,26 +24,69 @@ html[xmlns] .clearfix {
 html, body{
   margin:0;
   padding:0;
-  height:100%;
-  overflow:hidden;
 }
 body{
   position:relative;
-  /*overflow-x:hidden;*/
+}
+a{
+  text-decoration:none;
 }
 
 #container{
-  padding-left:10px;
-  /*width:8000px;*/
-  width: 100%;
-  overflow:hidden;
+  width:900px;
+  margin:20px auto;
   font-family: 'Helvetica Neue', Helvetica, sans-serif;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 21px;
   color: #353535;
 }
-#container,
-#content{
-  height:100%;
-}
 
+#tuxion-item-list table{
+  width:100%;
+}
+#tuxion-item-list a{
+  color:#333;
+}
+  #tuxion-item-list th,
+  #tuxion-item-list td{
+    line-height:24px;
+    padding:0 5px;
+  }
+  #tuxion-item-list td{
+    color:#333;
+  }
+  #tuxion-item-list tr:hover td,
+  #tuxion-item-list tr:hover a{
+    color:#000;
+  }
+  #tuxion-item-list th{
+    text-align:center;
+    line-height:24px;
+  }
+    #tuxion-item-list th a{
+      text-decoration:none;
+      display:block;
+      text-transform:lowercase;
+      font-size:1.10em;
+      background-color:#00A1E4;
+      color:#efefef;
+      border-bottom:solid #fff 5px;
+      border-top:solid #fff 5px;
+      text-shadow:1px 1px 1px #666;
+    }
+    #tuxion-item-list th a:hover{
+      color:#fff;
+      background-color:#00AAEE;
+    }
+    #tuxion-item-list td a{
+      padding:2px 3px;
+    }
+    #tuxion-item-list td a:hover{
+      background-color:#333;
+      color:#fff;
+    }
+
+  #tuxion-item-list td.description{
+    width:350px;
+    overflow:hidden;
+   }

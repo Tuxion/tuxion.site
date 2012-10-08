@@ -27,7 +27,7 @@ class Sections extends \dependencies\BaseViews
   {
 
     return array(
-      'items' => $this->table('Items')->execute()
+      'items' => $this->table('Items')->order('dt_created', 'DESC')->execute()
     );
 
   }
@@ -37,6 +37,7 @@ class Sections extends \dependencies\BaseViews
   
     return array(
       'item' => $this->table('Items')->pk(tx('Data')->get->item_id)->execute_single(),
+      'users' => tx('Component')->helpers('tuxion')->get_users(),
       'categories' => tx('Component')->helpers('tuxion')->get_categories()
     );
       
