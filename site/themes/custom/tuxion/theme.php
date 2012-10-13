@@ -1,9 +1,19 @@
-<?php namespace themes; if(!defined('TX')) die('No direct access.'); ?>
+<?php namespace themes; if(!defined('TX')) die('No direct access.');
+
+if( tx('Data')->get->view->not('empty') && (tx('Data')->get->view == 'light' || tx('Data')->get->view == 'dark') ){
+  $view = tx('Data')->get->view->get();
+}elseif( date("H") < 19 && date("H") > 7 ){
+  $view = 'light';
+}else{
+  $view = 'dark';
+}
+
+?>
 
     <script type="text/javascript" src="<?php echo $theme ?>js/javascript.js"></script>
     <link rel="stylesheet" type="text/css" href="<?php echo $theme ?>css/style.css" />
     <!--<link rel="stylesheet" type="text/css" href="<?php echo $theme ?>css/style-dark.css" />-->
-    <link rel="stylesheet" type="text/css" href="<?php echo $theme ?>css/style-light.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $theme ?>css/style-<?php echo $view; ?>.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $theme ?>css/scroll.css" />
 
     <script type="text/javascript">

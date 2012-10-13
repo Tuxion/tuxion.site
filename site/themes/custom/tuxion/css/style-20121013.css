@@ -2,24 +2,24 @@
 -------------------------------------------------------------- */
 
 .clearfix:after {
-  content: ".";
-  display: block;
-  clear: both;
-  visibility: hidden;
-  line-height: 0;
-  height: 0;
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
 }
  
 .clearfix {
-  display: inline-block;
+	display: inline-block;
 }
  
 html[xmlns] .clearfix {
-  display: block;
+	display: block;
 }
  
 * html .clearfix {
-  height: 1%;
+	height: 1%;
 }
 html, body{
   margin:0;
@@ -43,7 +43,7 @@ html, body{
 }
 
 /**********************
-    Layout
+		Layout
 *********************/
 
 body{
@@ -64,9 +64,6 @@ body{
   padding-left:10px;
   padding-bottom:110px;
   overflow:hidden;
-  font-family: 'proxima-nova',Helvetica,Arial,sans-serif;
-  color: #666666;
-  font-size:12px;
 }
   #sidebar .col{
     position:relative;
@@ -164,7 +161,6 @@ body{
   }
 
 #filters{
-  display:none;
   position:absolute;
   /*left:285px;*/
   right:0px;
@@ -251,7 +247,7 @@ body{
 }
 
 /**********************
-    Cols
+		Cols
 *********************/
 
 .col{
@@ -309,7 +305,7 @@ body{
   }
 
 /**********************
-    Boxes
+		Boxes
 *********************/
 
 .item {
@@ -388,17 +384,17 @@ body{
   }
 
 /**********************
-    Box Sizes
+		Box Sizes
 *********************/
 
 .wide .item {
-  width: 485px;
-  height: auto;
+	width: 485px;
+	height: auto;
 }
 
 .small .item {
-  width: 240px;
-  height: auto;
+	width: 240px;
+	height: auto;
 }
 
 .fluid .item {
@@ -407,7 +403,7 @@ body{
 }
 
 /**********************
-    Colors
+		Colors
 *********************/
 
 .blue.item {
@@ -425,7 +421,7 @@ body{
 }
 
 .purple.item {
-  border-top: 5px solid #bf206b;
+	border-top: 5px solid #bf206b;
 }
 /*.full .purple h1{
   border-bottom: 5px solid #bf206b;
@@ -457,14 +453,14 @@ body{
 
 
 /**********************
-    Image
+		Image
 *********************/
 
 .tja img {
-  width: 100%;
-  height: 140px;
-  margin-bottom: 25px;
-  background: #333;
+	width: 100%;
+	height: 140px;
+	margin-bottom: 25px;
+	background: #333;
 }
 
 
@@ -516,7 +512,7 @@ body{
 }
 
 /**********************
-    Readmore
+		Readmore
 *********************/
 
 body.full .item:not(.full-item){

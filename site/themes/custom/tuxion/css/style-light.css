@@ -12,6 +12,10 @@ body {
 .item a:hover{
   text-decoration:underline;
 }
+.item time{
+  color:#ccc;
+}
+
 
 #sidebar{
   background-color:#fff;

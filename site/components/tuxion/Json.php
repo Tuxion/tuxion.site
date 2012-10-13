@@ -9,7 +9,7 @@ class Json extends \dependencies\BaseComponent
   {
 
     $that = $this;
-    
+
     return tx('Fetching items.', function()use($data, $args, $that, &$return){
 
       $result = $that->table('Items')
@@ -68,6 +68,10 @@ class Json extends \dependencies\BaseComponent
             ->select("$c.color", 'category_color')
           ->join('Accounts', $a)->left()
             ->select("$a.username", 'username')
+          //Filter categories.
+          ->is($data->category_filter->is('set')->and_not('empty'), function($q)use($data){
+            $q->where('category_id', $data->category_filter);
+          })
           ->order('dt_created', 'DESC')
           ->execute_single();
       }
@@ -86,6 +90,10 @@ class Json extends \dependencies\BaseComponent
         ->join('Accounts', $a)->left()
           ->select("$a.username", 'username')
         ->where('dt_created', '>', $item->dt_created)
+        //Filter categories.
+        ->is($data->category_filter->is('set')->and_not('empty'), function($q)use($data){
+          $q->where('category_id', $data->category_filter);
+        })
         ->order('dt_created', 'ASC')
         ->limit($half)
       ->execute()
@@ -100,6 +108,10 @@ class Json extends \dependencies\BaseComponent
         ->join('Accounts', $a)->left()
           ->select("$a.username", 'username')
         ->where('dt_created', '<', $item->dt_created)
+        //Filter categories.
+        ->is($data->category_filter->is('set')->and_not('empty'), function($q)use($data){
+          $q->where('category_id', $data->category_filter);
+        })
         ->order('dt_created', 'DESC')
         ->limit($half)
       ->execute();

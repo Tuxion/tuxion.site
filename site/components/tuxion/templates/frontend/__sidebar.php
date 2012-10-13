@@ -2,12 +2,12 @@
 
 <div class="col small">
 
-  <img id="logo" src="<?php echo URL_THEMES; ?>custom/tuxion/img/logo-black-blue.png" alt="Tuxion logo" />
+  <img id="logo" src="<?php echo URL_THEMES; ?>custom/tuxion/img/logo-<?php echo ($data->view == 'light' ? 'black-blue' : 'white'); ?>.png" alt="Tuxion logo" />
 
   <section id="tuxion" class="item blue solid">
     <header><h1>Tuxion, aangenaam</h1></header>
     <p>
-      Wij zijn een jong, creatief team gespecialiseerd in het ontwikkelen <b>websites</b> en <b>webapplicaties</b>. Wij zijn altijd op zoek naar uitdagende projecten, zowel op technisch vlak als in design.
+      Wij zijn een jong, creatief team gespecialiseerd in het ontwikkelen van <b>websites</b> en <b>webapplicaties</b>. Wij zijn altijd op zoek naar uitdagende projecten, zowel op technisch vlak als in design.
     </p>
     <p>
       Wij zijn benieuwd naar uw idee&euml;n. <a class="menu-item-link" href="#contact" title="Contact">Vertel ons iets over uw project!</a>
@@ -16,23 +16,34 @@
 
   <section id="team" class="item blue solid">
     <header><h1>Het team</h1></header>
-    <p>
-      Wij zijn
-    </p>
-    <dl>
-      <dt class="adrian"><a>Adrian</a></dt>
-      <dd></dd>
-      <dt class="aldwin"><a>Aldwin</a></dt>
-      <dd></dd>
-      <dt class="bart"><a>Bart</a></dt>
-      <dd></dd>
-      <dt class="janine"><a>Janine</a></dt>
-      <dd></dd>
-      <dt class="jeroen"><a>Jeroen</a></dt>
-      <dd></dd>
-      <dt class="robin"><a>Robin</a></dt>
-      <dd></dd>
-    </dl>
+
+    <ul id="team-members">
+      <li class="robin" itemscope itemtype="http://schema.org/Person">
+        <span class="name" itemprop="name">Robin van Boven</span>
+      </li>
+      <li class="jeroen" itemscope itemtype="http://schema.org/Person">
+        <span class="name" itemprop="name">Jeroen Hofman</span>
+      </li>
+      <li class="adrian" itemscope itemtype="http://schema.org/Person">
+        <span class="name" itemprop="name">Adrian Klingen</span>
+      </li>
+      <li class="bart" itemscope itemtype="http://schema.org/Person">
+        <span class="name" itemprop="name">Bart Roorda</span>
+      </li>
+      <li class="janine" itemscope itemtype="http://schema.org/Person">
+        <span class="name" itemprop="name">Janine Terlouw</span>
+      </li>
+      <li class="aldwin" itemscope itemtype="http://schema.org/Person">
+        <span class="name" itemprop="name">Aldwin Vlasblom</span>
+      </li>
+    </ul>
+    <!-- Mijn favoriete websites -->
+    <!-- Mijn code-to-be-proud-of -->
+    <!-- Mijn laatste posts -->
+    <!-- Mijn favoriete dingen, "Loves: []" -->
+    <!-- Ik online, wellicht in kleine iconen a la http://www.peppered.nl/contact/ (sidebar: Medewerkers)  of http://supersteil.com/about#!team-->
+    <!-- Laatste tweet(?) -->
+    <!-- Random stukje inspirationele tekst, wissellijst -->
   </section>
 
   <section id="about" class="item blue solid">
@@ -53,7 +64,7 @@
       <li>
         <b>Wij focussen op innovatie.</b>
         Doordat wij bouwen op bestaande code, kunnen wij constant innoveren.
-        Dit resulteert in betere websites met de nieuwste webtechnlogieën.<br><br>
+        Dit resulteert in betere websites met de nieuwste webtechnologieën.<br><br>
       </li>
       <li>
         <b>Wij zijn persoonlijk en betrokken.</b>
@@ -70,7 +81,7 @@
     <h3>Websites volgens webstandaarden</h3>
 
     <p>
-      Onze websites zijn herkenbaar door hun sprekende designs en codering volgens webstandaarden van het <a href="http://www.w3.org/" target="_blank" title="Website van het World Wide Web Consortium">W3C</a>.
+      Onze websites zijn herkenbaar aan sprekende designs en codering volgens webstandaarden van het <a href="http://www.w3.org/" target="_blank" title="Website van het World Wide Web Consortium">W3C</a>.
     </p>
 
     <h3>Webapplicaties die werken</h3>
@@ -95,7 +106,6 @@
   <section id="contact" class="item blue solid">
     <header><h1>Contact</h1></header>
 
-    Goededag!
     Wij maken graag kennis met u. Bezoek ons, neem contact met ons op of laat ons u bellen.
 
     <p>
@@ -125,7 +135,7 @@
     <h4>Bel ons voor een afspraak</h4>
 
     <p>
-      We maken graag een afspraak voor een verfrissend gesprek, bij u of bij ons. Bel ons op (010) 840 6776.
+      We maken graag een afspraak voor een ori&euml;terend gesprek, bij u of bij ons. Bel ons op (010) 840 6776.
     </p>
 
   </section>

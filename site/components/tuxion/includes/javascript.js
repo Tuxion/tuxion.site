@@ -139,6 +139,7 @@
       this.options = _(options).defaults(this.options);
       this.Content = new this.ContentController;
       this.Sidebar = new this.SidebarController;
+      this.Filters = new this.FiltersController;
       moment.lang('nl');
     },
     
@@ -281,9 +282,14 @@
         
         var data = {}
           , Items = this
+          , Filters = app.Filters
           , req;
-          
+        
+        //If amount is given: add amount to data object.
         amount && _(data).extend({amount:amount});
+
+        //If an category filter is set: add it to data object.
+        Filters.category_filter && _(data).extend({category_filter:Filters.category_filter});
         
         //Try to fetch from cache
         if(Items.object[id]){
@@ -335,7 +341,9 @@
               return true;
             }
             
-            Items.object[val.id] = val;
+            if(val){
+              Items.object[val.id] = val;
+            }
             
           });
           
@@ -366,7 +374,7 @@
           tmp = tmp.slice(first);
           
           //Are we dealing with the end of our items?
-          if(_(itemArray).last() != 'last'){
+          if(_(itemArray).last() && _(itemArray).last() != 'last'){
             
             var endDate = Date.parse( _(itemArray).last().dt_created );
             
@@ -407,11 +415,11 @@
     Item: Controller.sub({
       
       elements: {
-        'more': '.read-more'
+        'el_more': '.read-more'
       },
       
       events: {
-        'click on more': function(e){
+        'click on el_more': function(e){
           if(app.Content.mode !== 'list') e.preventDefault();
         }
       },
@@ -541,7 +549,7 @@
             
             app.Sidebar.scootOver($('#container').scrollLeft());
             
-          })
+          });
         
       },
       
@@ -579,6 +587,44 @@
       }
       
     }),
+
+    /**
+    * FILTERS CONTROLLER
+    */
+    FiltersController: Controller.sub({
+      
+      el: '#filters',
+      namespace: 'filters',
+      
+      elements: {
+        el_filter: 'a'
+      },
+      
+      events: {
+        'click on el_filter': 'filterClick'
+      },
+      
+      init: function(){
+      
+        this.previous();
+        
+      },
+      
+      filterClick: function(e){
+
+        e.preventDefault();
+        app.Filters.category_filter = $(e.target).attr('data-id');
+
+        app.Content.closePage();
+        app.Content.empty();
+        app.Items.fetchClosest();
+        app.Content.rerender();
+
+        return false;
+
+      }
+      
+    }),
     
     /**
     * CONTENT CONTROLLER
@@ -591,11 +637,16 @@
       elements: {
         'el_items': '.item',
         'el_columns': '.col',
-        'back': '.back-to-overview'
+        'el_back': '.back-to-overview'
       },
 
       events: {
-        'click on back': function(e){
+        'click on el_back': function(e){
+          if(this.mode == 'full'){
+            this.closePage();
+          }
+        },
+        'click on .col:not(.full)': function(e){
           if(this.mode == 'full'){
             this.closePage();
           }

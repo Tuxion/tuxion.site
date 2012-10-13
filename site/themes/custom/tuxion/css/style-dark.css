@@ -10,6 +10,9 @@ body {
 .item a{
   color:#eee;
 }
+.item time{
+  color:#666;
+}
 
 .col.full{
   color:#eee;

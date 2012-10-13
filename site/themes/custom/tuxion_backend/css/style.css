@@ -90,3 +90,69 @@ a{
     width:350px;
     overflow:hidden;
    }
+
+#tuxion-item-form{
+  padding:15px;
+  background-color:#eee;
+  color:#000;
+}
+  #tuxion-item-form h3{
+    margin:0 0 15px 0;
+    text-shadow:1px 1px 1px #ccc;
+    font-size:14px;
+  }
+  #tuxion-item-form label{
+    display:block;
+    margin-top:10px;
+    text-shadow:1px 1px 1px #ccc;
+    font-size:12px;
+    text-transform:lowercase
+  }
+  #tuxion-item-form .ctrlHolder.category_id,
+  #tuxion-item-form .ctrlHolder.user_id,
+  #tuxion-item-form .ctrlHolder.dt_created{
+    float:left;
+    margin-right:10px;
+    width:280px;
+  }
+  #tuxion-item-form .ctrlHolder textarea,
+  #tuxion-item-form .ctrlHolder input{
+    width:859px;
+    color: #353535;
+  }
+  #tuxion-item-form .ctrlHolder textarea{
+    height:200px;
+  }
+    #tuxion-item-form .ctrlHolder.title input{
+      font-weight: bold;
+      font-size: 14px;
+    }
+    #tuxion-item-form .ctrlHolder.category_id select,
+    #tuxion-item-form .ctrlHolder.user_id select,
+    #tuxion-item-form .ctrlHolder.dt_created input{
+      width:280px;
+    }
+    #tuxion-item-form .ctrlHolder.text textarea{
+      height:400px;
+    }
+  #tuxion-item-form .ctrlHolder.title{
+    clear:both;
+  }
+  .back-to-overview{
+    text-align: center;
+    line-height: 24px;
+    text-decoration: none;
+    display: block;
+    text-transform: lowercase;
+    font-size: 1.10em;
+    font-weight: bold;
+    background-color: #00A1E4;
+    color: #EFEFEF;
+    border-bottom: solid white 5px;
+    border-top: solid white 5px;
+    text-shadow: 1px 1px 1px #666;    
+  }
+    .back-to-overview:hover{
+      color:#fff;
+      background-color:#00AAEE;
+    }

@@ -26,7 +26,8 @@ class EntryPoint extends \dependencies\BaseEntryPoint
           load_plugin('jsFramework')
         ),
         'scripts' => array(
-          'cms_backend' => '<script type="text/javascript" src="'.URL_COMPONENTS.'/tuxion/includes/backend.js"></script>'
+          'tuxion_backend' => '<script type="text/javascript" src="'.URL_COMPONENTS.'/tuxion/includes/backend.js"></script>',
+          'sisyphus' => '<script type="text/javascript" src="https://raw.github.com/simsalabim/sisyphus/master/sisyphus.min.js"></script>'
         )
       ),
       array(

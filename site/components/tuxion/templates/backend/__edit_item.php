@@ -2,53 +2,56 @@
 $form_id = tx('Security')->random_string(20);
 ?>
 
-<div id="tuxion-item-form">
+<a href="#" class="back-to-overview cancel">terug naar het item-overzicht</a>
 
-  <h3>Nieuw item</h3>
+<div id="tuxion-item-form">
 
   <form method="post" id="form<?php echo $form_id; ?>" action="<?php echo url('action=tuxion/save_item/post'); ?>" class="form edit-tuxion-item-form">
 
     <input type="hidden" name="id" value="<?php echo $edit_item->item->id ?>" />
 
-<!--
-    <div class="ctrlHolder">
-      <label for="l_user_id" accesskey="c"><?php __('User ID'); ?></label>
+    <div class="ctrlHolder user_id">
+      <label for="l_user_id" accesskey="c"><?php __('User'); ?></label>
       <?php echo $data->users->as_options('user_id', 'username', 'id', array('id' => 'l_user_id', 'default' => $data->item->user_id->otherwise(tx('Account')->user->id), 'placeholder_text' => __('Who are you? Who do you pretend to be?', 1))); ?>
     </div>
--->
 
-    <div class="ctrlHolder">
-      <label for="l_category_id" accesskey="c"><?php __('Category ID'); ?></label>
+    <div class="ctrlHolder category_id">
+      <label for="l_category_id" accesskey="c"><?php __('Category'); ?></label>
       <?php echo $data->categories->as_options('category_id', 'title', 'id', array('id' => 'l_category_id', 'default' => $data->item->category_id->get('int'), 'placeholder_text' => __('Select a category', 1))); ?>
     </div>
 
-    <div class="ctrlHolder">
+    <div class="ctrlHolder dt_created">
       <label for="l_dt_created" accesskey="t"><?php __('Date/time created'); ?></label>
       <input class="big large" type="text" id="l_dt_created" name="dt_created" value="<?php echo $data->item->dt_created->otherwise(date("Y-m-d H:i:s")); ?>" />
     </div>
 
-    <div class="ctrlHolder">
+    <div class="ctrlHolder title">
       <label for="l_title" accesskey="t"><?php __('Titel'); ?></label>
-      <input class="big large" style="width:600px;" type="text" id="l_title" name="title" value="<?php echo $edit_item->item->title; ?>" />
+      <input class="big large" type="text" id="l_title" name="title" value="<?php echo $edit_item->item->title; ?>" />
     </div>
 
     <div class="ctrlHolder">
       <label for="l_description" accesskey="d"><?php __('Description'); ?></label>
-      <textarea name="description" style="width:600px;height:200px;"><?php echo $edit_item->item->description; ?></textarea>
+      <textarea name="description"><?php echo $edit_item->item->description; ?></textarea>
     </div>
 
-    <div class="ctrlHolder">
+    <div class="ctrlHolder text">
       <label for="l_text" accesskey="x"><?php __('Text'); ?></label>
-      <textarea name="text" style="width:600px;height:400px;"><?php echo $edit_item->item->text; ?></textarea>
+      <textarea name="text"><?php echo $edit_item->item->text; ?></textarea>
     </div>
 
+    <div class="ctrlHolder" id="item-image-wrapper">
+      <label><?php __('Image'); ?></label><br />
+      <img id="item-image" height="181" src="<?php echo url('?section=media/image&fill=868/181&allow_growth=false&id='.$data->item->image_id, true); ?>" />
+      <input id="item-image-id" type="hidden" name="image_id" value="<?php echo $data->item->image_id; ?>">
+    </div>
+    
     <div class="ctrlHolder">
-      <label for="l_image_id" accesskey="i"><?php __('Image id'); ?></label>
-      <input class="big large" type="text" id="l_image_id" name="image_id" value="<?php echo $edit_item->item->image_id; ?>" />
+      <?php echo $data->image_uploader; ?>
     </div>
 
     <div class="buttonHolder">
-      <a href="#" id="cancel">Annuleren</a>
+      <a href="#" class="cancel">Annuleren</a>
       <input class="primaryAction button black" type="submit" value="<?php __('Save'); ?>" />
     </div>
 
@@ -56,35 +59,59 @@ $form_id = tx('Security')->random_string(20);
 
 </div>
 
+<?php if($data->item->image_id->get() <= 0){ ?>
+<style>#item-image-wrapper{display:none;}</style>
+<?php } ?>
+
 <script type="text/javascript">
 
 $(function(){
 
   //submit form
-  $("#form<?php echo $form_id; ?>")
+  $("#container")
 
     .on("submit", function(e){
 
       e.preventDefault();
     
       $("#form<?php echo $form_id; ?>").ajaxSubmit(function(d){
-        $('#tuxion-item-form').replaceWith(d);
+        $('#container').html(d);
       });
 
     })
 
-    .on('click', '#cancel', function(e){
+    .on('click', '.cancel', function(e){
       
       e.preventDefault();
 
       $.ajax({
         url: '<?php echo url('section=tuxion/item_list', true); ?>'
       }).done(function(d){
-        $('#tuxion-item-form').replaceWith(d);
+        $('#container').html(d);
       });
 
     })
   
+});
+
+$(function(){
+
+  var form = $('#form<?php echo $form_id; ?>');
+  
+  //On uploaded file.
+  window.plupload_image_file_id = function(up, ids, file_id){
+    
+    form
+      .find('#item-image')
+        .attr('src', '<?php echo url('?section=media/image&fill=868/181&allow_growth=false', true); ?>&id='+file_id).end()
+      .find('#item-image-wrapper')
+        .show();
+    
+    form.find('#item-image-id')
+      .val(file_id);
+    
+  };
+
 });
 
 </script>
