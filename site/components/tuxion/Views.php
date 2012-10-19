@@ -18,9 +18,13 @@ class Views extends \dependencies\BaseViews
     return array(
       'item_list' => $this->section('item_list'),
       'edit_item' => $this->section('edit_item'),
-      (tx('Component')->available('cms') ? 'admin_toolbar' => tx('Component')->sections('cms')->get_html('admin_toolbar') : false)
+      'admin_toolbar' => (tx('Component')->available('cms') ? tx('Component')->sections('cms')->get_html('admin_toolbar') : false)
     );
 
+  }
+  
+  protected function email_template($options){
+    return $options;
   }
 
 }

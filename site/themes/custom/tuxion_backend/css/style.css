@@ -49,11 +49,38 @@ a{
 }
   #tuxion-item-list th,
   #tuxion-item-list td{
-    line-height:24px;
+    line-height:32px;
     padding:0 5px;
   }
   #tuxion-item-list td{
     color:#333;
+  }
+  #tuxion-item-list tr td{
+    border-top:solid #fff 1px;
+    border-bottom:solid #fff 1px;
+  }
+  #tuxion-item-list tr:hover td{
+    border-color:#333;
+    background-color:#eee;
+  }
+  #tuxion-item-list tr td:first-child{
+    border-left:solid #fff 1px;
+  }
+  #tuxion-item-list tr:hover td:first-child{
+    border-color:#333;
+    border-top-left-radius:5px;
+    border-bottom-left-radius:5px;
+  }
+  #tuxion-item-list tr td:last-child{
+    border-right:solid #fff 1px;
+  }
+  #tuxion-item-list tr:hover td:last-child{
+    border-color:#333;
+    border-top-right-radius:5px;
+    border-bottom-right-radius:5px;
+  }
+  #tuxion-item-list tr:hover td{
+    text-shadow:1px 1px 1px #ccc;
   }
   #tuxion-item-list tr:hover td,
   #tuxion-item-list tr:hover a{
@@ -78,12 +105,18 @@ a{
       color:#fff;
       background-color:#00AAEE;
     }
+    #tuxion-item-list tr{
+      cursor:pointer;
+    }
     #tuxion-item-list td a{
+      width:30px;
+      display:inline-block;
       padding:2px 3px;
     }
     #tuxion-item-list td a:hover{
-      background-color:#333;
-      color:#fff;
+      /*background-color:#333;*/
+      /*color:#fff;*/
+      font-weight:bold;
     }
 
   #tuxion-item-list td.description{

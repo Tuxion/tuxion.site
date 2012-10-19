@@ -106,37 +106,63 @@
   <section id="contact" class="item blue solid">
     <header><h1>Contact</h1></header>
 
-    Wij maken graag kennis met u. Bezoek ons, neem contact met ons op of laat ons u bellen.
+    <h4>Laat een bericht achter!</h4>
 
     <p>
-      <b>Korte lijnen</b><br />
-      <img src="http://tuxion.nl/aangenaam/img/icons/icon_phone.gif" width="8" height="8" alt="telefoonnummer" /> (010) 840 6776<br />
-      <img src="http://tuxion.nl/aangenaam/img/icons/icon_email.gif" width="8" height="8" alt="e-mailadres" /> <a href="mailto:team@tuxion.nl" title="Stuur ons een e-mail">team@tuxion.nl</a><br />
-      <img src="http://tuxion.nl/aangenaam/img/icons/icon_skype.gif" width="8" height="8" alt="Skype-naam" /> <a href="skype:tuxion_nl?chat" type="Skype ons">tuxion_nl</a><br />
+      We maken graag een afspraak voor een ori&euml;nterend gesprek, bij u of bij ons.
     </p>
+
+    <div class="message-sent">
+      Dank voor uw bericht. We nemen binnen een werkdag contact met u op.
+    </div>
+
+    <form id="contact-form" action="<?php echo url('action=tuxion/send_mail/post', true); ?>" method="post" target="_self">
+      <input type="text" title="Uw naam" placeholder="Uw naam" name="name" />
+      <input type="text" title="Bedrijfsnaam" placeholder="Bedrijfsnaam" name="company" />
+      <div class="group">
+        <input type="text" title="E-mailadres" placeholder="E-mailadres" name="email" class="small-field" />
+        <input type="tel" title="Telefoonnummer" placeholder="Telefoon" name="phone" class="small-field" />
+      </div>
+      <input type="text" title="Onderwerp" placeholder="Onderwerp" data-default-value="Just saying hello" name="subject" />
+      <textarea name="message" title="Uw bericht" placeholder="Uw bericht"></textarea>
+      <input type="submit" value="Verzend bericht"  class="button" />
+    </form>
 
     <p>
-      <b>Postadres</b><br />
-      Rusthofstraat 63<br />
-      3034 TR  Rotterdam
+      U kunt ons ook altijd een e-mail sturen op <a href="mailto:team@tuxion.nl">team@tuxion.nl</a>, of bel <nobr><a href="tel:+31108406776" title="Klik om ons te bellen via uw VoIP-applicatie" class="no-underline" target="_self">010 - 840 67 76</a></nobr>.
     </p>
 
-    <p>
-      <b>Bezoekadres</b><br />
-      Slinge 250<br />
-      3085 EX  Rotterdam
-    </p>
+    <br />
 
-    <p>
-      <b>KvK-nummer</b><br />
-      24371485
-    </p>
+    <div class="group">
+  
+      <p>
+        <b>Postadres</b><br />
+        Rusthofstraat 63<br />
+        3034 TR  Rotterdam
+      </p>
 
-    <h4>Bel ons voor een afspraak</h4>
+      <p class="it-would-be-great-to-meet-you">
+        <b>Bezoekadres</b><br />
+        Slinge 250<br />
+        3085 EX  Rotterdam
+      </p>
 
-    <p>
-      We maken graag een afspraak voor een ori&euml;terend gesprek, bij u of bij ons. Bel ons op (010) 840 6776.
-    </p>
+    </div>
+
+    <div class="group">
+
+      <p>
+        <b>KvK-nummer</b><br />
+        24371485
+      </p>
+
+      <p>
+        <b>Rekeningnummer</b><br />
+        ING 5306733
+      </p>
+
+    </div>
 
   </section>
 </div>

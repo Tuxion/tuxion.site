@@ -14,14 +14,15 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
   
     <title>Tuxion webdevelopment</title>
-    <base href="<?php echo $head->base->href; ?>" target="<?php echo $head->base->target; ?>" />
+    
+    <base target="_blank" />
 
     <!-- character encoding -->
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
 
     <!-- seo -->
-    <meta name="description" content="Tuxion" />
     <meta name="author" content="Tuxion" />
+    <meta name="description" content="Tuxion, aangenaam. Wij zijn een jong, creatief team gespecialiseerd in het ontwikkelen van websites en webapplicaties." />
     <meta name="robots" content="index, follow" />
     <meta name="revisit-after" content="15 days" />
 

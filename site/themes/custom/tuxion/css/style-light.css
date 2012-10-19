@@ -16,6 +16,27 @@ body {
   color:#ccc;
 }
 
+.blue.item a,
+.full .blue a{
+  color:#00a1e4;
+}
+.orange.item a,
+.full .orange a{
+  color:#f15922;
+}
+.purple.item a,
+.full .purple a{
+  color:#bf206b;
+}
+.yellow.item a,
+.full .yellow a{
+  color:#98a41c;
+}
+.cyan.item a,
+.full .cyan a{
+  color:#6cc8bf;
+}
+
 
 #sidebar{
   background-color:#fff;

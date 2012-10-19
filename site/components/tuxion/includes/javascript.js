@@ -135,12 +135,17 @@
     */
     options: {},
     init: function(options){
+
       app = this;
       this.options = _(options).defaults(this.options);
       this.Content = new this.ContentController;
       this.Sidebar = new this.SidebarController;
       this.Filters = new this.FiltersController;
+
+      //Init plugins
+      $(":input[placeholder]").placeholder({overrideSupport: true});
       moment.lang('nl');
+
     },
     
     /**
@@ -520,12 +525,16 @@
       namespace: 'sidebar',
       
       elements: {
-        el_menu_items: 'a.menu-item'
+        el_menu_items: 'a.menu-item',
+        el_contact_form: '#contact-form',
+        el_contact_form_elements: '#contact-form :input:not(.button)'
       },
       
       events: {
         'click on a.menu-item': 'itemClick',
-        'click on a.menu-item-link': 'itemClick'
+        'click on a.menu-item-link': 'itemClick',
+        'submit el_contact_form': 'validateContactForm',
+        'blur el_contact_form_elements': 'validateContactForm'
       },
       
       init: function(){
@@ -584,6 +593,54 @@
         e.preventDefault();
         this.view.find('.col').scrollTo(this.view.find($(e.target).attr('href')), {axis:'y', duration: 300, offset: -25});
         return false;
+      },
+
+      validateContactForm: function(e){
+
+        e.preventDefault();
+        
+        //Check fields on submit or if this form is submitted before.
+        if( e.type == 'submit' || this.el_contact_form_elements.hasClass('error') )
+        {
+
+          //These form fields are required.
+          var arr_fields = ['name', 'email', 'message'];
+
+          //Add css class 'error' if an required field is empty.
+          $(this.el_contact_form_elements).each(function(){
+            if(arr_fields && arr_fields.indexOf($(this).attr('name')) != -1 && $(this).val() == ''){
+              $(this).addClass('error');
+            }else{
+              $(this).removeClass('error');
+            }
+          });
+
+        }
+
+        //Return false if there's an error.
+        if( $(this.el_contact_form_elements).hasClass('error') ){
+          return false;
+        }
+
+        //Or show an confirmation message on success.
+        else if(e.type == 'submit')
+        {
+
+          //Submit form.
+          $(this.el_contact_form).ajaxSubmit();
+
+          //Show confirmation message.
+          $(this.el_contact_form_elements).val('');
+          
+          $(this.view)
+            .find('.message-sent').slideDown(function(){
+              setTimeout(function(){
+                $('#contact').find('.message-sent').slideUp();
+              }, 5000);
+            });
+
+        }
+      
       }
       
     }),
@@ -711,11 +768,17 @@
             }
             
             else if(Content.mode == 'full'){
-              Content.el_full.animate({width: ($(window).width() * .9)}, 100);
+
+              Content.el_full
+                .animate({width: ($(window).width() * .9)}, 100, function(){
+                  Content.el_full.find('.inner').animate({width: ($(window).width() * .8)}, 10);
+                });
+
               $('#container').scrollTo(Content.el_full, {
                 offset: {left: -($(window).width() * .05)},
                 duration: 100
               });
+
             }
             
           }).debounce(120))
@@ -825,7 +888,16 @@
           app.Items.fetch(id).done(function(data){
             
             var tmpl = Content.templators[data.typeName || 'blog'];
-            Content.el_full.html(tmpl(data)).find('.inner').css('width', $(window).width());
+            
+            Content.el_full
+              .html(tmpl(data))
+              .find('.inner')
+                .css('width', $(window).width() * .8).end()
+              .find('.social-buttons').socialButtons({
+                url: 'http://web.tuxion.nl/#'+data.id,
+                message: data.title
+              });
+
             document.title = data.title+' | Tuxion webdevelopment';
             
           });

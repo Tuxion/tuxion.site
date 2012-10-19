@@ -1,6 +1,12 @@
 body {
   background-color: #000000;
 }
+a{
+  text-decoration: underline;
+}
+a:hover{
+  text-decoration: none;
+}
 
 .item {
   background-color: #292929;
@@ -9,6 +15,20 @@ body {
 .item,
 .item a{
   color:#eee;
+}
+.item header a{
+  text-decoration:none;
+}
+.item header a:hover{
+  text-decoration:underline;
+}
+.full a{
+  color:#ccc;
+  text-decoration:underline !important;
+}
+.full a.button,
+.full a:hover{
+  text-decoration:none !important;
 }
 .item time{
   color:#666;

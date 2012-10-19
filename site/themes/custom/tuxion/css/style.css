@@ -27,7 +27,16 @@ html, body{
   height:100%;
   overflow:hidden;
 }
-  
+a{
+  text-decoration: none;
+}
+a:hover{
+  text-decoration: underline;
+}
+a.no-underline{
+  text-decoration:none;
+}
+
 /* =Fonts
 -------------------------------------------------------------- */
 
@@ -224,31 +233,47 @@ body{
   text-align:right;
   width:140px;
 }
-#filters span{
+.tooltip{
   position:relative;
   line-height:14px;
-  text-transform:lowercase;
   background:#343943;
   color:#fff;
   text-decoration: none;
-  padding: 1px 3px;
+  text-transform:lowercase;
+  padding:0px 3px;
   border-radius: 3px;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   -webkit-background-clip: padding-box;
   font-size:10px;
-  border:solid #fff 1px;
+  /*border:solid #fff 1px;*/
 }
-#filters span:after{
+.tooltip.left{margin-left:2px;}
+.tooltip.right{margin-right:2px;}
+
+.tooltip:after{
   content:" ";
   position:absolute;
-  right:-2px;
-  top:6px;
   display:block;
+  display:none;
   width:2px;
   height:4px;
-  background:url(../img/tooltip-arrow-right.png) center center no-repeat;
+  top:5px;
+  background:center center no-repeat;
 }
+.tooltip.left:after{
+  background-image:url(../img/tooltip-arrow-left-transparent.png);
+  left:-2px;
+}
+.tooltip.right:after{
+  background-image:url(../img/tooltip-arrow-right-transparent.png);
+  right:-2px;
+}
+.blue .tooltip, .blue .tooltip:after{background-color:#00a1e4;}
+.cyan .tooltip, .cyan .tooltip:after{background-color:#6cc8bf;}
+.purple .tooltip, .purple .tooltip:after{background-color:#bf206b;}
+.yellow .tooltip, .yellow .tooltip:after{background-color:#cbdb2a;}
+.orange .tooltip, .orange .tooltip:after{background-color:#f15922;}
 
 /**********************
     Cols
@@ -285,9 +310,14 @@ body{
     text-decoration:none;
   }
   .col.full a:hover{
-    /*text-decoration:underline;*/
+    text-decoration:underline;
   }
 
+  .col.full article header,
+  .col.full article .body,
+  .col.full article footer{
+    /*margin:0 25px;*/
+  }
   .col.full article .body{
     width:100%;
     font-size:15px;
@@ -296,6 +326,9 @@ body{
 /*    columns:100px 5;
     -webkit-columns:100px 5;
     -moz-columns:100px 5;*/
+  }
+  .col.full article img{
+    max-width:100%;
   }
   .col.full article .img-wrap{
     background-color:#282828;
@@ -350,7 +383,7 @@ body{
 *********************/
 
 .item header {
-  margin:0 0 10px 0;
+  margin:0 0 0px 0;
   width:100%;
 }
 .item header:after{
@@ -413,58 +446,21 @@ body{
 .blue.item {
   border-top: 5px solid #00a1e4;
 }
-.full .blue a{
-  color:#00a1e4;
-}
 
 .orange.item {
   border-top: 5px solid #f15922;
-}
-.full .orange a{
-  color:#f15922;
 }
 
 .purple.item {
   border-top: 5px solid #bf206b;
 }
-/*.full .purple h1{
-  border-bottom: 5px solid #bf206b;
-}
-*/.full .purple a{
-  color:#bf206b;
-}
 
 .yellow.item {
   border-top: 5px solid #cbdb2a;
 }
-.full .yellow a{
-  /*color:#cbdb2a;*/
-  color:#677015;
-}
 
 .cyan.item {
   border-top: 5px solid #6cc8bf;
-}
-.full .cyan a{
-  color:#6cc8bf;
-}
-/*.full .cyan h1{
-  padding-bottom:10px;
-  border-bottom: 3px solid #6cc8bf;
-}
-*/
-
-
-
-/**********************
-    Image
-*********************/
-
-.tja img {
-  width: 100%;
-  height: 140px;
-  margin-bottom: 25px;
-  background: #333;
 }
 
 
@@ -481,11 +477,21 @@ body{
   border-radius: 3px;
   display: inline-block;
   color: #fff !important;
-  text-decoration: none;
+  text-decoration: none !important;
+  -webkit-font-smoothing: antialiased;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border:none;
+  -webkit-transition: border linear 0.08s,box-shadow linear 0.08s, opacity linear 0.08s;
+  -moz-transition: border linear 0.08s,box-shadow linear 0.08s, opacity linear 0.08s;
+  -ms-transition: border linear 0.08s,box-shadow linear 0.08s, opacity linear 0.08s;
+  -o-transition: border linear 0.08s,box-shadow linear 0.08s, opacity linear 0.08s;
+  transition: border linear 0.08s,box-shadow linear 0.08s, opacity linear 0.08s;
 }
-.item .button:hover {
+.button:hover {
   text-decoration: none;
   opacity:0.9;
+  cursor:pointer;
+  outline:0;
 }
 
 .disabled .item .button {
@@ -498,21 +504,46 @@ body{
 .blue .button {
   background: #00a1e4;
 }
+.blue .button:hover{
+  -webkit-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 3px rgba(82, 168, 236, 0.6);
+  -moz-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 3px rgba(82, 168, 236, 0.6);
+  box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 3px rgba(82, 168, 236, 0.6);
+}
 
 .orange .button {
   background: #f15922;
+}
+.orange .button:hover{
+  -webkit-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 3px rgba(241, 89, 34, 0.6);
+  -moz-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 3px rgba(241, 89, 34, 0.6);
+  box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 3px rgba(241, 89, 34, 0.6);
 }
 
 .purple .button {
   background: #bf206b;
 }
+.purple .button:hover{
+  -webkit-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 3px rgba(191, 32, 107, 0.6);
+  -moz-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 3px rgba(191, 32, 107, 0.6);
+  box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 3px rgba(191, 32, 107, 0.6);
+}
 
 .yellow .button {
   background: #cbdb2a;
 }
+.yellow .button:hover{
+  -webkit-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 3px rgba(203, 219, 42, 0.6);
+  -moz-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 3px rgba(203, 219, 42, 0.6);
+  box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 3px rgba(203, 219, 42, 0.6);
+}
 
 .cyan .button {
   background: #6cc8bf;
+}
+.cyan .button:hover{
+  -webkit-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 3px rgba(108, 200, 191, 0.6);
+  -moz-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 3px rgba(108, 200, 191, 0.6);
+  box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 3px rgba(108, 200, 191, 0.6);
 }
 
 /**********************
@@ -524,4 +555,192 @@ body.full .item:not(.full-item){
 }
 
 .wide .full-item{
+}
+
+/**********************
+    Social Buttons
+http://www.nouveller.com/general/free-social-media-bookmark-icon-pack-the-ever-growing-icon-set/
+http://webtreats.mysitemyway.com/1540-infocus-social-media-icon-mega-set/
+http://www.kadom.net/275/kadom-clean-social-icons-set-40-free-social-media-icons
+http://psd.tutsplus.com/freebies/icons/81-pixel-perfect-social-media-icons/
+http://sixrevisions.com/freebies/free-set-of-social-media-icons-rivet-social/
+http://designmodo.com/free-social-media-icon-set/
+http://icondock.com/free/vector-social-media-icons
+http://www.pixeden.com/social-icons/dark-social-icons-set
+http://www.iconfinder.com/search/?q=iconset%3Afugue+facebook+or+twitter
+*********************/
+
+.author-and-date{
+  float:left;
+  font-size: 10px;
+  margin-bottom:15px;
+}
+.back-to-overview{
+  clear:both;
+}
+
+.social-buttons{
+  float:right;
+  margin-bottom:15px;
+}
+.social-buttons .share,
+.social-buttons .count.total,
+.social-buttons .count .value{
+  display:none;
+}
+.social-buttons .services .count{
+  background-position:center center;
+  background-repeat:no-repeat;
+  width:24px;
+  height:24px;
+  display:inline-block;
+  text-indent:-9999px;
+  margin-left:8px;
+}
+  .social-buttons .services .count:hover{
+    opacity:0.9;
+  }
+.social-buttons .facebook{
+  background-image:url('../img/icon/facebook-24.png');
+}
+.social-buttons .twitter{
+  background-image:url('../img/icon/twitter-24.png');
+}
+.social-buttons .pinterest{
+  display:none !important;
+}
+
+/**********************
+    Forms
+*********************/
+
+textarea{
+  font-family: 'proxima-nova',Helvetica,Arial,sans-serif;
+}
+
+input[type="password"],
+input[type="search"]{
+  -webkit-appearance: textfield;
+  padding: 1px;
+  background-color: white;
+  border: 2px inset;
+  border-image: initial;
+  -webkit-rtl-ordering: logical;
+  -webkit-user-select: text;
+  cursor: auto;
+}
+input:not([type]),
+input[type="color"],
+input[type="date"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="email"],
+input[type="month"],
+input[type="number"],
+input[type="password"],
+input[type="tel"],
+input[type="text"],
+input[type="url"],
+input[type="week"]{
+  padding: 1px 0px;
+}
+#contact input[type="text"],
+#contact input[type="email"],
+#contact input[type="tel"],
+#contact textarea{
+  background-color: white;
+  background-repeat: no-repeat;
+  background-image: -moz-linear-gradient(#FCFCFC, white);
+  background-image: -ms-linear-gradient(top, #FCFCFC, white);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FCFCFC), to(white));
+  background-image: -webkit-linear-gradient(#FCFCFC, white);
+  background-image: linear-gradient(top, #FCFCFC, white);
+  background-color: white;
+  background-repeat: no-repeat;
+  background-image: -moz-linear-gradient(#FCFCFC, white);
+  background-image: -ms-linear-gradient(top, #FCFCFC, white);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FCFCFC), to(white));
+  background-image: -webkit-linear-gradient(#FCFCFC, white);
+  background-image: linear-gradient(top, #FCFCFC, white);
+  border: 1px solid #BBB;
+  border-radius: 3px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  color: #777;
+  display: block;
+  font: 400 14px;
+  margin-bottom: 10px;
+  width:228px;
+  padding: 5px;
+  -webkit-transition: border linear 0.08s,box-shadow linear 0.08s;
+  -moz-transition: border linear 0.08s,box-shadow linear 0.08s;
+  -ms-transition: border linear 0.08s,box-shadow linear 0.08s;
+  -o-transition: border linear 0.08s,box-shadow linear 0.08s;
+  transition: border linear 0.08s,box-shadow linear 0.08s;
+  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+#contact input[type="text"]:focus,
+#contact input[type="email"]:focus,
+#contact input[type="tel"]:focus,
+#contact textarea:focus{
+  outline:0;
+  border-color:rgba(82, 168, 236, 0.8);
+  -webkit-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
+  -moz-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 8px rgba(82, 168, 236, 0.6);
+  box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 8px rgba(82, 168, 236, 0.6);
+}
+
+#contact .group::after {
+  clear: both;
+  content: ".";
+  display: block;
+  height: 0;
+  visibility: hidden;
+}
+#contact input.small-field:first-child,
+#contact .group p:first-child{
+  margin-right: 12px;
+}
+#contact input.small-field,
+#contact .group p{
+  float: left;
+  width: 102px;
+}
+#contact input.small-field[name="email"]{
+  width:134px;
+}
+#contact input.small-field[name="phone"]{
+  width:70px;
+}
+#contact .group p.would-be-great-to-meet-you{
+  margin-left:24px;
+}
+
+#contact input.error,
+#contact input.error.placeholder,
+#contact input.error.placeholderFocus,
+#contact textarea.error,
+#contact textarea.error::placeholder,
+#contact textarea.error.placeholder,
+#contact textarea.error.placeholderFocus{
+  color:#BF206B;
+}
+#contact input.error,
+#contact textarea.error{
+  border:solid #BF206B 1px;
+}
+
+#contact .button{
+  width:239px !important;
+  height:34px;
+}
+
+#contact .message-sent{
+  display:none;
+  font-weight:bold;
+  background-color:#00A1E4;
+  color:#fff;
+  padding:5px 10px;
+  margin-bottom:15px;
 }

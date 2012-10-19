@@ -11,8 +11,8 @@ if( tx('Data')->get->view->not('empty') && (tx('Data')->get->view == 'light' || 
 ?>
 
     <script type="text/javascript" src="<?php echo $theme ?>js/javascript.js"></script>
+
     <link rel="stylesheet" type="text/css" href="<?php echo $theme ?>css/style.css" />
-    <!--<link rel="stylesheet" type="text/css" href="<?php echo $theme ?>css/style-dark.css" />-->
     <link rel="stylesheet" type="text/css" href="<?php echo $theme ?>css/style-<?php echo $view; ?>.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $theme ?>css/scroll.css" />
 

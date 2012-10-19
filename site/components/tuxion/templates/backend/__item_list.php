@@ -14,7 +14,7 @@
       <td><?php echo $row->title; ?></td>
       <td><?php echo substr(strip_tags($row->description), 0, 50); ?></td>
       <td><?php echo $row->user->username; ?></td>
-      <td><a class="edit" href="<?php echo url('section=tuxion/edit_item&item_id='.$row->id); ?>">edit</a></td>
+      <td hidden><a class="edit" href="<?php echo url('section=tuxion/edit_item&item_id='.$row->id); ?>">edit</a></td>
       <td><a class="delete" href="<?php echo url('action=tuxion/delete_item&item_id='.$row->id); ?>">delete</a></td>
     </tr>
     <?php }); ?>
@@ -32,7 +32,7 @@ $(function(){
 //delete and edit
 $("#tuxion-item-list")
 
-  .on("click", ".edit, .new-item", function(e){
+  .on("click", ".new-item", function(e){
 
     e.preventDefault();
     
@@ -58,7 +58,24 @@ $("#tuxion-item-list")
       });
     }
 
-  });
+  })
+
+  .on("click", "tr", function(e){
+
+    e.preventDefault();
+    
+    $('#tuxion-item-list').slideUp(function(){
+      $('#tuxion-item-list').html('Loading... brb').slideDown();
+    });
+
+    $.ajax({
+      url: $(this).find('.edit').attr("href")
+    }).done(function(d){
+      $("#tuxion-item-list").slideUp().replaceWith(d).slideDown();
+    });
+
+  })
+
 });
 
 </script>

@@ -3,6 +3,21 @@
 class Actions extends \dependencies\BaseComponent
 {
 
+  protected function send_mail($data)
+  {
+
+    tx('Component')->helpers('mail')->send_fleeting_mail(array(
+      'to' => array('name'=>'team@tuxion.nl'),
+      'subject' => 'web.tuxion.nl | '.$data->subject,
+      'html_message' => tx('Component')->views('tuxion')->get_html('email_template', $data->having('name', 'company', 'email', 'phone', 'subject', 'message'))
+    ))
+    
+    ->failure(function($info){
+      throw $info->exception;
+    });
+    
+  }
+
   protected function save_item($data)
   {
     

@@ -7,15 +7,13 @@
 
 <script id="item" type="text/x-jquery-tmpl">
   <section class="item <%- category_color %>" data-id="<%- id %>">
-    <header class="clearfix">
-      <h1><%- title %></h1>
+    <header>
+      <h1><a href="#<%- id %>" target="_self"><%- title %></a></h1>
       <time pubdate="pubdate" title="<%- dt_created %>"><%- moment(dt_created, "YYYY-MM-DD HH:mm:ss").format("DD[-]MM") %></time>
     </header>
-    <p>
-      <%= description %>
-    </p>
+    <%= description %>
     <footer>
-      <a href="#<%- id %>" class="read-more button">Lees meer</a>
+      <a href="#<%- id %>" class="read-more button" target="_self">Lees meer</a>
       <?php if(tx('Account')->user->level->get() >= 2){ ?><a href="admin/?section=tuxion/edit_item&item_id=<%- id %>" target="_blank" class="edit">edit</a><?php } ?>
       <span class="author" data-id="<%- user_id %>"><%- username %></span>
     </footer>
@@ -26,8 +24,12 @@
   
   <article class="inner <%- category_name %> <%- category_color %>">
     <header>
+      <a style="float:right;color:#666 !important;background:none;" href="#" class="back-to-overview button" target="_self">Terug naar het overzicht</a>
       <h1><%- title %></h1>
-      <p>Gepubliceerd op <time pubdate="pubdate"><%- moment(dt_created, "YYYY-MM-DD HH:mm:ss").format("D MMMM YYYY [om] H:mm [uur]") %></time></p>
+      <p>
+        Gepubliceerd op <time pubdate="pubdate"><%- moment(dt_created, "YYYY-MM-DD HH:mm:ss").format("D MMMM YYYY [om] H:mm [uur]") %></time>
+        <span title="Categorie: <%- category_title %>" class="tooltip left"><%- category_title %></span>
+      </p>
     </header>
     
     <div class="body">
@@ -35,10 +37,12 @@
     </div>
     
     <footer>
-      <p><small>By <%- username %></small></p>
+      <div class="author-and-date">Geschreven door <%- name %> <%- preposition %> <%- family_name %>, op <%- moment(dt_created, "YYYY-MM-DD HH:mm:ss").format("D MMMM YYYY") %></div>
+      <div class="social-buttons"></div>
+      <div class="clear"></div>
+      <a href="#" class="back-to-overview button" target="_self">Terug naar het overzicht</a>
+      <?php if(tx('Account')->user->level->get() >= 2){ ?><a href="admin/?section=tuxion/edit_item&item_id=<%- id %>" target="_blank" class="edit">edit</a><?php } ?>
     </footer>
-
-    <a href="#" class="back-to-overview button">Terug naar het overzicht</a>
 
   </article>
   
@@ -56,12 +60,12 @@
   <ul>
     <?php $data->categories->each(function($row){ ?>
     <li class="<?php echo $row->name.' '.$row->color; ?>">
-      <div><span><?php echo $row->description; ?></span></div>
-      <a href="#" data-id="<?php echo $row->id; ?>"><?php echo $row->title; ?></a>
+      <div><span class="tooltip right"><?php echo $row->description; ?></span></div>
+      <a href="#" data-id="<?php echo $row->id; ?>" target="_self"><?php echo $row->title; ?></a>
     </li>
     <?php }); ?>
     <li class="home">
-      <div><span>Terug naar het begin</span></div>
+      <div><span class="tooltip right">Terug naar het begin</span></div>
       <a href="#">Home</a>
     </li>
   </ul>

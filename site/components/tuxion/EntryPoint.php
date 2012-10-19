@@ -47,6 +47,8 @@ class EntryPoint extends \dependencies\BaseEntryPoint
         load_plugin('underscore'),
         load_plugin('html5shiv'),
         load_plugin('momentjs'),
+        load_plugin('jquery_socialButtons'),
+        load_plugin('jquery_placeholder'),
         load_plugin('jsFramework')
       )),
       array(

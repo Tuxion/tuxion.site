@@ -12,13 +12,20 @@ class Json extends \dependencies\BaseComponent
 
     return tx('Fetching items.', function()use($data, $args, $that, &$return){
 
-      $result = $that->table('Items')
+      $result = $that->table('Items'. $item)
         ->join('Categories', $c)->left()
           ->select("$c.name", 'category_name')
           ->select("$c.title", 'category_title')
           ->select("$c.color", 'category_color')
-        ->join('Accounts', $a)->left()
-          ->select("$a.first_name", 'first_name')
+        ->join('Accounts', $user)->left()
+
+        ->workwith($user)
+        ->join('UserInfo', $userinfo)->left()
+          ->select("$userinfo.name", 'name')
+          ->select("$userinfo.preposition", 'preposition')
+          ->select("$userinfo.family_name", 'family_name')
+
+        ->workwith($item)
         ->is($filter->id->is('set')->and_not('empty'), function($q)use($filter){
           $q->where('id', $filter->id);
         })
@@ -47,13 +54,21 @@ class Json extends \dependencies\BaseComponent
       //Get information about the item itself.
       if($id){
         $item = $that
-          ->table('Items')
+          ->table('Items', $item)
           ->join('Categories', $c)->left()
             ->select("$c.name", 'category_name')
             ->select("$c.title", 'category_title')
             ->select("$c.color", 'category_color')
-          ->join('Accounts', $a)->left()
-            ->select("$a.username", 'username')
+          ->join('Accounts', $user)->left()
+            ->select("$user.username", 'username')
+
+          ->workwith($user)
+          ->join('UserInfo', $userinfo)->left()
+            ->select("$userinfo.name", 'name')
+            ->select("$userinfo.preposition", 'preposition')
+            ->select("$userinfo.family_name", 'family_name')
+
+          ->workwith($item)
           ->pk($id)
           ->execute_single();
       }
@@ -61,14 +76,22 @@ class Json extends \dependencies\BaseComponent
       //No item? Use the first.
       if(!$id || $item->is_empty()){
         $item = $that
-          ->table('Items')
+          ->table('Items', $the_item)
           ->join('Categories', $c)->left()
             ->select("$c.name", 'category_name')
             ->select("$c.title", 'category_title')
             ->select("$c.color", 'category_color')
-          ->join('Accounts', $a)->left()
-            ->select("$a.username", 'username')
+          ->join('Accounts', $user)->left()
+            ->select("$user.username", 'username')
+
+          ->workwith($user)
+          ->join('UserInfo', $userinfo)->left()
+            ->select("$userinfo.name", 'name')
+            ->select("$userinfo.preposition", 'preposition')
+            ->select("$userinfo.family_name", 'family_name')
+
           //Filter categories.
+          ->workwith($the_item)
           ->is($data->category_filter->is('set')->and_not('empty'), function($q)use($data){
             $q->where('category_id', $data->category_filter);
           })
@@ -82,13 +105,21 @@ class Json extends \dependencies\BaseComponent
       }
       
       //Get items before the middle item.
-      $before = $that->table('Items')
+      $before = $that->table('Items', $the_item)
         ->join('Categories', $c)->left()
           ->select("$c.name", 'category_name')
           ->select("$c.title", 'category_title')
           ->select("$c.color", 'category_color')
-        ->join('Accounts', $a)->left()
-          ->select("$a.username", 'username')
+        ->join('Accounts', $user)->left()
+          ->select("$user.username", 'username')
+
+        ->workwith($user)
+        ->join('UserInfo', $userinfo)->left()
+          ->select("$userinfo.name", 'name')
+          ->select("$userinfo.preposition", 'preposition')
+          ->select("$userinfo.family_name", 'family_name')
+
+        ->workwith($the_item)
         ->where('dt_created', '>', $item->dt_created)
         //Filter categories.
         ->is($data->category_filter->is('set')->and_not('empty'), function($q)use($data){
@@ -100,13 +131,21 @@ class Json extends \dependencies\BaseComponent
       ->convert('reverse');
         
       //Get items after the middle item.
-      $after = $that->table('Items')
+      $after = $that->table('Items', $the_item)
         ->join('Categories', $c)->left()
           ->select("$c.name", 'category_name')
           ->select("$c.title", 'category_title')
           ->select("$c.color", 'category_color')
-        ->join('Accounts', $a)->left()
-          ->select("$a.username", 'username')
+        ->join('Accounts', $user)->left()
+          ->select("$user.username", 'username')
+
+        ->workwith($user)
+        ->join('UserInfo', $userinfo)->left()
+          ->select("$userinfo.name", 'name')
+          ->select("$userinfo.preposition", 'preposition')
+          ->select("$userinfo.family_name", 'family_name')
+
+        ->workwith($the_item)
         ->where('dt_created', '<', $item->dt_created)
         //Filter categories.
         ->is($data->category_filter->is('set')->and_not('empty'), function($q)use($data){
@@ -114,6 +153,7 @@ class Json extends \dependencies\BaseComponent
         })
         ->order('dt_created', 'DESC')
         ->limit($half)
+
       ->execute();
       
       //First? Prepend "first".
@@ -143,14 +183,23 @@ class Json extends \dependencies\BaseComponent
       
       $args[0]->validate('item identifier', array('required', 'number' => 'int'));
 
-      $result =$that
-        ->table('Items')
+      $result = $that
+        ->table('Items', $item)
         ->join('Categories', $c)->left()
           ->select("$c.name", 'category_name')
           ->select("$c.title", 'category_title')
           ->select("$c.color", 'category_color')
-        ->join('Accounts', $a)->left()
-          ->select("$a.username", 'username')
+
+        ->join('Accounts', $user)->left()
+          ->select("$user.username", 'username')
+
+        ->workwith($user)
+        ->join('UserInfo', $userinfo)->left()
+          ->select("$userinfo.name", 'name')
+          ->select("$userinfo.preposition", 'preposition')
+          ->select("$userinfo.family_name", 'family_name')
+
+        ->workwith($item)
         ->pk($args[0])
         ->execute_single();
       
