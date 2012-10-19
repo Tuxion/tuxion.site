@@ -1,0 +1,6 @@
+/*! jQuery Placeholder Plugin - v0.6.1 - 2012-10-03
+* http://andrew-jones.com/jquery-placeholder-plugin
+* Copyright (c) 2012 Andrew Jones; Licensed MIT */
+
+.placeholder { color: #666; }
+.placeholderFocus { color: #000; }
