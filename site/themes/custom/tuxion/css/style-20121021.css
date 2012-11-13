@@ -59,6 +59,8 @@ body{
   position:relative;
   /*overflow-x:hidden;*/
   font-family:'Helvetica Neue', Helvetica, sans-serif;
+  font-size:12px;
+  line-height:24px;
 }
 
 #sidebar{
@@ -74,7 +76,6 @@ body{
   font-family: 'proxima-nova',Helvetica,Arial,sans-serif;
   color: #666666;
   font-size:12px;
-  line-height:24px;
 }
   #sidebar .col{
     position:relative;
@@ -183,9 +184,6 @@ body{
 #content{
   margin-right:310px;
 }
-  #content .seo{
-    text-indent:-5000px;
-  }
 
 #footer{
   position:absolute;
@@ -288,7 +286,7 @@ body{
 }
 .tooltip{
   position:relative;
-  line-height:0.8em;
+  line-height:14px;
   background:#343943;
   color:#fff;
   text-decoration: none;
@@ -298,7 +296,7 @@ body{
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   -webkit-background-clip: padding-box;
-  font-size:0.8em;
+  font-size:10px;
   /*border:solid #fff 1px;*/
 }
 .tooltip.left{margin-left:2px;}
@@ -355,15 +353,10 @@ body{
     max-width:900px;
     margin:0 auto;
   }
-  .col.full h1{
-    font-size: 2em
-  }
   .col.full h2{
-    font-size:1.2em;
+    font-size:17px;
   }
-  .col.full h3{
-    font-size:1em;
-  }
+  .col.full article header h1{ font-size: 2em }
   .col.full a{
     text-decoration:none;
   }
@@ -378,21 +371,12 @@ body{
   }
   .col.full article .body{
     width:100%;
-/*
-    font-size: 20px;
-    line-height: 29px;
-*/
-    font-size: 21px;
-    line-height: 32px;
-    font-weight: 400;
-  }
-  .col.full header .back-to-overview{
-    top:7px;
-    position:relative;    
-    float:right;
-    color:#666 !important;
-    background:none;
-    /*text-transform:lowercase;*/
+    font-size:15px;
+    line-height:23px;
+    font-weight:400;
+/*    columns:100px 5;
+    -webkit-columns:100px 5;
+    -moz-columns:100px 5;*/
   }
   .col.full article img{
     max-width:100%;
@@ -425,10 +409,6 @@ body{
 }
 .item:hover {
   opacity:1;
-}
-.col .item {
-  font-size:12px;
-  line-height:24px;
 }
 
 .item.solid {
@@ -491,10 +471,6 @@ body{
     line-height:34px;
   }
 
-.item img{
-  max-width:100%;
-}
-
 /**********************
     Box Sizes
 *********************/
@@ -547,7 +523,6 @@ body{
   font-weight:bold;
   text-align: center;
   padding: 5px 15px;
-  line-height:24px;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   border-radius: 3px;
@@ -562,7 +537,6 @@ body{
   -ms-transition: border linear 0.08s,box-shadow linear 0.08s, opacity linear 0.08s;
   -o-transition: border linear 0.08s,box-shadow linear 0.08s, opacity linear 0.08s;
   transition: border linear 0.08s,box-shadow linear 0.08s, opacity linear 0.08s;
-  font-size:12px;
 }
 .button:hover {
   text-decoration: none;
@@ -649,7 +623,7 @@ http://www.iconfinder.com/search/?q=iconset%3Afugue+facebook+or+twitter
 
 .author-and-date{
   float:left;
-  /*font-size: 10px;*/
+  font-size: 10px;
   margin-bottom:15px;
 }
 .back-to-overview{

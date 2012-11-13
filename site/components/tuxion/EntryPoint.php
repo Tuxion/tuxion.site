@@ -49,6 +49,7 @@ class EntryPoint extends \dependencies\BaseEntryPoint
         load_plugin('momentjs'),
         load_plugin('jquery_socialButtons'),
         load_plugin('jquery_placeholder'),
+        load_plugin('jquery_touchswipe'),
         load_plugin('jsFramework')
       )),
       array(

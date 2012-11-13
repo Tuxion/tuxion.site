@@ -1,5 +1,9 @@
 body {
   background-color: #e3e3e3;
+/*  background: linear-gradient(45deg, #f06, yellow);
+  background: -moz-linear-gradient(45deg, #f06, yellow);
+  background: -webkit-linear-gradient(45deg, #F06, yellow);
+*/
 }
 
 .item {

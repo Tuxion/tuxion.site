@@ -6,35 +6,61 @@
 
   <section id="tuxion" class="item blue solid">
     <header><h1>Tuxion, aangenaam</h1></header>
+
     <p>
       Wij zijn een jong, creatief team gespecialiseerd in het ontwikkelen van <b>websites</b> en <b>webapplicaties</b>. Wij zijn altijd op zoek naar uitdagende projecten, zowel op technisch vlak als in design.
     </p>
+
     <p>
-      Wij zijn benieuwd naar uw idee&euml;n. <a class="menu-item-link" href="#contact" title="Contact">Vertel ons iets over uw project!</a>
+      <a href="https://twitter.com/Tuxion" class="twitter-follow-button" data-show-count="true" data-lang="nl" data-dnt="true">Follow @Tuxion</a>
+      <a class="icon-gplus" title="Volg Tuxion op Google Plus - tuxion.nl/+" href="http://gplus.to/tuxion"><img width="16" height="16" style="border: 0;" src="https://ssl.gstatic.com/images/icons/gplus-16.png" /></a>
     </p>
+
+    <p>
+      <span style="font-weight:bold;">Wij zijn benieuwd naar uw idee&euml;n.</span> <a class="menu-item-link" href="#contact" title="Contact">Vertel ons iets over uw project!</a>
+    </p>
+
   </section>
 
   <section id="team" class="item blue solid">
     <header><h1>Het team</h1></header>
 
     <ul id="team-members">
-      <li class="robin" itemscope itemtype="http://schema.org/Person">
-        <span class="name" itemprop="name">Robin van Boven</span>
-      </li>
-      <li class="jeroen" itemscope itemtype="http://schema.org/Person">
-        <span class="name" itemprop="name">Jeroen Hofman</span>
-      </li>
-      <li class="adrian" itemscope itemtype="http://schema.org/Person">
-        <span class="name" itemprop="name">Adrian Klingen</span>
-      </li>
       <li class="bart" itemscope itemtype="http://schema.org/Person">
-        <span class="name" itemprop="name">Bart Roorda</span>
+        <h2 class="name" itemprop="name">Bart Roorda</h2>
+        <p>
+          Oprichter van Tuxion. Liefhebber van muziek, code, Web en koffie.
+        </p>
+        <p class="follow-buttons">
+          <a href="https://twitter.com/bartroorda" class="twitter-follow-button" data-show-count="false" data-lang="nl" data-dnt="true">Follow @bartroorda</a>
+        </p>
       </li>
-      <li class="janine" itemscope itemtype="http://schema.org/Person">
-        <span class="name" itemprop="name">Janine Terlouw</span>
+      <li class="robin" itemscope itemtype="http://schema.org/Person">
+        <h2 class="name" itemprop="name">Robin van Boven</h2>
+        <!--<p>Programmeur (PHP / SQL / JS / C#) </p>-->
+        <p>PHP- en JavaScript-programmeur</p>
+        <p class="follow-buttons">
+          <a href="https://twitter.com/BeanowRobin" class="twitter-follow-button" data-show-count="false" data-lang="nl" data-dnt="true">Follow @BeanowRobin</a>
+        </p>
       </li>
       <li class="aldwin" itemscope itemtype="http://schema.org/Person">
-        <span class="name" itemprop="name">Aldwin Vlasblom</span>
+        <h2 class="name" itemprop="name">Aldwin Vlasblom</h2>
+        <p>PHP- en JavaScript-programmeur</p>
+      </li>
+      <li class="jeroen" itemscope itemtype="http://schema.org/Person">
+        <h2 class="name" itemprop="name">Jeroen Hofman</h2>
+        <p>Web- & interface designer</p>
+      </li>
+      <li class="adrian" itemscope itemtype="http://schema.org/Person">
+        <h2 class="name" itemprop="name">Adrian Klingen</h2>
+        <p>Front-end developer</p>
+        <p class="follow-buttons">
+          <a href="https://twitter.com/1337Lutz" class="twitter-follow-button" data-show-count="false" data-lang="nl" data-dnt="true">Follow @1337Lutz</a>
+        </p>
+      </li>
+      <li class="janine" itemscope itemtype="http://schema.org/Person">
+        <h2 class="name" itemprop="name">Janine Terlouw</h2>
+        <p>Grafisch ontwerper</p>
       </li>
     </ul>
     <!-- Mijn favoriete websites -->
@@ -78,13 +104,13 @@
   <section id="services" class="item blue solid">
     <header><h1>Diensten</h1></header>
 
-    <h3>Websites volgens webstandaarden</h3>
+    <h2>Websites volgens webstandaarden</h2>
 
     <p>
       Onze websites zijn herkenbaar aan sprekende designs en codering volgens webstandaarden van het <a href="http://www.w3.org/" target="_blank" title="Website van het World Wide Web Consortium">W3C</a>.
     </p>
 
-    <h3>Webapplicaties die werken</h3>
+    <h2>Webapplicaties die werken</h2>
 
     <p>
       Dagelijks werken wij aan interessante webapplicaties, die gebruiksvriendelijk zijn en perfect werken.
@@ -94,7 +120,7 @@
       Daarnaast zijn wij in elke fase direct aanspreekbaar, waardoor wij snel kunnen inspelen op uw specifieke wensen.
     </p>
 
-    <h3>Beheer</h3>
+    <h2>Beheer</h2>
 
     <p>
       Wenst u een site-update? Geen probleem, wij helpen u graag.
@@ -106,7 +132,7 @@
   <section id="contact" class="item blue solid">
     <header><h1>Contact</h1></header>
 
-    <h4>Laat een bericht achter!</h4>
+    <h2>Laat een bericht achter!</h2>
 
     <p>
       We maken graag een afspraak voor een ori&euml;nterend gesprek, bij u of bij ons.
@@ -136,16 +162,16 @@
 
     <div class="group">
   
-      <p>
-        <b>Postadres</b><br />
-        Rusthofstraat 63<br />
-        3034 TR  Rotterdam
-      </p>
-
       <p class="it-would-be-great-to-meet-you">
         <b>Bezoekadres</b><br />
         Slinge 250<br />
         3085 EX  Rotterdam
+      </p>
+
+      <p>
+        <b>Postadres</b><br />
+        Rusthofstraat 63<br />
+        3034 TR  Rotterdam
       </p>
 
     </div>
@@ -169,9 +195,10 @@
 
 <div class="sidebar-menu">
   
+  <a href="#logo" class="menu-item tuxion">Tuxion</a>
   <a href="#team" class="menu-item team">Het team</a>
-  <a href="#about" class="menu-item over">Over Tuxion</a>
   <a href="#services" class="menu-item diensten">Diensten</a>
   <a href="#contact" class="menu-item contact">Contact</a>
   
 </div>
+

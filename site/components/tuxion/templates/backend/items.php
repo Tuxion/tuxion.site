@@ -1,5 +1,5 @@
 <?php namespace components\tuxion; if(!defined('TX')) die('No direct access.');
 
 echo
-  $data->item_list.
+  $data->edit_item.
   $data->admin_toolbar;

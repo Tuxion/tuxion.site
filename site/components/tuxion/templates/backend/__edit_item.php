@@ -2,7 +2,7 @@
 $form_id = tx('Security')->random_string(20);
 ?>
 
-<a href="#" class="back-to-overview cancel">terug naar het item-overzicht</a>
+<a href="#" class="back-to-overview cancel">naar het item-overzicht</a>
 
 <div id="tuxion-item-form">
 
