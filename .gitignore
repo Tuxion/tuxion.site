@@ -4,3 +4,4 @@
 /config/email.php
 /config/paths.php
 sftp-config.json
+*.sublime*
