@@ -4,3 +4,6 @@
 [submodule "plugins/jquery_socialButtons/src"]
 	path = plugins/jquery_socialButtons/src
 	url = git://github.com/Tuxion/jquery-socialButtons.git
+[submodule "plugins/jquery_touchswipe/src"]
+	path = plugins/jquery_touchswipe/src
+	url = git://github.com/mattbryson/TouchSwipe-Jquery-Plugin.git
