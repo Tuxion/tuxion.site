@@ -545,12 +545,12 @@
         Sidebar.initialWidth = Sidebar.view.outerWidth();
         
         $(document)
-          .on('mousewheel DOMMouseScroll', Sidebar.view, function(e){
-            
+          .on('mousewheel DOMMouseScroll swipeUp swipeDown swipe', Sidebar.view, function(e){
+
             //Only in effect if scroll was used on the sidebar when it isn't allowed.
             if($(e.target).closest('#sidebar').size() == 0 || app.Sidebar.scrollAllowed())
               return;
-            
+
             var delta = getWheelDelta(e.originalEvent);
             
             var el = Sidebar.view.find('.col');
@@ -726,9 +726,10 @@
 
         $(document)
           
-          .on('mousewheel DOMMouseScroll', Content.view, function(e){
+          .on('mousewheel DOMMouseScroll swipeLeft swipeRight', Content.view, function(e){
 
             //Only in effect if scroll was not used on the sidebar when it isn't allowed.
+            //Also, don't disable default scroll in full read mode.
             if($(e.target).closest('#sidebar').size() > 0 && !app.Sidebar.scrollAllowed()){
               return;
             }
@@ -740,10 +741,11 @@
               Content.renderItems(delta < 0);
             }
             
-            else if(Content.mode == 'full'){
-              var el = Content.view.find('.col.full');
-              el.scrollTop(el.scrollTop() + (delta*50));
-            }
+            //Oldskool:
+            // else if(Content.mode == 'full'){
+            //   var el = Content.view.find('.col.full');
+            //   el.scrollTop(el.scrollTop() + (delta*50));
+            // }
             
             app.Sidebar.scootOver($('#container').scrollLeft());
             

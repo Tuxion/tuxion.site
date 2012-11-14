@@ -1,5 +1,39 @@
 <?php namespace components\tuxion; if(!defined('TX')) die('No direct access.'); ?>
 
+<div id="content" class="clearfix">
+  <div class="seo">
+
+<?php
+$data->items->each(function($row){
+
+  echo
+    '<h2>'.$row->title.'</h2>'."\n".
+    '<time pubdate="pubdate" title="'.$row->dt_created.'">'.$row->dt_created.'</time>'.
+    '<p>'.$row->description.'</p>'.
+    '<p><a href="#'.$row->id.'">Lees meer</a></p>'
+  ;
+
+});
+?>
+
+  </div><!-- /.seo -->
+</div>
+
+<div id="filters">
+  <ul>
+    <?php $data->categories->each(function($row){ ?>
+    <li class="<?php echo $row->name.' '.$row->color; ?>">
+      <div><span class="tooltip right"><?php echo $row->description; ?></span></div>
+      <a href="#" data-id="<?php echo $row->id; ?>" target="_self"><?php echo $row->title; ?></a>
+    </li>
+    <?php }); ?>
+    <li class="home">
+      <div><span class="tooltip right">Terug naar het begin</span></div>
+      <a href="#">Home</a>
+    </li>
+  </ul>
+</div>
+
 <script id="item-column" type="text/template">
   <div class="col" data-id="<%- id %>">
   </div>
@@ -9,7 +43,7 @@
   <section class="item <%- category_color %>" data-id="<%- id %>">
     <header>
       <h1><a href="#<%- id %>" target="_self"><%- title %></a></h1>
-      <time pubdate="pubdate" title="<%- dt_created %>"><%- moment(dt_created, "YYYY-MM-DD HH:mm:ss").format("DD[-]MM") %></time>
+      <time pubdate="pubdate" title="<%- moment(dt_created, "YYYY-MM-DD HH:mm").format("YYYY-MM-DD HH:mm") %>"><%- moment(dt_created, "YYYY-MM-DD HH:mm:ss").format("D MMM") %></time>
     </header>
     <%= description %>
     <footer>
@@ -24,7 +58,7 @@
   
   <article class="inner <%- category_name %> <%- category_color %>">
     <header>
-      <a style="float:right;color:#666 !important;background:none;" href="#" class="back-to-overview button" target="_self">Terug naar het overzicht</a>
+      <a href="#" class="back-to-overview button" target="_self">Terug naar het overzicht</a>
       <h1><%- title %></h1>
       <p>
         Gepubliceerd op <time pubdate="pubdate"><%- moment(dt_created, "YYYY-MM-DD HH:mm:ss").format("D MMMM YYYY [om] H:mm [uur]") %></time>
@@ -49,26 +83,13 @@
 </script>
 
 <script type="text/javascript">
+
   $(function(){
     window.app = new Tuxion({});
   });
+
+  !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+
 </script>
-
-<div id="content" class="clearfix"></div>
-
-<div id="filters">
-  <ul>
-    <?php $data->categories->each(function($row){ ?>
-    <li class="<?php echo $row->name.' '.$row->color; ?>">
-      <div><span class="tooltip right"><?php echo $row->description; ?></span></div>
-      <a href="#" data-id="<?php echo $row->id; ?>" target="_self"><?php echo $row->title; ?></a>
-    </li>
-    <?php }); ?>
-    <li class="home">
-      <div><span class="tooltip right">Terug naar het begin</span></div>
-      <a href="#">Home</a>
-    </li>
-  </ul>
-</div>
 
 <?php echo $data->admin_toolbar; ?>
