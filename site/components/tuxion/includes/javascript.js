@@ -698,14 +698,9 @@
       },
 
       events: {
-        'click on el_back': function(e){
-          if(this.mode == 'full'){
-            this.closePage();
-          }
-        },
         'click on .col:not(.full)': function(e){
           if(this.mode == 'full'){
-            this.closePage();
+            window.location.hash = '#';
           }
         }
       },
@@ -757,7 +752,6 @@
         $(window)
 
           .on('hashchange', function(e){
-            if(window.location.hash.length < 1 || window.location.hash == '#') return;
             Content.navigate();
           })
         
@@ -787,7 +781,7 @@
 
             //Escape key to close an article.
             if((e.which == 27 || e.keyCode == 27) && Content.mode == 'full'){
-              Content.closePage();
+              window.location.hash = '#';
             }
             
           })
@@ -805,10 +799,18 @@
       navigate: function(){
         
         var Content = this;
+        
+        _(Content).dir();
 
         if(window.location.hash.length > 0 && window.location.hash != '#'){
           Content.openPage(window.location.hash.slice(1));
-        }else{
+        }
+        
+        else if(Content.openPageID){
+          Content.closePage();
+        }
+        
+        else{
           Content.renderFrom();
         }
 
@@ -829,7 +831,6 @@
             break;
           
         }
-        
         
         Content.mode = mode;
         
@@ -938,8 +939,6 @@
             //#TODO: Content.renderFrom(Content.openPageID);
             Content.renderFrom();
           }
-          
-          window.location.hash = '';
           
           delete Content.openPageID;
           
