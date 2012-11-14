@@ -1,3 +1,6 @@
 [submodule "plugins/jquery_postpone/src"]
 	path = plugins/jquery_postpone/src
 	url = git://github.com/Avaq/jQuery-Postpone.git
+[submodule "plugins/jquery_socialButtons/src"]
+	path = plugins/jquery_socialButtons/src
+	url = git://github.com/Tuxion/jquery-socialButtons.git
