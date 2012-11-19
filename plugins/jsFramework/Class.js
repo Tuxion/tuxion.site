@@ -22,8 +22,8 @@
     $.extend(clazz, {
       fn:       clazz.prototype,
       proxy:    function(func){ return $.proxy(func, this); },
-      extend:   function(obj){ Class.inherit(this, obj); },
-      include:  function(obj){ Class.inherit(this.fn, obj); },
+      extend:   function(obj){ Class.inherit(this, obj); return this; },
+      include:  function(obj){ Class.inherit(this.fn, obj); return this; },
       sub:      function(inc){ return new Class(this, (inc || {})); }
     });
     

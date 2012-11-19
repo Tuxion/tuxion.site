@@ -212,7 +212,7 @@ class Json extends \dependencies\BaseComponent
     });
 
     return $return;
-
+    
   }
 
 }

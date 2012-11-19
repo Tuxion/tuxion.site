@@ -111,7 +111,85 @@
     
   }
   
-  //Mixin a logging functions into underscore.
+  //A helper class that allows us to calculate rectangle dimensions.
+  function Rectangle(width, height){
+    
+    this.width = width;
+    this.height = height;
+    this.ratio = width/height;
+    
+  }
+  
+  //Add methods to the cube class.
+  _(Rectangle.prototype).extend({
+    
+    width: 0,
+    height: 0,
+    ratio: -1,
+    
+    resize: function(options){
+      
+      _(options).defaults({
+        maintainAspectRatio: true,
+        fitOutward: false
+      });
+      
+      if(options.width){
+        this.setWidth(options.width, options.maintainAspectRatio);
+      }
+      
+      if(options.height && (!options.width || !options.maintainAspectRatio || (options.fitOutward
+        ? (options.height > this.height)
+        : (options.height < this.height)
+      ))){
+        this.setHeight(options.height, options.maintainAspectRatio);
+      }
+      
+      return this;
+      
+    },
+    
+    setWidth: function(width, maintainAspectRatio){
+      
+      maintainAspectRatio = (maintainAspectRatio==undefined ? true : maintainAspectRatio);
+      var scale = (this.width / width);
+      
+      if(maintainAspectRatio){
+        this.height = (this.height / scale);
+      }
+      
+      this.width = width;
+      
+      if(!maintainAspectRatio){
+        this.ratio = (this.width / this.height);
+      }
+      
+      return this;
+      
+    },
+    
+    setHeight: function(height, maintainAspectRatio){
+      
+      maintainAspectRatio = (maintainAspectRatio==undefined ? true : maintainAspectRatio);
+      var scale = (this.height / height);
+      
+      if(maintainAspectRatio){
+        this.width = (this.width / scale);
+      }
+      
+      this.height = height;
+      
+      if(!maintainAspectRatio){
+        this.ratio = (this.height / this.width);
+      }
+      
+      return this;
+      
+    }
+    
+  });
+  
+  //Mix logging functions into underscore.
   _.mixin({
     
     log: function(object){
@@ -135,17 +213,17 @@
     */
     options: {},
     init: function(options){
-
+      
       app = this;
       this.options = _(options).defaults(this.options);
       this.Content = new this.ContentController;
       this.Sidebar = new this.SidebarController;
       this.Filters = new this.FiltersController;
-
+      
       //Init plugins
       $(":input[placeholder]").placeholder({overrideSupport: true});
       moment.lang('nl');
-
+      
     },
     
     /**
@@ -433,17 +511,53 @@
       
       templator: tmpl('item'),
       namespace: 'item',
+      imagesMatcher: /\[img\:\d+\]/gm,
+      imageIdMatcher: /^\[img\:(\d+)\]$/,
       
       init: function(data){
+        
         this.id = data.id;
         this.data = data;
+        this.data.output = this.data.description;
         app.items[this.id] = this;
         this.previous(this.templator(data));
+        
       },
       
       render: function(){
+        
         this.view.replaceWith( this.templator(this.data) );
+        
         return this;
+        
+      },
+      
+      renderImages: function(width){
+        
+        var self = this;
+        var text = self.data.description;
+        var matches = self.imagesMatcher.exec(text);
+        
+        text.replace(self.imagesMatcher, function(match){
+          
+          var index = self.imageIdMatcher.exec(match)[1].toInt();
+          var imageInfo = self.data.images[index] || {
+            src: 'notfound.jpg',
+            name:'NotFound',
+            width: 100,
+            height: 100
+          };
+          
+          var dimensions = (new Rectangle(imageInfo.width, imageInfo.height)).setWidth(width);
+          
+          return '<img src="'+src+'" width="'+dimensions.width+'" height="'+dimensions.height+'" />';
+          
+        });
+        
+        this.data.output = text;
+        
+        return self;
+        
       }
       
     }),
@@ -462,15 +576,20 @@
       },
       
       init: function(){
+        
         this.id = app.columns.length;
         app.columns.push(this);
         this.previous( this.templator({id:this.id}) );
+        
       },
       
       //Rerender with a new template.
       render: function(){
+        
         this.view.replaceWith( this.templator({}) );
+        
         return this;
+        
       },
       
       //Append an instance of Item.
@@ -509,9 +628,12 @@
       
       //Return true if this column has too many items.
       overflowing: function(){
+        
         if(this.el_items.size() < 2) return false;
         var lastItem = this.el_items.last();
+        
         return (lastItem.height() + lastItem.position().top + 50) > this.view.height();
+        
       }
       
     }),
@@ -559,6 +681,14 @@
             app.Sidebar.scootOver($('#container').scrollLeft());
             
           });
+          
+        app.Content.subscribe('modechange', function(e, oldmode, newmode){
+          if(newmode == 'phone'){
+            Sidebar.fullScreen();
+          }else{
+            Sidebar.alignLeft();
+          }
+        });
         
       },
       
@@ -586,13 +716,23 @@
       },
       
       scrollAllowed: function(){
+        
         return this.view.css('opacity') < 1;
+        
       },
       
       itemClick: function(e){
+        
         e.preventDefault();
-        this.view.find('.col').scrollTo(this.view.find($(e.target).attr('href')), {axis:'y', duration: 300, offset: -25});
+        
+        this.view.find('.col').scrollTo(this.view.find($(e.target).attr('href')), {
+          axis:'y',
+          duration: 300,
+          offset: -25
+        });
+        
         return false;
+        
       },
 
       validateContactForm: function(e){
@@ -640,7 +780,17 @@
             });
 
         }
+        
+      },
       
+      fullScreen: function(){
+        this.view.css('width', '100%');
+        return this;
+      },
+      
+      alignLeft: function(){
+        this.view.css('width', 'auto');
+        return this;
       }
       
     }),
@@ -722,6 +872,11 @@
         
         $.after(20).done(function(){
           Content.navigate();
+          if($(window).width() < 500){
+            Content.mode = 'phone';
+            Content.hide();
+            app.Sidebar.fullScreen();
+          }
         });
 
         $(document)
@@ -759,6 +914,14 @@
         
           .on('resize', _(function(){
             
+            if($(window).width() <= 350 && app.Content.mode != 'phone'){
+              app.Content.setMode('phone');
+            }
+            
+            else if($(window).width() > 500 && app.Content.mode == 'phone'){
+              app.Content.setMode('list');
+            }
+            
             if(Content.mode == 'list'){
               Content.rerender();
             }
@@ -790,6 +953,26 @@
 
         ;//eof: $(window)
         
+        Content.subscribe('modechange', function(e, oldmode, newmode){
+          switch(newmode){
+            
+            case 'list':
+              Content.show();
+              Content.view.removeClass('disabled');
+              break;
+              
+            case 'full':
+              Content.show();
+              Content.view.addClass('disabled');
+              break;
+              
+            case 'phone':
+              Content.hide();
+              break;
+            
+          }
+        });
+        
       },
       
       fixHeight: function(){
@@ -802,8 +985,6 @@
         
         var Content = this;
         
-        _(Content).dir();
-
         if(window.location.hash.length > 0 && window.location.hash != '#'){
           Content.openPage(window.location.hash.slice(1));
         }
@@ -815,26 +996,15 @@
         else{
           Content.renderFrom();
         }
-
+        
       },
       
       setMode: function(mode){
         
         var Content = this;
-        
-        switch(mode){
-          
-          case 'list':
-            Content.view.removeClass('disabled');
-            break;
-            
-          case 'full':
-            Content.view.addClass('disabled');
-            break;
-          
-        }
-        
+        Content.publish('modechange', Content.mode, mode);
         Content.mode = mode;
+        return this;
         
       },
       
@@ -1052,7 +1222,9 @@
       },
       
       appendPrevious: function(){
+        
         return $.Deferred().reject().promise();
+        
       },
       
       append: function(item){
@@ -1128,9 +1300,26 @@
         
         this.view.animate({width: (colWidth + (extraWidth||20))}, duration||0);
         
+      },
+      
+      hide: function(){
+        
+        this.view.hide();
+        
+        return this;
+        
+      },
+      
+      show: function(){
+        
+        this.view.show();
+        
+        return this;
+        
       }
       
     })
+    .include(PubSub)
     
   });
   

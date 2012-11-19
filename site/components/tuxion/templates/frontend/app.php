@@ -45,7 +45,7 @@ $data->items->each(function($row){
       <h1><a href="#<%- id %>" target="_self"><%- title %></a></h1>
       <time pubdate="pubdate" title="<%- moment(dt_created, "YYYY-MM-DD HH:mm").format("YYYY-MM-DD HH:mm") %>"><%- moment(dt_created, "YYYY-MM-DD HH:mm:ss").format("D MMM") %></time>
     </header>
-    <%= description %>
+    <%= output %>
     <footer>
       <a href="#<%- id %>" class="read-more button" target="_self">Lees meer</a>
       <?php if(tx('Account')->user->level->get() >= 2){ ?><a href="admin/?section=tuxion/edit_item&item_id=<%- id %>" target="_blank" class="edit">edit</a><?php } ?>

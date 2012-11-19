@@ -1,15 +1,19 @@
 ;(function($, exports){
   
   var PubSub = {
-    pubsub:   $({}),
+    pubsub: $({}),
     subscribe: function(){
       this.pubsub.bind.apply(this.pubsub, arguments);
+      return this;
     },
     unsubscribe: function(){
       this.pubsub.unbind.apply(this.pubsub, arguments);
+      return this;
     },
     publish: function(){
-      this.pubsub.trigger.apply(this.pubsub, arguments);
+      arguments = $.makeArray(arguments);
+      this.pubsub.trigger.call(this.pubsub, arguments.shift(), arguments);
+      return this;
     }
   };
   
