@@ -36,7 +36,7 @@ class Actions extends \dependencies\BaseComponent
           $item_id = mysql_insert_id();
         })
         ->failure(function($item)use($data, $user_id, &$item_id){
-          $item->merge($data->having('category_id', 'image_id', 'title', 'description', 'text', 'user_id'))->merge(array('dt_last_modified', date("Y-m-d H:i:s")))->save();
+          $item->merge($data->having('dt_created', 'category_id', 'image_id', 'title', 'description', 'text', 'user_id'))->merge(array('dt_last_modified', date("Y-m-d H:i:s")))->save();
           $item_id = $item->id->get('int');
         });
 

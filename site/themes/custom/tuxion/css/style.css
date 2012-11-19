@@ -21,6 +21,11 @@ html[xmlns] .clearfix {
 * html .clearfix {
   height: 1%;
 }
+
+.clear{
+  clear:both;
+}
+
 html, body{
   margin:0;
   padding:0;
@@ -50,6 +55,23 @@ a.no-underline{
   font-weight: normal;
   font-style: normal;
 }
+
+/* =Scrollbars
+-------------------------------------------------------------- */
+
+::-webkit-scrollbar{
+  width:15px;
+  height:8px;
+}
+::-webkit-scrollbar-thumb{
+  height:50px;
+  -webkit-border-radius:0px;
+}
+::-webkit-scrollbar-thumb:hover{
+  height:50px;
+  -webkit-border-radius:0px;
+}
+
 
 /**********************
     Layout
@@ -349,6 +371,7 @@ body{
 .col.full{
   /*border: 1px solid red;*/
   margin-right:20px;
+  overflow:auto;
 }
   .col.full article{
     padding:25px 0px 45px;
@@ -426,11 +449,16 @@ body{
 .item:hover {
   opacity:1;
 }
+/* original
 .col .item {
   font-size:12px;
   line-height:24px;
 }
-
+*/
+.col .item {
+  font-size:13px;
+  line-height:24px;
+}
 .item.solid {
   -webkit-transition:opacity 150ms linear;
   -moz-transition:opacity 150ms linear;

@@ -1,3 +1,22 @@
+
+/* =Scrollbars
+-------------------------------------------------------------- */
+
+::-webkit-scrollbar-track-piece{
+  background-color:#fff;
+  -webkit-border-radius:0;
+}
+::-webkit-scrollbar-thumb{
+  background-color:#999;
+  outline:2px solid #fff;
+  outline-offset:-2px;
+  border: 2px solid #fff;
+}
+::-webkit-scrollbar-thumb:hover{
+  background-color:#9f9f9f;
+}
+
+
 body {
   background-color: #e3e3e3;
 /*  background: linear-gradient(45deg, #f06, yellow);
