@@ -181,7 +181,9 @@ class Json extends \dependencies\BaseComponent
     
     tx('Fetching item.', function()use($data, $args, $that, &$return){
       
-      $args[0]->validate('item identifier', array('required', 'number' => 'int'));
+      // $args[0]->validate('item identifier', array('required', 'number' => 'int'));
+
+      $identifier = $args[0];
 
       $result = $that
         ->table('Items', $item)
@@ -200,7 +202,12 @@ class Json extends \dependencies\BaseComponent
           ->select("$userinfo.family_name", 'family_name')
 
         ->workwith($item)
-        ->pk($args[0])
+        ->is($identifier->is('set')->and_not('empty')->and_is('numeric'), function($q)use($identifier){
+          $q->pk($identifier);
+        })
+        ->is($identifier->is('set')->and_not('empty')->and_not('numeric'), function($q)use($identifier){
+          $q->where('url_key', "'".$identifier."'");
+        })
         ->execute_single();
       
       $result->is('empty', function()use($args){

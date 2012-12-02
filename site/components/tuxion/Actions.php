@@ -32,11 +32,11 @@ class Actions extends \dependencies\BaseComponent
       //save item
       $item = tx('Sql')->table('tuxion', 'Items')->pk($data->id->get('int'))->execute_single()->is('empty')
         ->success(function()use($data, $user_id, &$item_id){
-          tx('Sql')->model('tuxion', 'Items')->merge($data->having('dt_created', 'category_id', 'image_id', 'title', 'description', 'text', 'user_id'))->save();
+          tx('Sql')->model('tuxion', 'Items')->merge($data->having('dt_created', 'category_id', 'image_id', 'url_key', 'title', 'description', 'text', 'user_id'))->save();
           $item_id = mysql_insert_id();
         })
         ->failure(function($item)use($data, $user_id, &$item_id){
-          $item->merge($data->having('dt_created', 'category_id', 'image_id', 'title', 'description', 'text', 'user_id'))->merge(array('dt_last_modified', date("Y-m-d H:i:s")))->save();
+          $item->merge($data->having('dt_created', 'category_id', 'image_id', 'url_key', 'title', 'description', 'text', 'user_id'))->merge(array('dt_last_modified', date("Y-m-d H:i:s")))->save();
           $item_id = $item->id->get('int');
         });
 

@@ -50,7 +50,8 @@ class EntryPoint extends \dependencies\BaseEntryPoint
         load_plugin('jquery_socialButtons'),
         load_plugin('jquery_placeholder'),
         load_plugin('jquery_touchswipe'),
-        load_plugin('jsFramework')
+        load_plugin('jsFramework'),
+        load_plugin('history.js')
       )),
       array(
         'sidebar' => $this->section('sidebar'),

@@ -23,15 +23,25 @@ class Helpers extends \dependencies\BaseComponent
     
   }
   
-  public function get_items($item_id = null, $options = null)
+  public function get_items($options = null)
   {
   
-    return $this
+    $options = Data($options);
+
+    $q = $this
       ->table('Items')
       ->order('dt_created', 'DESC')
-      ->limit(20)
-      ->execute();
-    
+      ->limit(20);
+
+    $url_key =
+      trim($options->url_key->get(), '/');
+
+    if(!empty($url_key)){
+      $q->where('url_key', "'".$url_key."'");
+    }
+
+    return $q->execute();
+
   }
   
 }

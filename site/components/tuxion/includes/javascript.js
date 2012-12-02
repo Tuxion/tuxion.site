@@ -1,5 +1,5 @@
 ;(function(root, $, _, undefined){
-  
+
   //Do an ajax request.
   var GET=1, POST=2, PUT=4, DELETE=8;
   function request(){
@@ -204,26 +204,31 @@
     
   });
   
-  var app;
-  
+  var app, History = window.History;
+
   root.Tuxion = new Class(null, {
     
     /**
     * OPTIONS AND INITIATOR
     */
-    options: {},
+    options: {
+      site_title: window.title
+    },
     init: function(options){
       
+      //Init plugin: placeholder.
+      $(":input[placeholder]").placeholder({overrideSupport: true});
+      
+      //Init plugin: momentjs.
+      moment.lang('nl');
+
+      //Init Tuxion app.
       app = this;
       this.options = _(options).defaults(this.options);
       this.Content = new this.ContentController;
       this.Sidebar = new this.SidebarController;
       this.Filters = new this.FiltersController;
-      
-      //Init plugins
-      $(":input[placeholder]").placeholder({overrideSupport: true});
-      moment.lang('nl');
-      
+
     },
     
     /**
@@ -503,7 +508,9 @@
       
       events: {
         'click on el_more': function(e){
-          if(app.Content.mode !== 'list') e.preventDefault();
+          e.preventDefault();
+          if(app.Content.mode != 'full')
+            app.Content.openPage($(e.target).data('id'));
         }
       },
       
@@ -784,12 +791,12 @@
       },
       
       fullScreen: function(){
-        this.view.css('width', '100%');
+        $('body').addClass('mobile');
         return this;
       },
       
       alignLeft: function(){
-        this.view.css('width', 'auto');
+        $('body').removeClass('mobile');
         return this;
       }
       
@@ -820,7 +827,7 @@
       filterClick: function(e){
 
         e.preventDefault();
-        app.Filters.category_filter = $(e.target).attr('data-id');
+        app.Filters.category_filter = $(e.target).data('id');
 
         app.Content.closePage();
         app.Content.empty();
@@ -850,8 +857,12 @@
       events: {
         'click on .col:not(.full)': function(e){
           if(this.mode == 'full'){
-            window.location.hash = '#';
+            app.Content.closePage();
           }
+        },
+        'click on el_back': function(e){
+          e.preventDefault();
+          app.Content.closePage();
         }
       },
       
@@ -865,6 +876,7 @@
       init: function(){
         
         var Content = this;
+        var phonemode_pixels = 350;
         
         Content.previous();
         Content.fixWidth();
@@ -896,12 +908,6 @@
               Content.renderItems(delta < 0);
             }
             
-            //Oldskool:
-            // else if(Content.mode == 'full'){
-            //   var el = Content.view.find('.col.full');
-            //   el.scrollTop(el.scrollTop() + (delta*50));
-            // }
-            
             app.Sidebar.scootOver($('#container').scrollLeft());
             
           });
@@ -909,16 +915,16 @@
         $(window)
 
           .on('hashchange', function(e){
-            Content.navigate();
+            app.Content.navigate();
           })
-        
+
           .on('resize', _(function(){
             
-            if($(window).width() <= 350 && app.Content.mode != 'phone'){
+            if($(window).width() <= phonemode_pixels && app.Content.mode != 'phone'){
               app.Content.setMode('phone');
             }
             
-            else if($(window).width() > 500 && app.Content.mode == 'phone'){
+            else if($(window).width() > phonemode_pixels && app.Content.mode == 'phone'){
               app.Content.setMode('list');
             }
             
@@ -946,7 +952,8 @@
 
             //Escape key to close an article.
             if((e.which == 27 || e.keyCode == 27) && Content.mode == 'full'){
-              window.location.hash = '#';
+              app.Content.closePage();
+              History.pushState({state: 'list'}, app.options.site_title, '/');
             }
             
           })
@@ -981,26 +988,52 @@
         
       },
       
-      navigate: function(){
-        
-        var Content = this;
-        
-        if(window.location.hash.length > 0 && window.location.hash != '#'){
-          Content.openPage(window.location.hash.slice(1));
+      navigate: function(page){
+
+        var
+          Content = this
+          url = window.location.href,
+          page_key = url.substring(url.lastIndexOf('/')+1)
+        ;
+
+        log('url: ' + url);
+        log('page_key: ' + page_key);
+
+        //Load given page.
+        if(page > 0){
+          Content.openPage(page);
+          log('Navigate: OPEN PAGE(page)');
         }
-        
+
+        //Load page based on hashtag (backwards compatibility).
+        else if(window.location.hash.length > 0 && window.location.hash != '#'){
+          Content.openPage(window.location.hash.slice(1));
+          log('Navigate: OPEN PAGE#hash');
+        }
+
+        //Load page based on URL.
+        else if(page_key.length > 0){
+          Content.openPage(page_key);
+          log('Navigate: OPEN PAGE/key');
+        }
+
+        //Close page if necessary.
         else if(Content.openPageID){
+          log('Navigate: CLOSE PAGE');
           Content.closePage();
         }
         
+        //Load timeline.
         else{
+          log('Navigate: RENDER TIMELINE')
           Content.renderFrom();
         }
         
       },
       
       setMode: function(mode){
-        
+
+        log('mode:' +mode);        
         var Content = this;
         Content.publish('modechange', Content.mode, mode);
         Content.mode = mode;
@@ -1067,16 +1100,17 @@
               .find('.inner')
                 .css('width', $(window).width() * .8).end()
               .find('.social-buttons').socialButtons({
-                url: 'http://web.tuxion.nl/#'+data.id,
+                url: 'http://web.tuxion.nl/'+data.url_key+'/',
                 message: data.title
               });
 
             document.title = data.title+' | Tuxion webdevelopment';
+            History.replaceState({state: 'full', id: data.id}, data.title, '/'+data.url_key+'/');
             
           });
           
         });
-        
+       
         Content.openPageID = id;
         
       },
@@ -1085,11 +1119,12 @@
         
         var Content = this;
 
-        document.title = 'Tuxion webdevelopment';
-
         if(!Content.el_full){
           return;
         }
+
+        document.title = 'Tuxion webdevelopment';
+        History.replaceState({state: 'list'}, app.options.site_title, '/');
 
         var to = ($('#container').scrollLeft())-($(window).width()/2);
         to = (to < 0 ? 0 : to);
@@ -1122,7 +1157,8 @@
         
         var Content = this;
         Content.empty();
-        
+        console.log('renderFrom');
+
         app.Items[(id ? 'fetch' : 'fetchFirst')](id).done(function(data){
           Content.append(new app.Item(data)).done(function(data){
             Content.renderItems();

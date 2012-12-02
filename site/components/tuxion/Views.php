@@ -6,7 +6,7 @@ class Views extends \dependencies\BaseViews
   protected function app($options)
   {
     return array(
-      'items' => tx('Component')->helpers('tuxion')->get_items(),
+      'items' => tx('Component')->helpers('tuxion')->get_items(array('url_key' => url('')->segments->path)),
       'categories' => tx('Component')->helpers('tuxion')->get_categories(),
       'admin_toolbar' => (tx('Component')->available('cms') ? tx('Component')->sections('cms')->get_html('admin_toolbar') : false)
     );
