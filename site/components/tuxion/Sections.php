@@ -5,6 +5,58 @@ class Sections extends \dependencies\BaseViews
 
   /* ---------- Frontend ---------- */
   
+  protected function feed($data)
+  {
+
+    load_plugin('atom');
+
+    //Create Atom object.
+    $atom = new \plugins\Atom('Tuxion webdevelopment', 'http://www.tuxion.nl/', 'yesterday');
+
+    //Define feed elements.
+    $atom->feed(array(
+      'author' => array(
+        'name' => 'Tuxion',
+        'email' => 'team@tuxion.nl',
+        'uri' => 'http://www.tuxion.nl'
+      ),
+      'link'   => array(
+        'rel'=>'self',
+        'type'=>'application/atom+xml', 
+        'href'=>'http://web.tuxion.nl/atom.xml'
+      ) 
+    ));
+
+    //Loop items.
+    tx('Component')
+      ->helpers('tuxion')
+      ->get_items()
+      ->each(function($r)use(&$atom){
+
+        //Define item elements.
+        $atom->entry(
+          ($r->title ? $r->title : 'Untitled'), 
+          'http://web.tuxion.nl/'.$r->url_key,'/',
+          $r->dt_created, 
+          array(
+            'link' => array(
+              'rel'  => 'alternate',
+              'href' => 'http://web.tuxion.nl/'.$r->url_key.'/'
+            ),
+            'content' => array(
+              'type'  => 'html', 
+              'value' => htmlspecialchars($r->text)
+            ),
+            'summary' => htmlspecialchars($r->description)
+          )
+        );
+
+      });
+
+    //Display feed.
+    $atom->display();
+
+  }
   protected function sidebar($data)
   {
     

@@ -30,6 +30,11 @@ $form_id = tx('Security')->random_string(20);
       <input class="big large" type="text" id="l_title" name="title" value="<?php echo $edit_item->item->title; ?>" />
     </div>
 
+    <div class="ctrlHolder title">
+      <label for="l_url_key" accesskey="u"><?php __('URL key'); ?></label>
+      <input class="big large" type="text" id="l_url_key" name="url_key" value="<?php echo $edit_item->item->url_key; ?>" />
+    </div>
+
     <div class="ctrlHolder">
       <label for="l_description" accesskey="d"><?php __('Description'); ?></label>
       <textarea name="description"><?php echo $edit_item->item->description; ?></textarea>
