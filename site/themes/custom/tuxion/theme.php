@@ -11,10 +11,12 @@ if( tx('Data')->get->view->not('empty') && (tx('Data')->get->view == 'light' || 
 ?>
 
     <script type="text/javascript" src="<?php echo $theme ?>js/javascript.js"></script>
+    <script type="text/javascript" src="<?php echo $theme ?>js/bootstrap.min.js"></script>
 
+    <!-- <link rel="stylesheet" type="text/css" href="<?php echo $theme ?>css/bootstrap.min.css" /> -->
     <link rel="stylesheet" type="text/css" href="<?php echo $theme ?>css/style.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $theme ?>css/style-<?php echo $view; ?>.css" />
-    <link rel="stylesheet" type="text/css" href="<?php echo $theme ?>css/scroll.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $theme ?>css/scroll.css" />    
 
     <script type="text/javascript">
 

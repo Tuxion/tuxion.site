@@ -212,7 +212,7 @@
     * OPTIONS AND INITIATOR
     */
     options: {
-      site_title: window.title
+      site_title: window.title,
     },
     init: function(options){
       
@@ -503,10 +503,18 @@
     Item: Controller.sub({
       
       elements: {
+        'item': self,
         'el_more': '.read-more'
       },
       
       events: {
+        'click on item': function(e){
+          if( ! $(e.target).is('a') ){
+            e.preventDefault();
+            if(app.Content.mode != 'full')
+              app.Content.openPage($(e.target).closest('.item').data('id'));
+          }
+        },
         'click on el_more': function(e){
           e.preventDefault();
           if(app.Content.mode != 'full')
@@ -867,7 +875,7 @@
       },
       
       templators: {
-        portfolio: tmpl('portfolio'),
+        // portfolio: tmpl('portfolio'),
         blog: tmpl('blog')
       },
       
@@ -953,7 +961,7 @@
             //Escape key to close an article.
             if((e.which == 27 || e.keyCode == 27) && Content.mode == 'full'){
               app.Content.closePage();
-              History.pushState({state: 'list'}, app.options.site_title, '/');
+              History.pushState({state: 'list'}, app.options.site_title, options.URL_PATH.URL_PATH+'/');
             }
             
           })
@@ -992,40 +1000,32 @@
 
         var
           Content = this
-          url = window.location.href,
-          page_key = url.substring(url.lastIndexOf('/')+1)
+          path = window.location.pathname,
+          page_key = path.substr(path.slice(0, -1).lastIndexOf('/')+1).slice(0, -1)
         ;
-
-        log('url: ' + url);
-        log('page_key: ' + page_key);
 
         //Load given page.
         if(page > 0){
           Content.openPage(page);
-          log('Navigate: OPEN PAGE(page)');
         }
 
         //Load page based on hashtag (backwards compatibility).
         else if(window.location.hash.length > 0 && window.location.hash != '#'){
           Content.openPage(window.location.hash.slice(1));
-          log('Navigate: OPEN PAGE#hash');
         }
 
         //Load page based on URL.
-        else if(page_key.length > 0){
+        else if(page_key.length > 0 && page_key != app.options.URL_PATH.slice(1)){
           Content.openPage(page_key);
-          log('Navigate: OPEN PAGE/key');
         }
 
         //Close page if necessary.
         else if(Content.openPageID){
-          log('Navigate: CLOSE PAGE');
           Content.closePage();
         }
         
         //Load timeline.
         else{
-          log('Navigate: RENDER TIMELINE')
           Content.renderFrom();
         }
         
@@ -1092,9 +1092,9 @@
           });
           
           app.Items.fetch(id).done(function(data){
-            
-            var tmpl = Content.templators[data.typeName || 'blog'];
-            
+
+            var tmpl = Content.templators[ (Content.templators[data.category_name] && Content.templators[data.category_name] != '' ? data.category_name : 'blog') ];
+
             Content.el_full
               .html(tmpl(data))
               .find('.inner')
@@ -1105,7 +1105,7 @@
               });
 
             document.title = data.title+' | Tuxion webdevelopment';
-            History.replaceState({state: 'full', id: data.id}, data.title, '/'+data.url_key+'/');
+            History.pushState({state: 'full', id: data.id}, data.title, app.options.URL_PATH+'/'+data.url_key+'/');
             
           });
           
@@ -1124,7 +1124,7 @@
         }
 
         document.title = 'Tuxion webdevelopment';
-        History.replaceState({state: 'list'}, app.options.site_title, '/');
+        History.pushState({state: 'list'}, app.options.site_title, app.options.URL_PATH+'/');
 
         var to = ($('#container').scrollLeft())-($(window).width()/2);
         to = (to < 0 ? 0 : to);

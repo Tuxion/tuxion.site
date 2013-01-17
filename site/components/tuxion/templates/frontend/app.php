@@ -9,9 +9,14 @@ tx('Ob')->link('social_seo'); ?>
   <meta property="og:locale" content="nl_NL" />
 
   <?php if($data->items->size() == 1){ ?>
+  <title><?php echo $data->items->{0}->title; ?> - Tuxion webdevelopment</title>
+  <meta name="description" content="<?php echo $data->items->{0}->title; ?> - <?php echo trim(strip_tags($data->items->{0}->description->get())); ?>" />
   <meta property="og:title" content="<?php echo $data->items->{0}->title; ?>" />
   <meta property="og:description" content="<?php echo trim(strip_tags($data->items->{0}->description->get())); ?>" />
   <!--<meta property="og:image" content="" />-->
+  <?php }else{ ?>
+  <title>Tuxion webdevelopment</title>
+  <meta name="description" content="Tuxion, aangenaam. Wij zijn een jong, creatief team gespecialiseerd in het ontwikkelen van websites en webapplicaties." />
   <?php } ?>
 
   <!-- Twitter Cards -->
@@ -106,11 +111,49 @@ tx('Ob')->link('social_seo'); ?>
   
 </script>
 
+<script id="portfolio" type="text/template">
+
+  <article class="inner <%- category_name %> <%- category_color %>">
+   
+    <header>
+      <a href="./" class="back-to-overview button" target="_self">Terug naar het overzicht</a>
+      <p>
+        Gepubliceerd op <time pubdate="pubdate"><%- moment(dt_created, "YYYY-MM-DD HH:mm:ss").format("D MMMM YYYY [om] H:mm [uur]") %></time>
+        <span title="Categorie: <%- category_title %>" class="tooltip left"><%- category_title %></span>
+      </p>
+    </header>
+   
+    <div class="header-img" style="background-image:url('?section=media/image&id=<%- image_id %>')">
+      <h1><%- title %></h1>
+    </div>
+
+    <div class="body">
+      <div class="left">
+        <%= text %>
+      </div>
+      <div class="right">
+      </div>
+    </div>
+    
+    <footer>
+      <div class="author-and-date">Geschreven door <%- name %> <%- preposition %> <%- family_name %>, op <%- moment(dt_created, "YYYY-MM-DD HH:mm:ss").format("D MMMM YYYY") %></div>
+      <div class="social-buttons"></div>
+      <div class="clear"></div>
+      <a href="./" class="back-to-overview button" target="_self">Terug naar het overzicht</a>
+      <?php if(tx('Account')->user->level->get() >= 2){ ?><a href="admin/?section=tuxion/edit_item&item_id=<%- id %>" target="_blank" class="edit">edit</a><?php } ?>
+    </footer>
+
+  </article>
+  
+</script>
+
 <script type="text/javascript">
 
   //Init Tuxion site.
   $(function(){
-    window.app = new Tuxion({});
+    window.app = new Tuxion({
+      'URL_PATH': '<?php echo (URL_PATH ? '/'.URL_PATH : ''); ?>'
+    });
   });
 
   //Make Twitter buttons.

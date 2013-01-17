@@ -98,8 +98,15 @@ body{
   font-size:12px;
   line-height:24px;
 }
+.mobile #sidebar{
+  width:100%;
+}
   #sidebar .col{
     position:relative;
+  }
+  .mobile #sidebar .col,
+  .mobile #sidebar .item{
+    width:auto;
   }
   .icon-gplus{
     display:inline-block;
@@ -151,7 +158,6 @@ body{
   #sidebar .sidebar-menu{
     position:absolute;
     bottom:0;
-    left:0;
     height:96px;
     text-align:center;
     padding:0px;
@@ -184,12 +190,16 @@ body{
       margin-right:0;
     }
     .menu-item:hover {
-      /*text-decoration: underline;*/
       opacity:0.9;
     }
 
   #logo{
     margin:32px 0 0 42px;
+  }
+  .mobile #logo{
+    margin: 32px auto 0 50%;
+    position: relative;
+    left: -94px;
   }
 
 #container{
@@ -377,6 +387,7 @@ body{
     padding:25px 0px 45px;
     max-width:900px;
     margin:0 auto;
+    position:relative;
   }
   .col.full h1{
     font-size: 2em
@@ -521,6 +532,26 @@ body{
 
 .item img{
   max-width:100%;
+}
+
+
+.bullets{
+  margin-left:0;
+  padding:0;
+  list-style: none;
+}
+.bullets li{
+  margin-left:0;
+  padding-left:20px;
+  background:url(http://www.tuxion.nl/aangenaam/img/icons/dot1s.png) no-repeat left center;
+}
+dl{
+}
+dt{
+  margin-top:5px;
+}
+dd{
+  margin-left
 }
 
 /**********************
@@ -849,4 +880,43 @@ input[type="week"]{
   color:#fff;
   padding:5px 10px;
   margin-bottom:15px;
+}
+
+.col.full .portfolio header .back-to-overview{
+  top:-7px;
+}
+
+.portfolio .header-img{
+  width:100%;
+  height:275px;
+  position:relative;
+  margin-bottom:30px;
+  background-color:#8c8c8c;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.portfolio .header-img h1{
+  position:absolute;
+  top:152px;
+  right:0;
+  height:56px;
+  line-height:56px;
+  padding:0 20px;
+  min-width:442px;
+  max-width:80%;
+  background-color:#2a2a2a;
+  color:#fff;
+}
+.portfolio header{
+  margin-bottom:30px;
+}
+.portfolio .body{
+}
+.portfolio .body .left{
+  float:left;
+}
+.portfolio .body .right{
+  width:275px;
+  float:right;
 }
