@@ -1,5 +1,12 @@
 ;(function(root, $, _, undefined){
-
+  
+  //Shim for String.trim()
+  if(!String.prototype.trim) {
+    String.prototype.trim = function () {
+      return this.replace(/^\s+|\s+$/g,'');
+    };
+  }
+  
   //Do an ajax request.
   var GET=1, POST=2, PUT=4, DELETE=8;
   function request(){
@@ -79,7 +86,9 @@
         throw "Can not generate templates before DOM is ready.";
       }else{
         tmpl = tmpl || _.template($('#'+id).html());
-        return $(tmpl.apply(this, arguments));
+        
+        //Use parseHTML, because as of jQuery 1.9 the selector is rather strict, parseHTML assumes HTML.
+        return ($.parseHTML || $)(tmpl.apply(this, arguments).trim());
       }
     }
     
